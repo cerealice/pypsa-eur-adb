@@ -1106,6 +1106,8 @@ rule prepare_sector_network:
         direct_utilisation_heat_sources=config_provider(
             "sector", "district_heating", "direct_utilisation_heat_sources"
         ),
+        fidelio=config_provider("fidelio","enable"),
+        fidelio_scenario=config_provider("fidelio","scenario"),
     input:
         unpack(input_profile_offwind),
         unpack(input_heat_source_potentials),

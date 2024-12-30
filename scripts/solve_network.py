@@ -915,7 +915,8 @@ def add_co2_atmosphere_constraint(n, snapshots):
         return
     for name, glc in glcs.iterrows():
         carattr = glc.carrier_attribute
-        emissions = n.carriers.query(f"{carattr} != 0")[carattr]
+        #emissions = n.carriers.query(f"{carattr} != 0")[carattr]
+        emissions = n.carriers.loc[(n.carriers[carattr] != 0) & (n.carriers[carattr].notnull()), carattr]
 
         if emissions.empty:
             continue
@@ -923,11 +924,12 @@ def add_co2_atmosphere_constraint(n, snapshots):
         # stores
         bus_carrier = n.stores.bus.map(n.buses.carrier)
         stores = n.stores[bus_carrier.isin(emissions.index) & ~n.stores.e_cyclic]
+
         if not stores.empty:
             last_i = snapshots[-1]
             lhs = n.model["Store-e"].loc[last_i, stores.index]
             rhs = glc.constant
-
+        
             n.model.add_constraints(lhs <= rhs, name=f"GlobalConstraint-{name}")
 
 

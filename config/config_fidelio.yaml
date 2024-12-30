@@ -77,7 +77,7 @@ enable:
   drop_leap_day: true
 
 fidelio:
-  enable: true
+  enable: false
   fidelio_shocks: false
   scenario: baseline
 
@@ -123,7 +123,7 @@ electricity:
   everywhere_powerplants: []
 
   conventional_carriers: [nuclear, oil, OCGT, CCGT, coal, lignite, geothermal, biomass]
-  renewable_carriers: [solar, solar-hsat, onwind, offwind-ac, offwind-dc, offwind-float, hydro]
+  renewable_carriers: [solar, onwind, offwind-ac, offwind-dc, offwind-float, hydro]
 
   estimate_renewable_capacities:
     enable: true
@@ -1091,7 +1091,7 @@ plotting:
     # solar
     solar: "#f9d002"
     solar PV: "#f9d002"
-    solar-hsat: "#fdb915"
+    #solar-hsat: "#fdb915"
     solar thermal: '#ffbf2b'
     residential rural solar thermal: '#f1c069'
     services rural solar thermal: '#eabf61'

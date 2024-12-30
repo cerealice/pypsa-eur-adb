@@ -316,6 +316,8 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
             if not new_build.empty:
                 new_capacity = capacity.loc[new_build.str.replace(name_suffix, "")]
 
+                co2_labels = "co2_ets2" if fidelio else "co2 atmosphere"
+
                 if generator != "urban central solid biomass CHP":
                     n.add(
                         "Link",
@@ -323,7 +325,7 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
                         suffix=name_suffix,
                         bus0=bus0,
                         bus1=new_capacity.index,
-                        bus2="co2 atmosphere",
+                        bus2=co2_labels,
                         carrier=generator,
                         marginal_cost=costs.at[generator, "efficiency"]
                         * costs.at[generator, "VOM"],  # NB: VOM is per MWel
@@ -551,13 +553,15 @@ def add_heating_capacities_installed_before_baseyear(
                 heat_system, "gas", nodes, heating_efficiencies, costs
             )
 
+            co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
+
             n.add(
                 "Link",
                 nodes,
                 suffix=f" {heat_system} gas boiler-{grouping_year}",
                 bus0="EU gas" if "EU gas" in spatial.gas.nodes else nodes + " gas",
                 bus1=nodes + " " + heat_system.value + " heat",
-                bus2="co2 atmosphere",
+                bus2=co2_labels,
                 carrier=heat_system.value + " gas boiler",
                 efficiency=efficiency,
                 efficiency2=costs.at["gas", "CO2 intensity"],
@@ -578,13 +582,15 @@ def add_heating_capacities_installed_before_baseyear(
                 heat_system, "oil", nodes, heating_efficiencies, costs
             )
 
+            co2_labels = "co2_ets2" if fidelio else "co2 atmosphere"
+
             n.add(
                 "Link",
                 nodes,
                 suffix=f" {heat_system} oil boiler-{grouping_year}",
                 bus0=spatial.oil.nodes,
                 bus1=nodes + " " + heat_system.value + " heat",
-                bus2="co2 atmosphere",
+                bus2=co2_labels,
                 carrier=heat_system.value + " oil boiler",
                 efficiency=efficiency,
                 efficiency2=costs.at["oil", "CO2 intensity"],
@@ -660,6 +666,8 @@ if __name__ == "__main__":
     update_config_from_wildcards(snakemake.config, snakemake.wildcards)
 
     options = snakemake.params.sector
+
+    fidelio = snakemake.params.fidelio
 
     baseyear = snakemake.params.baseyear
 

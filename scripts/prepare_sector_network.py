@@ -219,16 +219,15 @@ def define_spatial(nodes, options):
 
 spatial = SimpleNamespace()
 
-def determine_emission_sectors_ff55(opts):
-    sectors_ets = ["electricity"]
+def determine_emission_sectors_ff55(options):
+    sectors_ets = ["electricity", "indirect"]
     sectors_ets2 = []
     sectors_nonets = []
-    if "T" in opts:
-        print("Land transport emissions treated separetely")
-        #sectors_ets2 += ["rail non-elec", "road non-elec"]
-    if "H" in opts:
+    if options["transport"]:
+        sectors_ets2 += ["rail non-elec", "road non-elec"]
+    if options["heating"]:
         sectors_ets2 += ["residential non-elec", "services non-elec"]
-    if "I" in opts:
+    if options["industry"]:
         sectors_ets += [
             "industrial non-elec",
             "industrial processes",
@@ -237,8 +236,13 @@ def determine_emission_sectors_ff55(opts):
             "domestic navigation",
             "international navigation",
         ]
-    if "A" in opts:
-        sectors_nonets += ["agriculture"]
+    if options["agriculture"]:
+        sectors_nonets += [
+            "agriculture",
+            #"LULUCF",
+            "waste management",
+            "other"
+        ]
 
     return sectors_ets, sectors_ets2, sectors_nonets
 
@@ -636,25 +640,24 @@ def add_co2_tracking(n, costs, fidelio, options):
     # CH4 burning puts CH4 down, atmosphere up
     if fidelio:
         co2_labels = ["co2_ets", "co2_ets2", "co2_nonets"]
+        for co2_label in co2_labels:
+            n.add("Carrier", co2_label, **{co2_label: -1.0})
+            n.add("Bus", co2_label, location="EU", carrier=co2_label, unit="t_co2")
+            n.add("Store",co2_label, e_nom_extendable=True,e_min_pu=-1,carrier=co2_label,bus=co2_label,)
+        #n.carriers[co2_labels] = n.carriers[co2_labels].fillna(0)
     else:
-        co2_labels = ["co2"]
+        n.add("Carrier", "co2", co2_emissions=-1.0)
+        n.add("Bus", "co2 atmosphere", location="EU", carrier="co2", unit="t_co2")
 
-    for co2_label in co2_labels:
-        n.add("Carrier", co2_label, **{co2_label: -1.0})
-        n.carriers[co2_label] = n.carriers[co2_label].fillna(0)
-
-    # this tracks CO2 in the atmosphere
-    n.add("Bus", co2_labels, location="EU", carrier="co2", unit="t_co2")
-
-    # can also be negative
-    n.add(
-        "Store",
-        co2_labels,
-        e_nom_extendable=True,
-        e_min_pu=-1,
-        carrier="co2",
-        bus=co2_labels,
-    )
+        # can also be negative
+        n.add(
+            "Store",
+            "co2 atmosphere",
+            e_nom_extendable=True,
+            e_min_pu=-1,
+            carrier="co2",
+            bus="co2 atmosphere",
+        )
 
     # add CO2 tanks
     n.add(
@@ -1111,9 +1114,9 @@ def add_co2limit(n, options, nyears=1.0, limit=0.0):
                 # More or less 90% reduction wrt 1990 value of 5000 MtCO2
 
             elif investment_year == 2050:
-                limit_ets = 1
-                limit_ets2 = 1
-                limit_nonets = 1
+                limit_ets = 0
+                limit_ets2 = 0
+                limit_nonets = 0
 
         else:
             limit_ets = 1
@@ -1141,7 +1144,7 @@ def add_co2limit(n, options, nyears=1.0, limit=0.0):
             "CO2LimitETS",
             carrier_attribute="co2_ets",
             sense="<=",
-            type="co2_limit",
+            type="co2_atmosphere",
             constant=co2_limit_ets,
         )
         
@@ -1150,7 +1153,7 @@ def add_co2limit(n, options, nyears=1.0, limit=0.0):
             "CO2LimitETS2",
             carrier_attribute="co2_ets2",
             sense="<=",
-            type="co2_limit",
+            type="co2_atmosphere",
             constant=co2_limit_ets2,
         )
 
@@ -1159,7 +1162,7 @@ def add_co2limit(n, options, nyears=1.0, limit=0.0):
             "CO2LimitnonETS",
             carrier_attribute="co2_nonets",
             sense="<=",
-            type="co2_limit",
+            type="co2_atmosphere",
             constant=co2_limit_nonets,
         )
 
@@ -1915,8 +1918,8 @@ def land_transport_shares_calculation(n, limit):
         if investment_year == 2030:
 
             fuel_cell_share = 0
-            electric_share = share_ev_2030/2
-            ice_share = 1 - share_ev_2030/2
+            electric_share = share_ev_2030/3
+            ice_share = 1 - share_ev_2030/3
     
         # Values for curpol in 2030: FCEV share: 0% EV share: 32.2%, ICEV share: 67.8%
 
@@ -1937,8 +1940,6 @@ def land_transport_shares_calculation(n, limit):
         fuel_cell_share = get(options["land_transport_fuel_cell_share"], investment_year)
         electric_share = get(options["land_transport_electric_share"], investment_year)
         ice_share = get(options["land_transport_ice_share"], investment_year)
-    
-    print(f" Fuel cell {fuel_cell_share}")
     
     output = pd.Series([fuel_cell_share, electric_share, ice_share], index=["fuel_cell", "electric", "ice"]) # Keep the order to match add_land_transport
     return output
@@ -2169,7 +2170,6 @@ def add_land_transport(n, costs, limit=1.0):
 
         if fidelio:
             shares = land_transport_shares_calculation(n, limit)
-            print(f"Shares {shares}")
             logger.info(f"{engine} share: {shares[engine]*100}%")
         else:
             shares[engine] = get(options[f"land_transport_{engine}_share"], investment_year)
@@ -2197,6 +2197,7 @@ def add_land_transport(n, costs, limit=1.0):
         add_fuel_cell_cars(n, p_set, shares["fuel_cell"], temperature)
 
     if shares["ice"] > 0:
+        print(f" Share ice {shares["ice"]}")
         add_ice_cars(n, p_set, shares["ice"], temperature)
 
 

@@ -8,6 +8,7 @@ horizon.
 """
 
 import logging
+from collections import Counter
 from types import SimpleNamespace
 
 import country_converter as coco
@@ -21,7 +22,7 @@ from _helpers import (
     set_scenario_config,
     update_config_from_wildcards,
 )
-from add_electricity import sanitize_carriers
+from add_electricity import sanitize_carriers, calculate_annuity
 from definitions.heat_sector import HeatSector
 from definitions.heat_system import HeatSystem
 from definitions.heat_system_type import HeatSystemType
@@ -623,6 +624,226 @@ def add_heating_capacities_installed_before_baseyear(
             )
 
 
+def add_steel_industry_existing_gem(n):
+
+    # Steel capacities in Europe in kton of steel products per year
+    capacities = pd.read_csv(snakemake.input.steel_capacities, index_col=0)
+    start_dates = pd.read_csv(snakemake.input.steel_start_dates, index_col=0)
+    keys = pd.read_csv(snakemake.input.industrial_distribution_key, index_col=0)
+
+    capacities_bof = capacities["Integrated steelworks"]
+    capacities_eaf = capacities["EAF"] + capacities["DRI + EAF"]
+    capacities_bof.index = capacities.index
+    capacities_eaf.index = capacities.index
+
+    capacities_bof = capacities_bof * keys["Integrated steelworks"]
+
+    capacities_eaf = capacities_eaf * keys["EAF"]
+
+    start_dates_eaf = round((start_dates["EAF"] * capacities["EAF"] + start_dates["DRI + EAF"] * capacities["DRI + EAF"])/ capacities_eaf)
+    start_dates_bof = round(start_dates["Integrated steelworks"])
+
+    # Average age of assets in Iron and steel in Europe: 21-28 years, so I assume they are starting in 2000 in case https://www.energimyndigheten.se/4a9556/globalassets/energieffektivisering_/jag-ar-saljare-eller-tillverkare/dokument/produkter-med-krav/ugnar-industriella-och-laboratorie/annex-b_lifetime_energy.pdf
+    start_dates_eaf = start_dates_eaf.where((start_dates_eaf >= 1000) & np.isfinite(start_dates_eaf), 2000)
+    start_dates_bof = start_dates_bof.where((start_dates_bof >= 1000) & np.isfinite(start_dates_bof), 2000)
+
+    nodes = pop_layout.index
+    p_nom_bof = pd.DataFrame(index=nodes, columns=(["value"]))
+    p_nom_eaf = pd.DataFrame(index=nodes, columns=(["value"]))
+
+    p_nom_bof = capacities_bof / nhours  # get the hourly production capacity
+    p_nom_eaf = capacities_eaf / nhours  # get the hourly production capacity
+
+    # Should steel be produced at a constant rate during the year or not? 1 or 0
+    prod_constantly = 0
+    ramp_limit = 0
+
+    ########### Add existing steel production capacities ############
+    # Blast furnace assuming with natural gas
+
+    # BOF
+
+    iron_to_steel_bof = 1.429
+    iron_to_steel_eaf_ng = 1.36
+    em_factor_bof = 668.2 # tCO2/kt steel
+
+    # Lifetimes https://www.energimyndigheten.se/4a9556/globalassets/energieffektivisering_/jag-ar-saljare-eller-tillverkare/dokument/produkter-med-krav/ugnar-industriella-och-laboratorie/annex-b_lifetime_energy.pdf
+    lifetime_bof = 100
+    lifetime_eaf = 67 
+
+    # Capex
+    discount_rate = 0.04
+    capex_bof = ((211000 + 100000 ) * 0.7551 / nhours / iron_to_steel_bof ) * calculate_annuity(lifetime_bof, discount_rate)
+    # https://iea-etsap.org/E-TechDS/PDF/I02-Iron&Steel-GS-AD-gct.pdf 2010USD/kt/yr steel, then /nhour for the price in 2010USD/kt steel/timestep, divided by the efficiency to have the value in kt iron
+    capex_eaf = ((145000 + 80000) * 0.7551 / nhours / iron_to_steel_bof) * calculate_annuity(lifetime_eaf, discount_rate)
+    # https://iea-etsap.org/E-TechDS/PDF/I02-Iron&Steel-GS-AD-gct.pdf then /nhours for the price
+    opex_bof = 90 * 1e3 * 0.7551 / nhours / iron_to_steel_bof # $/t/yr -> €/kt iron/hour
+    opex_eaf = (13+32) * 1e3 * 0.7551 / nhours / iron_to_steel_bof # $/t/yr -> €/kt iron/hour
+
+    # Energy input data BF BOF
+    coal4bfobf = 4415.6 # MWh coal per kt steel
+    coal4bfbof_harvey = 1306 + 130 # MWh coal per kt steel
+
+    elec4bfbof = 488.9 # MWh electricity per kt steel
+    elec4bfbof_harvey = 75 + 303 # MWh electricity per kt steel
+
+    # Energy input data NG DRI EAF
+    ng4dri = 2803 # MWh natural gas per kt steel
+    ng4dri_harvey = 2733 # MWh natural gas per kt steel
+
+    hy4dri = 2211 # MWh natural gas per kt steel
+
+    elec4eaf = 675.9 # MWh electricity per kt steel
+    elec4eaf_harvey = 588 # MWh electricity per kt steel
+
+
+    n.add(
+        "Link",
+        nodes,
+        suffix=" BF-BOF-2020",
+        bus0=spatial.iron.nodes,
+        bus1=spatial.steel.nodes,
+        bus2=spatial.coal.nodes,
+        bus3=nodes,
+        bus4=spatial.co2.bof,
+        carrier="BF-BOF",
+        p_nom=p_nom_bof * iron_to_steel_bof,
+        p_nom_extendable=False,
+        p_min_pu=prod_constantly,  # hot elements cannot be turned off easily
+        #capital_cost=capex_bof,
+        marginal_cost=0,#opex_bof,
+        efficiency=1 / iron_to_steel_bof,
+        efficiency2= - coal4bfbof_harvey / iron_to_steel_bof,  # MWhth coal per kt iron
+        efficiency3= - elec4bfbof_harvey / iron_to_steel_bof,  # MWh electricity per kt iron
+        efficiency4= em_factor_bof / iron_to_steel_bof, # t CO2 per kt iron
+        lifetime=100,  # https://www.energimyndigheten.se/4a9556/globalassets/energieffektivisering_/jag-ar-saljare-eller-tillverkare/dokument/produkter-med-krav/ugnar-industriella-och-laboratorie/annex-b_lifetime_energy.pdf
+        build_year=start_dates_bof,
+    )
+
+    n.add(
+        "Link",
+        nodes,
+        suffix=" DRI-EAF-2020",
+        bus0=spatial.iron.nodes,
+        bus1=spatial.steel.nodes,
+        bus2=spatial.drigas.nodes,  # in this process is the reducing agent, it is not burnt
+        bus3=nodes,
+        carrier="DRI-EAF",
+        p_nom=p_nom_eaf * iron_to_steel_eaf_ng,
+        p_nom_extendable=False,
+        p_min_pu=prod_constantly,  # hot elements cannot be turned off easily
+        #capital_cost=capex_eaf ,  # https://iea-etsap.org/E-TechDS/PDF/I02-Iron&Steel-GS-AD-gct.pdf then /nhours for the price,
+        marginal_cost=0,#opex_eaf,
+        efficiency=1 / iron_to_steel_eaf_ng,
+        efficiency2= -1 / iron_to_steel_eaf_ng, # one unit of dri gas per kt iron
+        efficiency3= - elec4eaf_harvey / iron_to_steel_eaf_ng, #MWh electricity per kt iron
+        lifetime=67,  # https://www.energimyndigheten.se/4a9556/globalassets/energieffektivisering_/jag-ar-saljare-eller-tillverkare/dokument/produkter-med-krav/ugnar-industriella-och-laboratorie/annex-b_lifetime_energy.pdf
+        build_year=start_dates_eaf,
+    )
+
+
+def add_cement_industry_existing_sfi(n):
+
+    # Cement capacities in Europe in kton of cement products per year
+    capacities = pd.read_csv(snakemake.input.cement_capacities, index_col=0)
+    start_dates = pd.read_csv(snakemake.input.cement_start_dates, index_col=0)
+    keys = pd.read_csv(snakemake.input.industrial_distribution_key, index_col=0)
+
+    capacities = capacities['capacity'] * keys["Cement_SFI"]
+
+    start_dates = round(start_dates["year"])
+
+    start_dates = start_dates.where(
+        (start_dates >= 1000) & np.isfinite(start_dates), 2000
+    )
+
+    nodes = pop_layout.index
+    p_nom = pd.DataFrame(index=nodes, columns=(["value"]))
+
+    p_nom = capacities / nhours  # get the hourly production capacity
+
+    # Should steel be produced at a constant rate during the year or not? 1 or 0
+    prod_constantly = 0
+    ramp_limit = 0
+
+    ########### Add existing cement production capacities ############
+
+    # Lifetimes
+    lifetime_cement = 100
+
+    # Capital costs
+    discount_rate = 0.04
+    capex_cement = 263000/nhours * calculate_annuity(lifetime_cement, discount_rate) # https://iea-etsap.org/E-TechDS/HIGHLIGHTS%20PDF/I03_cement_June%202010_GS-gct%201.pdf with CCS 558000 
+
+    n.add(
+        "Link",
+        nodes,
+        suffix=" Cement Plant-2020",
+        bus0=spatial.limestone.nodes,
+        bus1=spatial.cement.nodes,
+        bus2=spatial.gas.nodes,
+        bus3=spatial.co2.cement,
+        carrier="cement plant",
+        p_nom=p_nom,
+        p_min_pu=prod_constantly,  # hot elements cannot be turned off easily
+        p_nom_extendable=False,
+        capital_cost=capex_cement,
+        efficiency=1/1.28, # kt limestone/ kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
+        efficiency2= - 3420.1 / 3.6 * (1/1.28) / 0.5, # MWh/kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
+        efficiency3=500 * (1/1.28), #tCO2/kt cement
+        lifetime=lifetime_cement, 
+        build_year=start_dates,
+    )
+
+
+def add_chemicals_industry_existing_ecm(n):
+
+    # Chemicals capacities in Europe in kton of cement products per year
+    capacities = pd.read_csv(snakemake.input.chemicals_capacities, index_col=0)
+    start_dates = pd.read_csv(snakemake.input.chemicals_start_dates, index_col=0)
+    keys = pd.read_csv(snakemake.input.industrial_distribution_key, index_col=0)
+
+    # Ammonia
+    capacities = capacities['Ammonia']
+    start_dates = start_dates['Ammonia']
+    capacities = capacities * keys["Ammonia"]
+
+    start_dates = round(start_dates)
+    start_dates = start_dates.where((start_dates >= 1000) & np.isfinite(start_dates), 2000)
+
+    nodes = pop_layout.index
+    p_nom = pd.DataFrame(index=nodes, columns=(["value"]))
+
+    p_nom = capacities / nhours  # get the hourly production capacity
+
+    # Should steel be produced at a constant rate during the year or not? 1 or 0
+    #prod_constantly = 0
+    #ramp_limit = 0
+
+    ########### Add existing ammonia production capacities ############
+
+    n.add(
+        "Link",
+        nodes,
+        suffix=" Haber-Bosch-2020",
+        bus0=nodes,
+        bus1=spatial.ammonia.nodes,
+        bus2= spatial.h2.nodes, #nodes + " H2",
+        p_nom_extendable=False,
+        p_nom=p_nom,
+        #p_min_pu=prod_constantly,  # hot elements cannot be turned off easily
+        carrier="Haber-Bosch",
+        efficiency=1 / costs.at["Haber-Bosch", "electricity-input"],
+        efficiency2=-costs.at["Haber-Bosch", "hydrogen-input"]
+        / costs.at["Haber-Bosch", "electricity-input"],
+        capital_cost=costs.at["Haber-Bosch", "fixed"]
+        / costs.at["Haber-Bosch", "electricity-input"],
+        marginal_cost=costs.at["Haber-Bosch", "VOM"]
+        / costs.at["Haber-Bosch", "electricity-input"],
+        lifetime=costs.at["Haber-Bosch", "lifetime"],
+        build_year=start_dates,
+    )
+
 def set_defaults(n):
     """
     Set default values for missing values in the network.
@@ -660,13 +881,16 @@ if __name__ == "__main__":
     update_config_from_wildcards(snakemake.config, snakemake.wildcards)
 
     options = snakemake.params.sector
+    gem = snakemake.input.steel_capacities
+    sfi = snakemake.input.cement_capacities
+    endo_industry = snakemake.params.endo_industry
 
     baseyear = snakemake.params.baseyear
 
     n = pypsa.Network(snakemake.input.network)
 
     # define spatial resolution of carriers
-    spatial = define_spatial(n.buses[n.buses.carrier == "AC"].index, options)
+    spatial = define_spatial(n.buses[n.buses.carrier == "AC"].index, options, endo_industry)
     add_build_year_to_new_assets(n, baseyear)
 
     Nyears = n.snapshot_weightings.generators.sum() / 8760.0
@@ -710,6 +934,14 @@ if __name__ == "__main__":
 
     if options.get("cluster_heat_buses", False):
         cluster_heat_buses(n)
+
+    pop_layout = pd.read_csv(snakemake.input.clustered_pop_layout, index_col=0)
+    nhours = n.snapshot_weightings.generators.sum()
+    if endo_industry.get("enable"):
+        add_steel_industry_existing_gem(n)
+        add_cement_industry_existing_sfi(n)
+        if endo_industry.get("endo_chemicals"):
+            add_chemicals_industry_existing_ecm(n)
 
     n.meta = dict(snakemake.config, **dict(wildcards=dict(snakemake.wildcards)))
 

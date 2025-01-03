@@ -345,7 +345,7 @@ rule build_cop_profiles:
     script:
         "../scripts/build_cop_profiles/run.py"
 
-
+    
 rule build_direct_heat_source_utilisation_profiles:
     params:
         direct_utilisation_heat_sources=config_provider(
@@ -698,6 +698,8 @@ rule build_industrial_distribution_key:
         clustered_pop_layout=resources("pop_layout_base_s_{clusters}.csv"),
         hotmaps="data/Industrial_Database.csv",
         gem_gspt="data/gem/Global-Steel-Plant-Tracker-April-2024-Standard-Copy-V1.xlsx",
+        cement_sfi="data/SFI-Global-Cement-Database-July-2021.xlsx",
+        chemicals_ecm="data/1-s2.0-S0196890424010586-mmc2.xlsx",
         ammonia="data/ammonia_plants.csv",
         cement_supplement="data/cement-plants-noneu.csv",
         refineries_supplement="data/refineries-noneu.csv",
@@ -705,6 +707,12 @@ rule build_industrial_distribution_key:
         industrial_distribution_key=resources(
             "industrial_distribution_key_base_s_{clusters}.csv"
         ),
+        steel_capacities=resources("steel/gem_capacities_s_{clusters}.csv"),
+        steel_start_dates=resources("steel/gem_start_dates_s_{clusters}.csv"),
+        cement_capacities=resources("cement/sfi_capacities_s_{clusters}.csv"),
+        cement_start_dates=resources("cement/sfi_start_dates_s_{clusters}.csv"),
+        chemicals_capacities=resources("chemicals/ecm_capacities_s_{clusters}.csv"),
+        chemicals_start_dates=resources("chemicals/ecm_start_dates_s_{clusters}.csv"),
     threads: 1
     resources:
         mem_mb=1000,
@@ -833,6 +841,46 @@ rule build_industrial_energy_demand_per_node_today:
     script:
         "../scripts/build_industrial_energy_demand_per_node_today.py"
 
+
+if config["sector"]["endo_industry"].get("enable", False):
+
+    rule build_industry_steel_production_projections:
+        input:
+            ssp="data/ssp_snapshot_1706291930_allcountries.xlsx",  #ADB manually uploaded data is freely available here upon registration https://data.ece.iiasa.ac.at/ssp/#/login
+        output:
+            steel_demand=resources("steel/eu_steel_production.csv"),
+        log:
+            logs("build_industry_steel_production_projections.log"),
+        resources:
+            mem_mb=5000,
+        conda:
+            "../envs/environment.yaml"
+        script:
+            "../scripts/build_industry_steel_production_projections.py"
+
+if config["sector"]["endo_industry"].get("enable", False) and config["sector"]["endo_industry"].get("cement_prod_growth", False): 
+
+    rule build_industry_cement_production_projections:
+        params:
+            countries=config_provider("countries")
+        input:
+            ssp="data/ssp_snapshot_1706291930_allcountries.xlsx",  #ADB manually uploaded data is freely available here upon registration https://data.ece.iiasa.ac.at/ssp/#/login
+            cement_plants="data/SFI-Global-Cement-Database-July-2021.xlsx",
+            idees="data/jrc-idees-2021",
+            cement_extra_eu="data/cement_production_extra_eu27.xlsx",
+            industrial_distribution_key=resources("industrial_distribution_key_base_s_{clusters}.csv"),
+        output:
+            cement_prod=resources("cement/cement_production_s_{clusters}.csv"),
+        log:
+            logs("build_industry_cement_production_projections_{clusters}.log"),
+        benchmark:
+            benchmarks("build_industry_cement_production_projections/s_{clusters}")
+        resources:
+            mem_mb=5000,
+        conda:
+            "../envs/environment.yaml"
+        script:
+            "../scripts/build_industry_cement_production_projections.py"
 
 rule build_retro_cost:
     params:
@@ -1063,7 +1111,6 @@ rule build_egs_potentials:
 
 
 def input_heat_source_potentials(w):
-
     return {
         heat_source_name: resources(
             "heat_source_potential_" + heat_source_name + "_base_s_{clusters}.csv"
@@ -1106,6 +1153,8 @@ rule prepare_sector_network:
         direct_utilisation_heat_sources=config_provider(
             "sector", "district_heating", "direct_utilisation_heat_sources"
         ),
+        endo_industry=config_provider("sector", "endo_industry", "enable"),
+        co2_budget_apply=config_provider("co2_budget_apply"),
     input:
         unpack(input_profile_offwind),
         unpack(input_heat_source_potentials),
@@ -1200,6 +1249,33 @@ rule prepare_sector_network:
         ),
         direct_heat_source_utilisation_profiles=resources(
             "direct_heat_source_utilisation_profiles_base_s_{clusters}_{planning_horizons}.nc"
+        ),
+        # Steel
+        steel_production=lambda w: (
+            resources("steel/eu_steel_production.csv")
+            if config_provider("sector", "endo_industry","enable")(w)
+            else []
+        ),
+        steel_capacities=lambda w: (
+            resources("steel/gem_capacities_s_{clusters}.csv")
+            if config_provider("sector", "endo_industry", "enable")(w)
+            else []
+        ),
+        industrial_distribution_key=lambda w: (
+            resources("industrial_distribution_key_base_s_{clusters}.csv")
+            if config_provider("sector", "endo_industry", "enable")(w)
+            else []
+        ),
+        # Cement
+        cement_production=lambda w: (
+            resources("cement/cement_production_s_{clusters}.csv")
+            if config_provider("sector", "endo_industry", "enable")(w)
+            else []
+        ),
+        cement_capacities=lambda w: (
+            resources("cement/sfi_capacities_s_{clusters}.csv")
+            if config_provider("sector", "endo_industry", "enable")(w)
+            else []
         ),
     output:
         RESULTS

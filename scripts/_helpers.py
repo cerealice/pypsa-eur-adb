@@ -108,11 +108,26 @@ def get_run_path(fn, dir, rdir, shared_resources, exclude_from_shared):
         irrelevant_wildcards = {"technology", "year", "scope", "kind"}
         no_relevant_wildcards = not existing_wildcards - irrelevant_wildcards
         not_shared_rule = (
-            not fn.startswith("networks/elec")
+            not fn.endswith("elec.nc")
             and not fn.startswith("add_electricity")
             and not any(fn.startswith(ex) for ex in exclude_from_shared)
         )
         is_shared = no_relevant_wildcards and not_shared_rule
+        shared_files = (
+            "networks/base_s_{clusters}.nc",
+            "regions_onshore_base_s_{clusters}.geojson",
+            "regions_offshore_base_s_{clusters}.geojson",
+            "busmap_base_s_{clusters}.csv",
+            "linemap_base_s_{clusters}.csv",
+            "cluster_network_base_s_{clusters}",
+            "profile_{clusters}_",
+            "build_renewable_profile_{clusters}",
+            "availability_matrix_",
+            "determine_availability_matrix_",
+            "solar_thermal",
+        )
+        if any(prefix in fn for prefix in shared_files) or is_shared:
+            is_shared = True
         rdir = "" if is_shared else rdir
     elif isinstance(shared_resources, str):
         rdir = shared_resources + "/"
@@ -687,6 +702,11 @@ def update_config_from_wildcards(config, w, inplace=True):
                 config["adjustments"]["electricity"], {attr: {carrier: factor}}
             )
 
+        for o in opts:
+            if o.startswith("lv") or o.startswith("lc"):
+                config["electricity"]["transmission_expansion"] = o[1:]
+                break
+
     if w.get("sector_opts"):
         opts = w.sector_opts.split("-")
 
@@ -858,9 +878,9 @@ def validate_checksum(file_path, zenodo_url=None, checksum=None):
         for chunk in iter(lambda: f.read(65536), b""):  # 64kb chunks
             hasher.update(chunk)
     calculated_checksum = hasher.hexdigest()
-    assert (
-        calculated_checksum == checksum
-    ), "Checksum is invalid. This may be due to an incomplete download. Delete the file and re-execute the rule."
+    assert calculated_checksum == checksum, (
+        "Checksum is invalid. This may be due to an incomplete download. Delete the file and re-execute the rule."
+    )
 
 
 def get_snapshots(snapshots, drop_leap_day=False, freq="h", **kwargs):

@@ -1102,29 +1102,29 @@ def add_co2limit(n, options, nyears=1.0, limit=0.0):
 
         if limit == 'ff55':
             if investment_year == 2030:
-                limit_ets = 0.38
-                limit_ets2 = 0.38
-                limit_nonets = 0.57
+                limit_ets = 0.37
+                limit_ets2 = 0.57
+                limit_nonets = 0.60
 
             elif investment_year == 2040:
                 limit_ets = 0
                 limit_ets2 = 0.3
-                limit_nonets = 0.285
-                # More or less 90% reduction wrt 1990 value of 5000 MtCO2
+                limit_nonets = 0.3
+                # More or less 90% reduction wrt 1990 value of 5000 MtCO2 -> CHECK
 
             elif investment_year == 2050:
                 limit_ets = 0
                 limit_ets2 = 0
-                limit_nonets = 0
+                limit_nonets = 0.1 #ADB to fix for agriculture machinery oil
 
         else:
             limit_ets = 1
             limit_ets2 = 1
             limit_nonets = 1
 
-        logger.info(f"Adding CO2 budget limit for ETS as per unit of 1990 levels of {limit_ets} in {investment_year}")
-        logger.info(f"Adding CO2 budget limit for ETS2 as per unit of 1990 levels of {limit_ets2} in {investment_year}")
-        logger.info(f"Adding CO2 budget limit for non ETS as per unit of 1990 levels of {limit_nonets} in {investment_year}")
+        logger.info(f"Adding CO2 reduction for ETS of -{1-limit_ets}% of 1990 levels in {investment_year}")
+        logger.info(f"Adding CO2 budget limit for ETS 2 of -{1-limit_ets2}% of 1990 levels in {investment_year}")
+        logger.info(f"Adding CO2 budget limit for non ETS of -{1-limit_nonets}% of 1990 levels in {investment_year}")
 
         # ETS limit
         co2_limit_ets = co2_totals.loc[countries, sectors_ets].sum().sum()
@@ -1862,10 +1862,91 @@ def check_land_transport_shares(shares):
             "corresponding to increased or decreased demand assumptions."
         )
 
+def calculate_land_transport_shares_ff55(n, number_cars, limit):
+
+    # Number of cars is from 2019 -> let's assume 2020
+    ef_allcars_2021 = 173.95 # gCO2/km from IDEES in 2019 (NO EVs)
+    ef_allvans_2021 = 245.73 # gCO2/km from IDEES in 2019
+    new_car_per_year = 15.5 # million vehicles
+    number_cars = 290 * 1e6 # Total number of cars
+    share_new_cars_per_year = new_car_per_year / (number_cars / 1e6)
+    ef_newcars_2021 = 95 # gCO2/km
+
+    # Initialize ef_newcars dictionary
+    ef_newcars = {}
+    ef_newcars[2021] = ef_newcars_2021
+    all_years = list(range(2022, 2051))
+
+    # Function to calculate ef_newcars for each year
+    def calculate_ef_newcars(annual_ef_red):
+        for year in all_years:
+            ef_newcars[year] = ef_newcars[2021] * (1 - annual_ef_red) ** (year - 2021)
+
+    # Function to calculate ef_allcars for a given range of years
+    def calculate_ef_allcars(start_year, end_year, base_ef):
+        return sum(share_new_cars_per_year * ef_newcars[year] for year in range(start_year, end_year)) + \
+            (1 - (share_new_cars_per_year * len(range(start_year, end_year)))) * base_ef
+
+    if limit == 'ff55':
+        ef_newcars_2030_ff55 = ef_newcars_2021 * (1 - 0.55)
+        annual_ef_cars_ff55 = (ef_newcars_2021 - ef_newcars_2030_ff55) / (2030 - 2021) / 100
+        calculate_ef_newcars(annual_ef_cars_ff55)
+
+        # Ban ICE vehicles after 2035
+        for year in all_years:
+            if year > 2035:
+                ef_newcars[year] = 0
+
+        ef_allcars_2030 = calculate_ef_allcars(2022, 2031, ef_allcars_2021)
+        ef_allcars_2040 = calculate_ef_allcars(2031, 2041, ef_allcars_2030)
+        ef_allcars_2050 = calculate_ef_allcars(2041, 2051, ef_allcars_2040)
+
+    else:
+        annual_ef_red = 0.016 # 1.6% per year for new cars
+        calculate_ef_newcars(annual_ef_red)
+
+        ef_allcars_2030 = calculate_ef_allcars(2022, 2031, ef_allcars_2021)
+        ef_allcars_2040 = calculate_ef_allcars(2031, 2041, ef_allcars_2030)
+        ef_allcars_2050 = calculate_ef_allcars(2041, 2051, ef_allcars_2040)
 
 
-def land_transport_shares_calculation(n, limit):
 
+    # Calculate the share of EV cars for each year
+    share_ev_cars_2030 = (ef_allcars_2021 - ef_allcars_2030) / ef_allcars_2021
+    share_ev_cars_2040 = (ef_allcars_2021 - ef_allcars_2040) / ef_allcars_2021
+    share_ev_cars_2050 = (ef_allcars_2021 - ef_allcars_2050) / ef_allcars_2021
+
+    if investment_year == 2030:
+
+        fuel_cell_share = 0
+        electric_share = round(share_ev_cars_2030,2)
+        ice_share = 1 - share_ev_cars_2030
+    
+        # Values for no policy in 2030: FCEV share: 0% EV share: 23.8%, ICEV share: 76.2%
+
+    elif investment_year == 2040:
+            # ASSUMING LINEAR GROWTH OF EV UPTAKE
+            fuel_cell_share = 0
+            electric_share = round(share_ev_cars_2040,2)
+            ice_share = 1 - electric_share
+
+        # Values for no policy in 2030: FCEV share: 0% EV share: 41.4%, ICEV share: 58.6%
+
+    elif investment_year == 2050:
+
+            fuel_cell_share = 0
+            electric_share = round(share_ev_cars_2040,2)
+            ice_share = 1 - electric_share
+
+        # Values for no policy in 2030: FCEV share: 0% EV share: 53.0%, ICEV share: 47%
+    
+    output = pd.Series([fuel_cell_share, electric_share, ice_share], index=["fuel_cell", "electric", "ice"]) # Keep the order to match add_land_transport
+    return output
+
+
+def calculate_land_transport_shares_ff55_old(n, number_cars, limit):
+
+    # OLD
     target_ef_2030_cars = 49.5 #gCO2/km https://www.eea.europa.eu/ims/co2-performance-of-new-passenger
     target_ef_2030_vans = 70.5 #gCO2/km https://climate.ec.europa.eu/eu-action/transport/road-transport-reducing-co2-emissions-vehicles/co2-emission-performance-standards-cars-and-vans_en
     new_ef_2021_cars = 114.1 #gCO2/km https://www.eea.europa.eu/ims/co2-performance-of-new-passenger
@@ -1890,6 +1971,70 @@ def land_transport_shares_calculation(n, limit):
         # We could use this data to have a weighted average, but better to check IDEES first
     share_ev_2030 = ( share_ev_cars_2030 + share_ev_vans_2030 ) / 2
     logger.info(f"Scenario {limit}")
+
+    # nEW
+    target_ef_2030_cars = (1-0.55) * 95 #gCO2/km on average for the EU-wide fleet of new cars (55% less than the value is 2021 which is 95gCO2/km)
+    target_ef_2030_vans = (1-0.5) * 147 #gCO2/km on average for the EU-wide fleet of new vans (50% less than the value is 2021 which is 147gCO2/km)
+    lifetime = 15 # years The report says 12 but we stay conservative https://www.acea.auto/figure/average-age-of-eu-vehicle-fleet-by-country/
+    # Assuming all cars and vans from 2015 will be at the end of life in 2030, the EU fleet will be composed of 1/3 of cars from 2020 and 2/3 of cars from 2025
+    ef_2020_cars = 95 #gCO2/km
+    ef_2020_vans = 147 #gCO2/km
+
+    # Target start for new cars in 2030, so ultill 2030 we follow the current trend
+    # -1.6% gCO2/km/year for new cars, in 2030 
+    ef_2025_cars = ef_2020_cars * (1-0.016) **(2025-2020) * 5/15
+    average_ef_2030_cars_fleet = (1/3) * ef_2020_cars + (2/3) * new_ef_2021_cars
+    average_ef_2030_vans_fleet = (1/3) * ef_2020_cars + (2/3) * new_ef_2021_vans
+
+    # AGAIN
+    # Number of cars is from 2019 -> assumed to stay constant
+    ef_allcars_2021 = 173.95 #gCO2/km from IDEES in 2019 (NO EVs)
+    ef_allvans_2021 = 245.73 #gCO2/km from IDEES in 2019
+    new_car_per_year = 15.5 #milion vehicles
+    share_new_cars_per_year = new_car_per_year / (number_cars.sum()/1e6)
+    ef_newcars_2021 = 95 #gCO2/km
+
+    if limit != 'ff55':
+        annual_ef_red = 0.016 #1.6% per year for new cars https://climate.ec.europa.eu/eu-action/transport/road-transport-reducing-co2-emissions-vehicles/co2-emission-performance-standards-cars-and-vans_en
+
+        ef_newcars = {}
+        ef_newcars[2021] = ef_newcars_2021
+        all_years = list(range(2022, 2051))
+        for year in all_years:
+            ef_newcars[year] = ef_newcars[2021] * (1-annual_ef_red) ** (year - 2021)
+
+        ef_allcars_2030 = sum(share_new_cars_per_year * ef_newcars[year] for year in range(2022, 2031)) + (1-(share_new_cars_per_year * len(range(2022, 2031)))) * ef_allcars_2021
+        ef_allcars_2040 = sum(share_new_cars_per_year * ef_newcars[year] for year in range(2031, 2041)) + (1-(share_new_cars_per_year * len(range(2031, 2041)))) * ef_allcars_2030
+        ef_allcars_2050 = sum(share_new_cars_per_year * ef_newcars[year] for year in range(2041, 2051)) + (1-(share_new_cars_per_year * len(range(2041, 2051)))) * ef_allcars_2040
+
+        # Follow the trend previous to the application of the policy -1.6% emission factor for new cars
+        share_ev_cars_2030 = (ef_allcars_2021 - ef_allcars_2030) / ef_allcars_2021 
+        share_ev_cars_2040 = (ef_allcars_2021 - ef_allcars_2040) / ef_allcars_2021
+        share_ev_cars_2050 = (ef_allcars_2021 - ef_allcars_2050) / ef_allcars_2021
+
+    elif limit == 'ff55':
+        ef_newcars_2030_ff55 = ef_newcars_2021 * (1-0.55)
+        annual_ef_cars_ff55 = (ef_newcars_2021 - ef_newcars_2030_ff55) / (2030-2021)
+
+        ef_newcars = {}
+        ef_newcars[2021] = ef_newcars_2021
+        all_years = list(range(2022, 2051))
+        for year in all_years:
+            if year <= 2035:
+                ef_newcars[year] = ef_newcars[2021] * (1-annual_ef_red) ** (year - 2021)
+            else:
+                ef_newcars[year] = 0 # Ban ICE vehicles after 2035
+
+        ef_allcars_2030 = sum(share_new_cars_per_year * ef_newcars[year] for year in range(2022, 2031)) + (1-(share_new_cars_per_year * len(range(2022, 2031)))) * ef_allcars_2021
+        ef_allcars_2040 = sum(share_new_cars_per_year * ef_newcars[year] for year in range(2031, 2041)) + (1-(share_new_cars_per_year * len(range(2031, 2041)))) * ef_allcars_2030
+        ef_allcars_2050 = sum(share_new_cars_per_year * ef_newcars[year] for year in range(2041, 2051)) + (1-(share_new_cars_per_year * len(range(2041, 2051)))) * ef_allcars_2040
+
+        # Follow the trend previous to the application of the policy -1.6% emission factor for new cars
+        share_ev_cars_2030 = (ef_allcars_2021 - ef_allcars_2030) / ef_allcars_2021 
+        share_ev_cars_2040 = (ef_allcars_2021 - ef_allcars_2040) / ef_allcars_2021
+        share_ev_cars_2050 = (ef_allcars_2021 - ef_allcars_2050) / ef_allcars_2021
+
+
 
     if limit == 'ff55':
         if investment_year == 2030:
@@ -2167,7 +2312,7 @@ def add_land_transport(n, costs, limit=1.0):
     for engine in engine_types:
 
         if fidelio:
-            shares = land_transport_shares_calculation(n, limit)
+            shares = calculate_land_transport_shares_ff55(n, number_cars, limit)
             logger.info(f"{engine} share: {shares[engine]*100}%")
         else:
             shares[engine] = get(options[f"land_transport_{engine}_share"], investment_year)
@@ -2195,7 +2340,6 @@ def add_land_transport(n, costs, limit=1.0):
         add_fuel_cell_cars(n, p_set, shares["fuel_cell"], temperature)
 
     if shares["ice"] > 0:
-        print(f" Share ice {shares["ice"]}")
         add_ice_cars(n, p_set, shares["ice"], temperature)
 
 

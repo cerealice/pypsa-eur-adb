@@ -1954,21 +1954,29 @@ def calculate_shipping_shares_ff55(n, limit):
 
     # Calculate the share of methanol for each year
     share_MeOH_shipping_2030 = (ef_allships_2020 - ef_allships_2030_ff55) / (ef_allships_2020 - ef_MeOH)
-    share_MeOH_shipping_2040 = (ef_allships_2020 - ef_allships_2040_ff55) / (ef_allships_2020 - ef_MeOH)
-    share_MeOH_shipping_2050 = (ef_allships_2020 - ef_allships_2050_ff55) / (ef_allships_2020 - ef_MeOH)
+
+    # In 2040 the share of methanol would need to be already above 100%, so we add hydrogen. ShareH2 = 1- shareMeOH
+    # shareMeOH * ef_MeOH + (1-shareMeOH) * 0 = ef_target
+
+    share_MeOH_shipping_2040 = ef_allships_2040_ff55 / ef_MeOH
+    share_MeOH_shipping_2050 = ef_allships_2050_ff55 / ef_MeOH
 
     if investment_year == 2030:
         shipping_methanol_share = round(share_MeOH_shipping_2030,2)
+        shipping_hydrogen_share = 0
+        shipping_oil_share = 1 - shipping_methanol_share
     
     elif investment_year == 2040:
         shipping_methanol_share = round(share_MeOH_shipping_2040,2)
+        shipping_hydrogen_share = 1 - shipping_methanol_share
+        shipping_oil_share = 0
 
     elif investment_year == 2050:
         shipping_methanol_share = round(share_MeOH_shipping_2050,2)
-    
-    shipping_oil_share = 1 - shipping_methanol_share
+        shipping_hydrogen_share = 1 - shipping_methanol_share
+        shipping_oil_share = 0
 
-    return shipping_oil_share, shipping_methanol_share
+    return shipping_oil_share, shipping_methanol_share, shipping_hydrogen_share
 
 def get_temp_efficency(
     car_efficiency,

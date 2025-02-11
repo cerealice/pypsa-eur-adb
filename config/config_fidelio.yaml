@@ -6,7 +6,7 @@
 run:
   prefix: ""
   name: 
-  - baseline
+  #- baseline
   - ff55
   scenarios:
     enable: true
@@ -27,7 +27,7 @@ scenario:
   - vopt
   clusters:
   #- 39
-  - 30
+  - 31
   opts:
   - ''
   sector_opts:
@@ -47,7 +47,7 @@ second_iter: true # Should be turned on if it is the coupling iteration with fid
 
 # Just EU countries
 # Removed Countries (Not in the EU): Albania (AL), Bosnia and Herzegovina (BA), United Kingdom (GB), Montenegro (ME), North Macedonia (MK), Norway (NO), Serbia (RS), Kosovo (XK)
-countries: ['AT', 'BE', 'BG', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK']
+countries: ['AT', 'BE', 'BG', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'GB', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK']
 
 
 fidelio:

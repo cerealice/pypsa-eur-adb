@@ -1069,23 +1069,24 @@ def add_dac(n, costs):
         - costs.at["direct air capture", "compression-heat-output"]
     )  # MWh_th / tCO2
 
-    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
+    co2_labels = ["co2_ets","co2_ets2"] if fidelio else "co2 atmosphere"
 
-    n.add(
-        "Link",
-        heat_buses.str.replace(" heat", " DAC"),
-        bus0=locations.values,
-        bus1=heat_buses,
-        bus2=co2_labels,
-        bus3=spatial.co2.df.loc[locations, "nodes"].values,
-        carrier="DAC",
-        capital_cost=costs.at["direct air capture", "fixed"] / electricity_input,
-        efficiency=-heat_input / electricity_input,
-        efficiency2=-1 / electricity_input,
-        efficiency3=1 / electricity_input,
-        p_nom_extendable=True,
-        lifetime=costs.at["direct air capture", "lifetime"],
-    )
+    for co2_label in co2_labels:
+        n.add(
+            "Link",
+            heat_buses.str.replace(" heat", f" DAC {co2_label}"),
+            bus0=locations.values,
+            bus1=heat_buses,
+            bus2=co2_label,
+            bus3=spatial.co2.df.loc[locations, "nodes"].values,
+            carrier="DAC",
+            capital_cost=costs.at["direct air capture", "fixed"] / electricity_input,
+            efficiency=-heat_input / electricity_input,
+            efficiency2=-1 / electricity_input,
+            efficiency3=1 / electricity_input,
+            p_nom_extendable=True,
+            lifetime=costs.at["direct air capture", "lifetime"],
+        )    
 
 
 def add_co2limit(n, options, nyears=1.0, limit=0.0):
@@ -1869,7 +1870,7 @@ def calculate_land_transport_shares_ff55(n, number_cars, limit):
     ef_allvans_2021 = 245.73 # gCO2/km from IDEES in 2019
     new_car_per_year = 15.5 # million vehicles
     #number_cars = 290 * 1e6 # Total number of cars
-    share_new_cars_per_year = new_car_per_year / (number_cars / 1e6)
+    share_new_cars_per_year = new_car_per_year / (number_cars.sum() / 1e6)
     ef_newcars_2021 = 95 # gCO2/km
 
     # Initialize ef_newcars dictionary
@@ -1935,7 +1936,7 @@ def calculate_land_transport_shares_ff55(n, number_cars, limit):
     elif investment_year == 2050:
 
             fuel_cell_share = 0
-            electric_share = round(share_ev_cars_2040,2)
+            electric_share = round(share_ev_cars_2050,2)
             ice_share = 1 - electric_share
 
         # Values for no policy in 2030: FCEV share: 0% EV share: 53.0%, ICEV share: 47%
@@ -3685,8 +3686,7 @@ def add_industry(n, costs, limit=1.0):
 
     if fidelio:
         if limit == 'ff55':
-            shipping_oil_share, shipping_methanol_share, shipping_hydrogen_share = calculate_shipping_shares_ff55()
-            logger.info(f"{engine} share: {shares[engine]*100}%")
+            shipping_oil_share, shipping_methanol_share, shipping_hydrogen_share = calculate_shipping_shares_ff55(n, limit)
         else:
             shipping_oil_share = 1
             shipping_methanol_share = 0

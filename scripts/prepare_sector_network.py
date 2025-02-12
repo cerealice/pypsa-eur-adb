@@ -1189,7 +1189,7 @@ def add_dac(n, costs):
         )    
 
 
-def add_co2limit(n, options, co2_totals_file, countries, nyears, limit=0.0):
+def add_co2limit(n, options, fidelio, co2_totals_file, countries, nyears, limit=0.0):
     """
     Add a global CO2 emissions constraint to the network.
 
@@ -1231,7 +1231,7 @@ def add_co2limit(n, options, co2_totals_file, countries, nyears, limit=0.0):
         sectors_ets, sectors_ets2, sectors_nonets = determine_emission_sectors_ff55(options)
 
         # convert Mt to tCO2
-        co2_totals = 1e6 * pd.read_csv(snakemake.input.co2_totals_name, index_col=0)
+        co2_totals = 1e6 * pd.read_csv(co2_totals_file, index_col=0)
 
         if limit == 'ff55':
             if investment_year == 2030:
@@ -1302,7 +1302,7 @@ def add_co2limit(n, options, co2_totals_file, countries, nyears, limit=0.0):
 
         sectors = determine_emission_sectors(options)
         # convert Mt to tCO2
-        co2_totals = 1e6 * pd.read_csv(snakemake.input.co2_totals_name, index_col=0)
+        co2_totals = 1e6 * pd.read_csv(co2_totals_file, index_col=0)
 
         co2_limit = co2_totals.loc[countries, sectors].sum().sum()
 
@@ -2375,8 +2375,63 @@ def add_ice_cars(n, p_set, ice_share, temperature):
     )
 
 
-def add_land_transport(n, costs):
-    logger.info("Add land transport")
+def add_land_transport(
+    n,
+    costs,
+    transport_demand_file,
+    transport_data_file,
+    avail_profile_file,
+    dsm_profile_file,
+    temp_air_total_file,
+    options,
+    investment_year,
+    nodes,
+    limit,
+    logger=None,
+    ):
+    """
+    Add land transport demand and infrastructure to the network.
+
+    Parameters
+    ----------
+    n : pypsa.Network
+        The PyPSA network container object
+    costs : pd.DataFrame
+        Cost assumptions for different technologies
+    transport_demand_file : str
+        Path to CSV file containing transport demand in driven km [100 km]
+    transport_data_file : str
+        Path to CSV file containing number of cars per region
+    avail_profile_file : str
+        Path to CSV file containing availability profiles
+    dsm_profile_file : str
+        Path to CSV file containing demand-side management profiles
+    temp_air_total_file : str
+        Path to netCDF file containing air temperature data
+    options : dict
+        Dictionary containing configuration options, specifically:
+        - land_transport_fuel_cell_share
+        - land_transport_electric_share
+        - land_transport_ice_share
+    investment_year : int
+        Year for which to get the transport shares
+    nodes : list-like
+        List of spatial nodes to consider
+    logger : logging.Logger, optional
+        Logger instance for output. If None, logging is skipped.
+
+    Returns
+    -------
+    None
+        Modifies the network object in-place by adding transport-related
+        components and their properties.
+
+    Notes
+    -----
+    The function adds different types of land transport (electric vehicles,
+    fuel cell vehicles, and internal combustion engines) to the network
+    based on specified shares and profiles.
+    """
 
     # read in transport demand in units driven km [100 km]
     transport = pd.read_csv(transport_demand_file, index_col=0, parse_dates=True)
@@ -5396,9 +5451,6 @@ if __name__ == "__main__":
         options=options,
     )
 
-    if options["transport"]:
-        add_land_transport(n, costs)
-
     if options["heating"]:
         add_heat(
             n=n,
@@ -5441,8 +5493,6 @@ if __name__ == "__main__":
 
     if options["methanol"]:
         add_methanol(n, costs)
-
-
 
     if options["heating"]:
         add_waste_heat(n)
@@ -5501,6 +5551,7 @@ if __name__ == "__main__":
     add_co2limit(
         n,
         options,
+        fidelio,
         snakemake.input.co2_totals_name,
         snakemake.params.countries,
         nyears,
@@ -5508,7 +5559,21 @@ if __name__ == "__main__":
     )
 
     if options["transport"]:
-        add_land_transport(n, costs, limit)
+        add_land_transport(
+            n=n,
+            costs=costs,
+            transport_demand_file=snakemake.input.transport_demand,
+            transport_data_file=snakemake.input.transport_data,
+            avail_profile_file=snakemake.input.avail_profile,
+            dsm_profile_file=snakemake.input.dsm_profile,
+            temp_air_total_file=snakemake.input.temp_air_total,
+            options=options,
+            investment_year=investment_year,
+            nodes=spatial.nodes,
+            limit=limit,
+            logger=logger,
+        )
+
 
     if options["industry"]:
         add_industry(

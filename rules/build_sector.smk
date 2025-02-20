@@ -1116,6 +1116,7 @@ rule prepare_sector_network:
         ),
         weather_years=config_provider("weather_years","enable"),
         renewable_carriers=config_provider("electricity","renewable_carriers"),
+        remove_import=config_provider("remove_import"),
     input:
         unpack(input_profile_offwind),
         unpack(input_heat_source_power),

@@ -35,8 +35,8 @@ scenario:
   sector_opts:
   - ''
   planning_horizons:
-  # - 2020
-  #- 2030
+  - 2020
+  - 2030
   - 2040
   #- 2050
 
@@ -53,11 +53,12 @@ enable:
   custom_busmap: false
   drop_leap_day: true
 
+remove_import: true
 
 
 weather_years:
   enable: false
-  rcp: 4-5
+  rcp: 2-6
 # RCP 2.6 is 2-6, RCP 4.5 is 4-5, RCP 8.5 is 8-5
   global_regional_models: CNRM-CERFACS-CM5--CNRM-ALADIN63
 # Global Climate Models (GCMs): CNRM-CERFACS-CM5, MPI-M-MPI-ESM-LR, MIROC-MIROC5
@@ -69,9 +70,11 @@ electricity:
   extendable_carriers:
     Generator: [solar, onwind, offwind-ac, offwind-dc, OCGT, CCGT]
     StorageUnit: [] # battery, H2
-    Store: [battery, H2]
+    Store: [battery]
     Link: [] # H2 pipeline
   renewable_carriers: [solar, onwind, offwind-ac, offwind-dc, hydro]
+  max_hours:
+    battery: 3
 
 # docs
 # TODO: PyPSA-Eur merge issue in prepare_sector_network.py
@@ -119,6 +122,9 @@ sector:
     2050: 200
   min_part_load_fischer_tropsch: 0.5
   H2_network: false
+  apply_ctax:
+    enable: true
+    file: "data/200225 Carbon Tax Alice.xlsx"
 
   # This wildcard is not working if only in config.default.yaml (I have no idea why)
   chp:

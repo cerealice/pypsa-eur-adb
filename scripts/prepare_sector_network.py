@@ -1923,6 +1923,33 @@ def add_storage_and_grids(
         )
 
 
+def add_ctax(n, ctax_javier):
+
+    ctax_file = pd.read_excel(ctax_javier)
+    ctax = ctax_file.loc[investment_year, 'Carbon tax [eur/ton_eq_CO2]']
+
+    logger.info(f"Applying a carbon tax of {round(ctax,2)} €/tonCO2")
+
+    # Some emitting carriers cannot addressed with a carbon tax since they are accounted for as loads, that do not have an associated cost
+    # These carriers are: oil emissions, shipping oil emissions, shipping methanol emissions, land transport oil emissions and agriculture machinery oil emissions
+    #ADB to do: endogenie and account them in links
+
+    # Emitters in bus 1
+    emitters_index1 = n.links[n.links['bus1'].str.contains('co2 atmosphere', na=False)].index
+    emitters_index1 = emitters_index1[~emitters_index1.to_series().apply(lambda x: ('CC' in x and 'biomass' in x) or 'DAC' in x)]
+    n.links.loc[emitters_index1,'marginal_cost'] += ctax*n.links.loc[emitters_index1,'efficiency']
+
+    # Emitters in bus 2
+    emitters_index2 = n.links[n.links['bus2'].str.contains('co2 atmosphere', na=False)].index
+    emitters_index2 = emitters_index2[~emitters_index2.to_series().apply(lambda x: ('CC' in x and 'biomass' in x) or 'DAC' in x)]
+    n.links.loc[emitters_index2,'marginal_cost'] += ctax*n.links.loc[emitters_index2,'efficiency2']
+
+    # Emitters in bus 3
+    emitters_index3 = n.links[n.links['bus3'].str.contains('co2 atmosphere', na=False)].index
+    emitters_index3 = emitters_index3[~emitters_index3.to_series().apply(lambda x: ('CC' in x and 'biomass' in x) or 'DAC' in x)]
+    n.links.loc[emitters_index3,'marginal_cost'] += ctax*n.links.loc[emitters_index3,'efficiency3']#/n.links.loc[selected_rows,'efficiency']
+
+
 def check_land_transport_shares(shares):
     # Sums up the shares, ignoring None values
     total_share = sum(filter(None, shares))
@@ -5089,6 +5116,152 @@ def add_enhanced_geothermal(
             )
 
 
+
+def adjust_renewable_profiles(n, countries, renewable_carriers,zenodo_timeseries):
+    """"
+    Adjusts the `p_max_pu` (maximum power availability per unit) of all renewable generators
+    to match synthetic weather-based capacity factors for a given planning horizon.
+
+    Parameters:
+    - n: The PyPSA network object containing generator and storage unit data.
+    - countries: List of country codes for which profiles should be adjusted.
+    - renewable_carriers: List of renewable energy carriers.
+    - zenodo_timeseries: Path to the directory where timeseries data is stored.
+
+    Notes:
+    - The function ensures that all profiles match full-year (8760-hour) time series.
+    - Leap years are handled by removing February 29th from the dataset.
+    - If no data is found for "offwind", "hydro", "PHS", or "ror", a warning is logged instead of raising an error.
+    """
+
+    # Get the target year from the Snakemake wildcards
+    year = snakemake.wildcards.planning_horizons
+
+    # To be more robust we take the average of 5 years around the planning year 
+    start_year = year - 2
+    end_year = year + 2
+
+    # Include additional renewable carriers relevant for hydropower
+    renewable_carriers = renewable_carriers + ['ror', 'PHS']
+
+    for carrier in renewable_carriers:
+        for country in countries:
+            # Define the correct folder and dataset variable names for each carrier type
+            if "solar" in carrier:
+                folder = "solar_capacity_factor"
+                carrier_name = "solar__capacity_factor"
+                variable_name = "Solar capacity factor"
+
+            elif "onwind" in carrier:
+                folder = "wind_capacity_factor"
+                carrier_name = "wind__capacity_factor_time_series__onshore"
+                variable_name = "Onshore wind capacity factor"
+
+            elif "offwind" in carrier:
+                folder = "wind_capacity_factor"
+                carrier_name = "wind__capacity_factor_time_series__offshore"
+                variable_name = "Offshore wind capacity factor"
+
+            elif "ror" in carrier:
+                folder = "run_of_river_hydropower_inflow"
+                carrier_name = "hydropower__inflow_time_series__run_of_river"
+                variable_name = "Hydropower inflow"
+
+            elif "hydro" in carrier or "PHS" in carrier:
+                folder = "conventional_and_pumped_storage_hydropower_inflow"
+                carrier_name = "hydropower__inflow_time_series__conventional_and_pumped_storage"
+                variable_name = "Hydropower inflow"
+
+            # Construct the path to the directory containing time series data
+            dir_path = os.path.join(zenodo_timeseries, folder)
+
+            # Find files that match the expected pattern (e.g., "DE_solar__capacity_factor.nc")
+            files = [file for file in os.listdir(dir_path) 
+                     if os.path.isfile(os.path.join(dir_path, file)) 
+                     and f"{country}_" in file 
+                     and carrier_name in file]
+
+            # Handle missing or multiple file cases
+            if len(files) == 0:
+                # If no file is found, allow skipping for these specific carriers
+                if "offwind" in carrier or "hydro" in carrier or "PHS" in carrier or "ror" in carrier:
+                    logger.warning(f"No climate data timeseries found for {country} with carrier {carrier}. Skipping.")
+                    continue
+                else:
+                    raise FileNotFoundError(f"No file found matching pattern: {country}_*_{carrier_name}.nc")
+
+            elif len(files) > 1:
+                raise ValueError(f"Multiple files found matching pattern: {country}_*_{carrier_name}.nc -> {files}")
+
+            # Open the dataset
+            ds = xr.open_dataset(os.path.join(dir_path, files[0]))
+
+            # Extract the yearly capacity factor profile
+            #profile = ds[f"{variable_name}"].sel(time=slice(f"{year}-01-01 00:00", f"{year}-12-31 23:00")).to_series()
+
+            # Extract the 5-year time series
+            profile_5years = ds[f"{variable_name}"].sel(time=slice(f"{start_year}-01-01 00:00", f"{end_year}-12-31 23:00"))
+
+            # Convert to a pandas DataFrame for easier resampling
+            profile_df = profile_5years.to_dataframe()
+
+            # Extract the hour-of-year for grouping
+            profile_df["hour_of_year"] = profile_df.index.dayofyear * 24 + profile_df.index.hour
+
+            # Compute the mean for each hour-of-year over the 5 years
+            profile = profile_df.groupby("hour_of_year").mean()
+
+            # Convert back to a pandas Series with a DatetimeIndex (assuming non-leap years)
+            profile.index = pd.date_range(start=f"{year}-01-01", periods=8760, freq="H")
+
+            # Remove February 29th to handle leap years
+            profile = profile.loc[profile.index.strftime('%m-%d') != '02-29']
+
+            # In the case of ror hydropower, normalize the inflow with the maximum value of the timeseries
+            if carrier == "ror":
+                profile = profile / profile.max()
+
+            # --- Assign profile to the correct PyPSA table ---
+            if carrier in ["hydro", "PHS"]:
+                # Ensure that the storage unit profiles match a full year (8760 hours)
+                if n.storage_units_t.inflow.shape[0] != 8760:
+                    logger.error("Adjusting renewable profiles currently only works for full years!")
+                assert len(profile) == n.storage_units_t.inflow.shape[0]
+
+                # Select the relevant storage units for the given country and carrier
+                index = n.storage_units[
+                    (n.storage_units.index.str[:2] == country) & 
+                    (n.storage_units.carrier == carrier)
+                ].index
+
+                # Assign the profile to the selected storage units
+                if len(index) == 1:
+                    n.storage_units_t.p_max_pu.loc[:, index] = profile.values
+                else:
+                    for i in index:
+                        n.storage_units_t.p_max_pu.loc[:, i] = profile.values
+
+            else:
+                # Ensure generator profiles match a full year (8760 hours)
+                if n.generators_t.p_max_pu.shape[0] != 8760:
+                    logger.error("Adjusting renewable profiles currently only works for full years!")
+                assert len(profile) == n.generators_t.p_max_pu.shape[0]
+
+                # Select the relevant generators for the given country and carrier
+                index = n.generators[
+                    (n.generators.index.str[:2] == country) & 
+                    (n.generators.carrier == carrier)
+                ].index
+
+                # Assign the profile to the selected generators
+                if len(index) == 1:
+                    n.generators_t.p_max_pu.loc[:, index] = profile.values
+                else:
+                    for i in index:
+
+                        n.generators_t.p_max_pu.loc[:, i] = profile.values
+
+
 # %%
 if __name__ == "__main__":
     if "snakemake" not in globals():
@@ -5369,7 +5542,45 @@ if __name__ == "__main__":
         n, snakemake.params["adjustments"], investment_year
     )
 
+    if options["apply_ctax"]["enable"]:
+        add_ctax(n, options["apply_ctax"]["file"])
+
     n.meta = dict(snakemake.config, **dict(wildcards=dict(snakemake.wildcards)))
+
+    if investment_year == 2020: # Validation, so no expansion
+        fixed_capacity = ['CCGT','OCGT','nuclear','lignite','coal','CC','charger']#,'H2','battery','SMR']#,'DC','DAC','Sabatier','Fischer']#'Fuel','charger','heat','CHP'] 
+
+        filtered_index = [
+            idx for idx in n.links.index 
+            if any(capacity.lower() in idx.lower() for capacity in fixed_capacity) 
+            and not idx[0].islower() 
+            and not idx.startswith("EU")
+        ]
+
+        n.links.loc[filtered_index, 'p_nom_extendable'] = False
+        n.generators.loc[~n.generators.index.str.startswith('EU') & ~n.generators.index.str.contains('thermal'), 'p_nom_extendable'] = False
+
+    if snakemake.params.remove_import:
+        # Very hard coded and case specific
+        it_0 = n.loads_t.p.loc[:,n.generators.index.str.endswith('IT0 0')].sum()
+        it_1 = n.loads_t.p.loc[:,n.generators.index.str.endswith('IT1 0')].sum()
+
+        if investment_year == 2020:
+            scaling0 = (51*1e6/8760) * (it_0/(it_0 + it_1))
+            scaling1 = (51*1e6/8760) * (it_1/(it_0 + it_1)) 
+
+        elif investment_year == 2030:
+            scaling0 = (43*1e6/8760) * (it_0/(it_0 + it_1))
+            scaling1 = (43*1e6/8760) * (it_1/(it_0 + it_1)) 
+
+        elif investment_year == 2040:
+            scaling0 = (46*1e6/8760) * (it_0/(it_0 + it_1))
+            scaling1 = (46*1e6/8760) * (it_1/(it_0 + it_1)) 
+            
+        n.loads_t.p.loc[:,n.generators.index.str.endswith('IT0 0')].sum() * scaling0
+        n.loads_t.p.loc[:,n.generators.index.str.endswith('IT1 0')].sum() * scaling1
+
+
 
     sanitize_carriers(n, snakemake.config)
     sanitize_locations(n)

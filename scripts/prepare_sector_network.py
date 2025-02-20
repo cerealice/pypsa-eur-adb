@@ -5280,6 +5280,14 @@ if __name__ == "__main__":
     if options["allam_cycle_gas"]:
         add_allam_gas(n, costs)
 
+    if snakemake.params.weather_years:
+        adjust_renewable_profiles(
+            n,
+            snakemake.params.countries,
+            snakemake.params.renewable_carriers,
+            snakemake.input.zenodo_timeseries,
+            )
+
     n = set_temporal_aggregation(
         n, snakemake.params.time_resolution, snakemake.input.snapshot_weightings
     )

@@ -1114,6 +1114,8 @@ rule prepare_sector_network:
         limited_heat_sources=config_provider(
             "sector", "district_heating", "limited_heat_sources"
         ),
+        weather_years=config_provider("weather_years","enable"),
+        renewable_carriers=config_provider("electricity","renewable_carriers"),
     input:
         unpack(input_profile_offwind),
         unpack(input_heat_source_power),

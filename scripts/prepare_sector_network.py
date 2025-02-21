@@ -1926,6 +1926,7 @@ def add_storage_and_grids(
 def add_ctax(n, ctax_javier):
 
     ctax_file = pd.read_excel(ctax_javier)
+    ctax_file.set_index("Year", inplace=True)
     ctax = ctax_file.loc[investment_year, 'Carbon tax [eur/ton_eq_CO2]']
 
     logger.info(f"Applying a carbon tax of {round(ctax,2)} €/tonCO2")
@@ -5562,8 +5563,9 @@ if __name__ == "__main__":
 
     if snakemake.params.remove_import:
         # Very hard coded and case specific
-        it_0 = n.loads_t.p.loc[:,n.generators.index.str.endswith('IT0 0')].sum()
-        it_1 = n.loads_t.p.loc[:,n.generators.index.str.endswith('IT1 0')].sum()
+        aloads = n.loads_t.p_set.sum()
+        it_0 = aloads[aloads.index.str.endswith("IT0 0")]
+        it_1 = aloads[aloads.index.str.endswith("IT1 0")]
 
         if investment_year == 2020:
             scaling0 = (51*1e6/8760) * (it_0/(it_0 + it_1))
@@ -5577,10 +5579,8 @@ if __name__ == "__main__":
             scaling0 = (46*1e6/8760) * (it_0/(it_0 + it_1))
             scaling1 = (46*1e6/8760) * (it_1/(it_0 + it_1)) 
             
-        n.loads_t.p.loc[:,n.generators.index.str.endswith('IT0 0')].sum() * scaling0
-        n.loads_t.p.loc[:,n.generators.index.str.endswith('IT1 0')].sum() * scaling1
-
-
+        n.loads_t.p_set.loc[:,n.loads_t.p_set.columns.str.endswith('IT0 0')] *= scaling0
+        n.loads_t.p_set.loc[:,n.loads_t.p_set.columns.str.endswith('IT1 0')] *= scaling1
 
     sanitize_carriers(n, snakemake.config)
     sanitize_locations(n)

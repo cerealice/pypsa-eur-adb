@@ -1212,6 +1212,11 @@ rule prepare_sector_network:
         direct_heat_source_utilisation_profiles=resources(
             "direct_heat_source_utilisation_profiles_base_s_{clusters}_{planning_horizons}.nc"
         ),
+        zenodo_timeseries=lambda w: (
+            "data/zenodo_timeseries"
+            if config_provider("weather_years", "enable")(w)
+            else []
+        ),
     output:
         resources(
             "networks/base_s_{clusters}_{opts}_{sector_opts}_{planning_horizons}.nc"

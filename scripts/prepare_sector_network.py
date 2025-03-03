@@ -1255,9 +1255,9 @@ def add_co2limit(n, options, fidelio, co2_totals_file, countries, nyears, limit=
             limit_ets2 = 1
             limit_nonets = 1
 
-        logger.info(f"Adding CO2 reduction for ETS of -{1-limit_ets}% of 1990 levels in {investment_year}")
-        logger.info(f"Adding CO2 budget limit for ETS 2 of -{1-limit_ets2}% of 1990 levels in {investment_year}")
-        logger.info(f"Adding CO2 budget limit for non ETS of -{1-limit_nonets}% of 1990 levels in {investment_year}")
+        logger.info(f"Adding CO2 reduction for ETS of -{1-limit_ets}% of 2005 levels in {investment_year}")
+        logger.info(f"Adding CO2 budget limit for ETS 2 of -{1-limit_ets2}% of 2005 levels in {investment_year}")
+        logger.info(f"Adding CO2 budget limit for non ETS of -{1-limit_nonets}% of 2005 levels in {investment_year}")
 
         # ETS limit
         co2_limit_ets = co2_totals.loc[countries, sectors_ets].sum().sum()
@@ -3946,6 +3946,7 @@ def add_industry(
     nodes = pop_layout.index
     nhours = n.snapshot_weightings.generators.sum()
     nyears = nhours / 8760
+    timestep = n.snapshot_weightings.iloc[0,0] #ADB
     co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
 
     # 1e6 to convert TWh to MWh
@@ -4578,7 +4579,8 @@ def add_industry(
         factor = (
             1
             - industrial_demand.loc[loads_i, "current electricity"].sum()
-            / n.loads_t.p_set[loads_i].sum().sum()
+            #/ n.loads_t.p_set[loads_i].sum().sum()
+            / (n.loads_t.p_set[loads_i].sum().sum()*timestep)
         )
         n.loads_t.p_set[loads_i] *= factor
 

@@ -14,7 +14,9 @@
 hist:
   planning_horizons:
   - 2020
-  validation: true
+  energy:
+    base_emissions_year: 2018
+
   
 
 baseline:

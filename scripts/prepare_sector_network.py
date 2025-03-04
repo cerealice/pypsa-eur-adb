@@ -42,7 +42,7 @@ spatial = SimpleNamespace()
 logger = logging.getLogger(__name__)
 
 
-def define_spatial(nodes, options):
+def define_spatial(nodes, options, fidelio):
     """
     Namespace for spatial.
 
@@ -184,6 +184,10 @@ def define_spatial(nodes, options):
         spatial.oil.shipping = ["EU shipping oil"]
         spatial.oil.agriculture_machinery = ["EU agriculture machinery oil"]
         spatial.oil.land_transport = ["EU land transport oil"]
+
+    if fidelio:
+        spatial.biomass.aviation = ["EU biofuels for aviation"]
+        spatial.h2.aviation = ["EU hydrogen for aviation"]
 
     # uranium
     spatial.uranium = SimpleNamespace()
@@ -2144,6 +2148,7 @@ def calculate_land_transport_shares_ff55(n, number_cars, limit):
     output = pd.Series([fuel_cell_share, electric_share, ice_share], index=["fuel_cell", "electric", "ice"]) # Keep the order to match add_land_transport
     return output
 
+
 def calculate_shipping_shares_ff55(n, limit):
 
     ef_allships_2020 = 91.16 # gCO2eq/MJ from https://www.dnv.com/maritime/insights/topics/fueleu-maritime/#:~:text=The%20baseline%20for%20the%20calculation,an%2080%25%20reduction%20by%202050.
@@ -2181,7 +2186,51 @@ def calculate_shipping_shares_ff55(n, limit):
         shipping_hydrogen_share = round(share_h2_2040,2)
         shipping_oil_share = 1 - shipping_methanol_share - shipping_hydrogen_share
 
+    total_share = shipping_oil_share + shipping_methanol_share + shipping_hydrogen_share
+    if total_share != 1:
+        logger.warning(
+            f"Total shipping shares sum up to {total_share:.2%},"
+            "corresponding to increased or decreased demand assumptions."
+        )
+
     return shipping_oil_share, shipping_methanol_share, shipping_hydrogen_share
+
+
+def calculate_aviation_shares_ff55(n):
+
+    # Based on share required by policy, data from 
+    # https://www.easa.europa.eu/en/light/topics/fit-55-and-refueleu-aviation
+    # https://www.europarl.europa.eu/news/en/press-room/20230911IPR04913/70-of-jet-fuels-at-eu-airports-will-have-to-be-green-by-2050
+
+    if investment_year == 2020:
+        aviation_hydrogen_share = 0
+        aviation_bio_share = 0
+        aviation_kero_share = 1
+
+    elif investment_year == 2030:
+        aviation_hydrogen_share = 0.012
+        aviation_bio_share = 0.06 - aviation_hydrogen_share
+        aviation_kero_share = 1 - aviation_hydrogen_share - aviation_bio_share
+
+    elif investment_year == 2040:
+        aviation_hydrogen_share = 0.10
+        aviation_bio_share = 0.34 - aviation_hydrogen_share
+        aviation_kero_share = 1 - aviation_hydrogen_share - aviation_bio_share
+
+    elif investment_year == 2050:
+        aviation_hydrogen_share = 0.35
+        aviation_bio_share = 0.70 - aviation_hydrogen_share
+        aviation_kero_share = 1 - aviation_hydrogen_share - aviation_bio_share
+
+    total_share = aviation_kero_share + aviation_bio_share + aviation_hydrogen_share
+    if total_share != 1:
+        logger.warning(
+            f"Total aviation shares sum up to {total_share:.2%},"
+            "corresponding to increased or decreased demand assumptions."
+        )
+
+    return aviation_kero_share, aviation_bio_share, aviation_hydrogen_share
+
 
 def get_temp_efficency(
     car_efficiency,
@@ -4536,13 +4585,87 @@ def add_industry(
         unit="MWh_LHV",
     )
 
-    n.add(
-        "Load",
-        spatial.oil.kerosene,
-        bus=spatial.oil.kerosene,
-        carrier="kerosene for aviation",
-        p_set=p_set,
-    )
+    if fidelio and limit == 'ff55':
+        aviation_kero_share, aviation_bio_share, aviation_hydrogen_share = calculate_aviation_shares_ff55(n)
+
+        n.add(
+            "Load",
+            spatial.oil.kerosene,
+            bus=spatial.oil.kerosene,
+            carrier="kerosene for aviation",
+            p_set=p_set * aviation_kero_share,
+        )
+
+        # Adding biofuels SAF
+        n.add(
+            "Bus",
+            spatial.biomass.aviation,
+            location=spatial.oil.demand_locations,
+            carrier="biofuels for aviation",
+            unit="MWh_LHV",
+        )
+
+        n.add(
+            "Load",
+            spatial.biomass.aviation,
+            bus=spatial.biomass.aviation,
+            carrier="biofuels for aviation",
+            p_set=p_set * aviation_bio_share,
+        )
+
+        add_carrier_buses(n, "oil")
+        n.add(
+            "Link",
+            spatial.biomass.nodes,
+            suffix=" for aviation",
+            bus0=spatial.biomass.nodes,
+            bus1=spatial.biomass.aviation,
+            bus2="co2_ets",
+            carrier="biofuels for aviation",
+            lifetime=costs.at["BtL", "lifetime"],
+            efficiency=costs.at["BtL", "efficiency"],
+            efficiency2=-costs.at["solid biomass", "CO2 intensity"]
+            + costs.at["BtL", "CO2 stored"],
+            p_nom_extendable=True,
+            capital_cost=costs.at["BtL", "fixed"] * costs.at["BtL", "efficiency"],
+            marginal_cost=costs.at["BtL", "VOM"] * costs.at["BtL", "efficiency"],
+        )
+
+        # Adding synthetic fuels
+        n.add(
+            "Bus",
+            spatial.h2.aviation,
+            location=spatial.oil.demand_locations,
+            carrier="hydrogen for aviation",
+            unit="MWh_LHV",
+        )
+
+        n.add(
+            "Load",
+            spatial.h2.aviation,
+            bus = spatial.h2.aviation,
+            carrier="hydrogen for aviation",
+            p_set=p_set * aviation_hydrogen_share,
+        )
+
+        n.add(
+            "Link",
+            nodes + " hydrogen for aviation",
+            bus0=nodes + " H2",
+            bus1=spatial.h2.aviation,
+            carrier="hydrogen for aviation",
+            p_nom_extendable=True,
+        )
+
+    else:
+        n.add(
+            "Load",
+            spatial.oil.kerosene,
+            bus=spatial.oil.kerosene,
+            carrier="kerosene for aviation",
+            p_set=p_set,
+        )
+    
     
     co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
     n.add(
@@ -5427,8 +5550,9 @@ if __name__ == "__main__":
     fn = snakemake.input.heating_efficiencies
     year = int(snakemake.params["energy_totals_year"])
     heating_efficiencies = pd.read_csv(fn, index_col=[1, 0]).loc[year]
+    fidelio = snakemake.params.fidelio
 
-    spatial = define_spatial(pop_layout.index, options)
+    spatial = define_spatial(pop_layout.index, options, fidelio)
 
     if snakemake.params.foresight in ["myopic", "perfect"]:
         add_lifetime_wind_solar(n, costs)
@@ -5439,7 +5563,6 @@ if __name__ == "__main__":
 
     add_eu_bus(n)
 
-    fidelio = snakemake.params.fidelio
     add_co2_tracking(
         n,
         costs,

@@ -101,6 +101,10 @@ energy:
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#sector
 sector:
+  fidelio:
+    enable: true
+    fidelio_shocks: false
+    scenario: baseline
   bev_dsm: false
   v2g: false
   land_transport_fuel_cell_share:
@@ -160,7 +164,9 @@ sector:
     2040: 200
     2045: 200
     2050: 200
-  biomass_to_liquid: true
+  biomass_to_liquid: false
+  #solid_biomass_import:
+  #  enable: false
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#industry
 industry:
@@ -266,3 +272,5 @@ plotting:
     co2_ets: "#235ebc"
     co2_ets2: "black"
     co2_nonets: "white"
+    hydrogen for aviation: 'white'
+    biofuels for aviation: 'green'

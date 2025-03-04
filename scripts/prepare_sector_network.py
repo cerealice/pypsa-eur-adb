@@ -42,7 +42,7 @@ spatial = SimpleNamespace()
 logger = logging.getLogger(__name__)
 
 
-def define_spatial(nodes, options, fidelio):
+def define_spatial(nodes, options):
     """
     Namespace for spatial.
 
@@ -185,7 +185,7 @@ def define_spatial(nodes, options, fidelio):
         spatial.oil.agriculture_machinery = ["EU agriculture machinery oil"]
         spatial.oil.land_transport = ["EU land transport oil"]
 
-    if fidelio:
+    if options['fidelio']['enable']:
         spatial.biomass.aviation = ["EU biofuels for aviation"]
         spatial.h2.aviation = ["EU hydrogen for aviation"]
 
@@ -707,6 +707,7 @@ def add_co2_tracking(n, costs, fidelio, options, sequestration_potential_file=No
     """
     # minus sign because opposite to how fossil fuels used:
     # CH4 burning puts CH4 down, atmosphere up
+
     if fidelio:
         co2_labels = ["co2_ets", "co2_ets2", "co2_nonets"]
         for co2_label in co2_labels:
@@ -4605,12 +4606,20 @@ def add_industry(
             unit="MWh_LHV",
         )
 
+        aviation_kero_efficiency = 0.50084 # Figure 4, Cruise in Ogur et al. https://www.sciencedirect.com/science/article/pii/S0016236124024736 
+        aviation_bio_efficiency = aviation_kero_efficiency * (1 + 0.1818) # Akdeniz et al. https://doi.org/10.1007/s10973-023-11982-z 
+        # If biofuel is selected over jet-kerosene fuel, it is observed that the engine has better energy efficiency performance by 18.18%.
+
+        efficiency = aviation_kero_efficiency / aviation_bio_efficiency
+
+        print(f"Value bio {p_set * aviation_bio_share * efficiency}")
+
         n.add(
             "Load",
             spatial.biomass.aviation,
             bus=spatial.biomass.aviation,
             carrier="biofuels for aviation",
-            p_set=p_set * aviation_bio_share,
+            p_set=p_set * aviation_bio_share * efficiency,
         )
 
         add_carrier_buses(n, "oil")
@@ -4640,12 +4649,14 @@ def add_industry(
             unit="MWh_LHV",
         )
 
+        efficiency = aviation_kero_efficiency / costs.at["fuel cell", "efficiency"]
+
         n.add(
             "Load",
             spatial.h2.aviation,
             bus = spatial.h2.aviation,
             carrier="hydrogen for aviation",
-            p_set=p_set * aviation_hydrogen_share,
+            p_set=p_set * aviation_hydrogen_share * efficiency,
         )
 
         n.add(
@@ -5550,9 +5561,9 @@ if __name__ == "__main__":
     fn = snakemake.input.heating_efficiencies
     year = int(snakemake.params["energy_totals_year"])
     heating_efficiencies = pd.read_csv(fn, index_col=[1, 0]).loc[year]
-    fidelio = snakemake.params.fidelio
+    fidelio = options['fidelio']['enable']
 
-    spatial = define_spatial(pop_layout.index, options, fidelio)
+    spatial = define_spatial(pop_layout.index, options)
 
     if snakemake.params.foresight in ["myopic", "perfect"]:
         add_lifetime_wind_solar(n, costs)

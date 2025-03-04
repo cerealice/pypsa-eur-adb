@@ -19,9 +19,11 @@ hist:
 
 
 baseline:
-  fidelio:
-    scenario: baseline
+  sector:
+    fidelio:
+      scenario: baseline
 
 ff55:
-  fidelio:
-    scenario: ff55
+  sector:
+    fidelio:
+      scenario: ff55

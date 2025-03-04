@@ -1239,6 +1239,7 @@ def add_co2limit(n, options, fidelio, co2_totals_file, countries, nyears, limit=
         co2_totals = 1e6 * pd.read_csv(co2_totals_file, index_col=0)
 
         if limit == 'ff55':
+
             if investment_year == 2020:
                 limit_ets = 1
                 limit_ets2 = 1
@@ -4612,8 +4613,6 @@ def add_industry(
 
         efficiency = aviation_kero_efficiency / aviation_bio_efficiency
 
-        print(f"Value bio {p_set * aviation_bio_share * efficiency}")
-
         n.add(
             "Load",
             spatial.biomass.aviation,
@@ -4626,7 +4625,7 @@ def add_industry(
         n.add(
             "Link",
             spatial.biomass.nodes,
-            suffix=" for aviation",
+            suffix=" to aviation biofuels",
             bus0=spatial.biomass.nodes,
             bus1=spatial.biomass.aviation,
             bus2="co2_ets",

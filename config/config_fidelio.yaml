@@ -6,7 +6,7 @@
 run:
   prefix: ""
   name: 
-  #- baseline
+  - baseline
   - ff55
   #- hist
   scenarios:
@@ -165,8 +165,8 @@ sector:
     2045: 200
     2050: 200
   biomass_to_liquid: false
-  #solid_biomass_import:
-  #  enable: false
+  solid_biomass_import:
+    enable: true
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#industry
 industry:

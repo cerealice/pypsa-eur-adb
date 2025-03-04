@@ -1234,6 +1234,11 @@ def add_co2limit(n, options, fidelio, co2_totals_file, countries, nyears, limit=
         co2_totals = 1e6 * pd.read_csv(co2_totals_file, index_col=0)
 
         if limit == 'ff55':
+            if investment_year == 2020:
+                limit_ets = 1
+                limit_ets2 = 1
+                limit_nonets = 1
+
             if investment_year == 2030:
                 limit_ets = 0.37
                 limit_ets2 = 0.57
@@ -2148,29 +2153,33 @@ def calculate_shipping_shares_ff55(n, limit):
     ef_allships_2040_ff55 = 62.90 #gCO2eq/MJ
     ef_allships_2050_ff55 = 18.23 #gCO2eq/MJ
 
-    # Calculate the share of methanol for each year
-    share_MeOH_shipping_2030 = (ef_allships_2020 - ef_allships_2030_ff55) / (ef_allships_2020 - ef_MeOH)
+    # Calculate the share of fuels for 2030 and 2050 
+    # 2030
+    share_h2_2030 = 0.05 #IMO policy
+    share_MeOH_2030 = (ef_allships_2030_ff55 - ((1 - share_h2_2030) * ef_allships_2020)) / (ef_MeOH - ef_allships_2020 )
 
-    # In 2040 the share of methanol would need to be already above 100%, so we add hydrogen. ShareH2 = 1- shareMeOH
-    # shareMeOH * ef_MeOH + (1-shareMeOH) * 0 = ef_target
+    # 2050
+    share_h2_2050 = (ef_MeOH - ef_allships_2050_ff55) / ef_MeOH
+    share_MeOH_2050 = 1- share_h2_2050
 
-    share_MeOH_shipping_2040 = ef_allships_2040_ff55 / ef_MeOH
-    share_MeOH_shipping_2050 = ef_allships_2050_ff55 / ef_MeOH
+    # 2040
+    share_MeOH_2040 = share_MeOH_2030 + ((share_MeOH_2050 - share_MeOH_2030) / (2050- 2030)) * (2040 - 2030)
+    share_h2_2040 = (share_MeOH_2040 * ef_MeOH + (1-share_MeOH_2040) * ef_allships_2020 - ef_allships_2040_ff55 ) / ef_allships_2020
 
     if investment_year == 2030:
-        shipping_methanol_share = round(share_MeOH_shipping_2030,2)
-        shipping_hydrogen_share = 0
-        shipping_oil_share = 1 - shipping_methanol_share
+        shipping_methanol_share = round(share_MeOH_2030,2)
+        shipping_hydrogen_share = share_h2_2030
+        shipping_oil_share = 1 - shipping_methanol_share - shipping_hydrogen_share
     
     elif investment_year == 2040:
-        shipping_methanol_share = round(share_MeOH_shipping_2040,2)
-        shipping_hydrogen_share = 1 - shipping_methanol_share
-        shipping_oil_share = 0
+        shipping_methanol_share = round(share_MeOH_2040,2)
+        shipping_hydrogen_share = round(share_h2_2040,2)
+        shipping_oil_share = 1 - shipping_methanol_share - shipping_hydrogen_share
 
     elif investment_year == 2050:
-        shipping_methanol_share = round(share_MeOH_shipping_2050,2)
-        shipping_hydrogen_share = 1 - shipping_methanol_share
-        shipping_oil_share = 0
+        shipping_methanol_share = round(share_MeOH_2050,2)
+        shipping_hydrogen_share = round(share_h2_2040,2)
+        shipping_oil_share = 1 - shipping_methanol_share - shipping_hydrogen_share
 
     return shipping_oil_share, shipping_methanol_share, shipping_hydrogen_share
 

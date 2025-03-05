@@ -2073,8 +2073,8 @@ def calculate_land_transport_shares_ff55(n, number_cars, limit):
 
     # Number of cars is from 2019 -> let's assume 2020
     ef_allcars_2021 = 173.95 # gCO2/km from IDEES in 2019 (NO EVs)
-    ef_allvans_2021 = 245.73 # gCO2/km from IDEES in 2019
-    new_car_per_year = 15.5 # million vehicles
+    #ef_allvans_2021 = 245.73 # gCO2/km from IDEES in 2019
+    new_car_per_year = 11.37 # million vehicles
     #number_cars = 290 * 1e6 # Total number of cars
     share_new_cars_per_year = new_car_per_year / (number_cars.sum() / 1e6)
     ef_newcars_2021 = 95 # gCO2/km
@@ -2157,7 +2157,7 @@ def calculate_shipping_shares_ff55(n, limit):
     ef_MeOH = 1/options["MWh_MeOH_per_tCO2"]*1e6/3600 # from tCO2/MWh *(1MWh/3600MJ) * (1e6gCO2/tCO2)
 
     ef_allships_2030_ff55 = 85.69 #gCO2eq/MJ
-    ef_allships_2040_ff55 = 62.90 #gCO2eq/MJ
+    ef_allships_2040_ff55 = 56.52 #gCO2eq/MJ
     ef_allships_2050_ff55 = 18.23 #gCO2eq/MJ
 
     # Calculate the share of fuels for 2030 and 2050 

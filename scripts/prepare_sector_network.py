@@ -187,7 +187,10 @@ def define_spatial(nodes, options):
 
     if options['fidelio']['enable']:
         spatial.biomass.aviation = ["EU biofuels for aviation"]
-        spatial.h2.aviation = ["EU H2 for aviation"]
+        spatial.oil.synkerosene = ["EU synfuels for aviation"]
+        spatial.ammonia = SimpleNamespace()
+        spatial.ammonia.nodes = ["EU NH3"]
+        spatial.ammonia.locations = ["EU"]
 
     # uranium
     spatial.uranium = SimpleNamespace()
@@ -1077,6 +1080,7 @@ def add_methanol_to_kerosene(n, costs):
     capital_cost = costs.at[tech, "fixed"] / costs.at[tech, "methanol-input"]
 
     co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
+    kerosene_bus = spatial.oil.synkerosene if fidelio else spatial.oil.kerosene
 
     n.add(
         "Link",
@@ -1086,7 +1090,7 @@ def add_methanol_to_kerosene(n, costs):
         capital_cost=capital_cost,
         marginal_cost=costs.at[tech, "VOM"] / costs.at[tech, "methanol-input"],
         bus0=spatial.methanol.nodes,
-        bus1=spatial.oil.kerosene,
+        bus1=kerosene_bus,
         bus2=spatial.h2.nodes,
         bus3=co2_labels,
         efficiency=1 / costs.at[tech, "methanol-input"],
@@ -2069,7 +2073,7 @@ def check_land_transport_shares(shares):
             "corresponding to increased or decreased demand assumptions."
         )
 
-def calculate_land_transport_shares_ff55(n, number_cars, limit):
+def calculate_land_transport_shares_ff55(number_cars, limit):
 
     # Number of cars is from 2019 -> let's assume 2020
     ef_allcars_2021 = 173.95 # gCO2/km from IDEES in 2019 (NO EVs)
@@ -2092,7 +2096,7 @@ def calculate_land_transport_shares_ff55(n, number_cars, limit):
     # Function to calculate ef_allcars for a given range of years
     def calculate_ef_allcars(start_year, end_year, base_ef):
         return sum(share_new_cars_per_year * ef_newcars[year] for year in range(start_year, end_year)) + \
-            (1 - (share_new_cars_per_year ** len(range(start_year, end_year)))) * base_ef
+            ((1 - share_new_cars_per_year) ** len(range(start_year, end_year))) * base_ef
 
     if limit == 'ff55':
         ef_newcars_2030_ff55 = ef_newcars_2021 * (1 - 0.55)
@@ -2157,7 +2161,7 @@ def calculate_land_transport_shares_ff55(n, number_cars, limit):
     return output
 
 
-def calculate_shipping_shares_ff55(n, limit):
+def calculate_shipping_shares_ff55():
 
     ef_allships_2020 = 91.16 # gCO2eq/MJ from https://www.dnv.com/maritime/insights/topics/fueleu-maritime/#:~:text=The%20baseline%20for%20the%20calculation,an%2080%25%20reduction%20by%202050.
     ef_MeOH = 1/options["MWh_MeOH_per_tCO2"]*1e6/3600 # from tCO2/MWh *(1MWh/3600MJ) * (1e6gCO2/tCO2)
@@ -2168,76 +2172,76 @@ def calculate_shipping_shares_ff55(n, limit):
 
     # Calculate the share of fuels for 2030 and 2050 
     # 2030
-    share_h2_2030 = 0.05 #IMO policy
-    share_MeOH_2030 = (ef_allships_2030_ff55 - ((1 - share_h2_2030) * ef_allships_2020)) / (ef_MeOH - ef_allships_2020 )
+    share_ammonia_2030 = 0.05 #IMO policy
+    share_MeOH_2030 = (ef_allships_2030_ff55 - ((1 - share_ammonia_2030) * ef_allships_2020)) / (ef_MeOH - ef_allships_2020 )
 
     # 2050
-    share_h2_2050 = (ef_MeOH - ef_allships_2050_ff55) / ef_MeOH
-    share_MeOH_2050 = 1- share_h2_2050
+    share_ammonia_2050 = (ef_MeOH - ef_allships_2050_ff55) / ef_MeOH
+    share_MeOH_2050 = 1- share_ammonia_2050
 
     # 2040
     share_MeOH_2040 = share_MeOH_2030 + ((share_MeOH_2050 - share_MeOH_2030) / (2050- 2030)) * (2040 - 2030)
-    share_h2_2040 = (share_MeOH_2040 * ef_MeOH + (1-share_MeOH_2040) * ef_allships_2020 - ef_allships_2040_ff55 ) / ef_allships_2020
+    share_ammonia_2040 = (share_MeOH_2040 * ef_MeOH + (1-share_MeOH_2040) * ef_allships_2020 - ef_allships_2040_ff55 ) / ef_allships_2020
 
     if investment_year == 2030:
         shipping_methanol_share = round(share_MeOH_2030,2)
-        shipping_hydrogen_share = share_h2_2030
-        shipping_oil_share = 1 - shipping_methanol_share - shipping_hydrogen_share
+        shipping_ammonia_share = share_ammonia_2030
+        shipping_oil_share = 1 - shipping_methanol_share - shipping_ammonia_share
     
     elif investment_year == 2040:
         shipping_methanol_share = round(share_MeOH_2040,2)
-        shipping_hydrogen_share = round(share_h2_2040,2)
-        shipping_oil_share = 1 - shipping_methanol_share - shipping_hydrogen_share
+        shipping_ammonia_share = round(share_ammonia_2040,2)
+        shipping_oil_share = 1 - shipping_methanol_share - shipping_ammonia_share
 
     elif investment_year == 2050:
         shipping_methanol_share = round(share_MeOH_2050,2)
-        shipping_hydrogen_share = round(share_h2_2040,2)
-        shipping_oil_share = 1 - shipping_methanol_share - shipping_hydrogen_share
+        shipping_ammonia_share = round(share_ammonia_2040,2)
+        shipping_oil_share = 1 - shipping_methanol_share - shipping_ammonia_share
 
-    total_share = shipping_oil_share + shipping_methanol_share + shipping_hydrogen_share
+    total_share = shipping_oil_share + shipping_methanol_share + shipping_ammonia_share
     if total_share != 1:
         logger.warning(
             f"Total shipping shares sum up to {total_share:.2%},"
             "corresponding to increased or decreased demand assumptions."
         )
 
-    return shipping_oil_share, shipping_methanol_share, shipping_hydrogen_share
+    return shipping_oil_share, shipping_methanol_share, shipping_ammonia_share
 
 
-def calculate_aviation_shares_ff55(n):
+def calculate_aviation_shares_ff55():
 
     # Based on share required by policy, data from 
     # https://www.easa.europa.eu/en/light/topics/fit-55-and-refueleu-aviation
     # https://www.europarl.europa.eu/news/en/press-room/20230911IPR04913/70-of-jet-fuels-at-eu-airports-will-have-to-be-green-by-2050
 
     if investment_year == 2020:
-        aviation_hydrogen_share = 0
+        aviation_synfuels_share = 0
         aviation_bio_share = 0
         aviation_kero_share = 1
 
     elif investment_year == 2030:
-        aviation_hydrogen_share = 0.012
-        aviation_bio_share = 0.06 - aviation_hydrogen_share
-        aviation_kero_share = 1 - aviation_hydrogen_share - aviation_bio_share
+        aviation_synfuels_share = 0.012
+        aviation_bio_share = 0.06 - aviation_synfuels_share
+        aviation_kero_share = 1 - aviation_synfuels_share - aviation_bio_share
 
     elif investment_year == 2040:
-        aviation_hydrogen_share = 0.10
-        aviation_bio_share = 0.34 - aviation_hydrogen_share
-        aviation_kero_share = 1 - aviation_hydrogen_share - aviation_bio_share
+        aviation_synfuels_share = 0.10
+        aviation_bio_share = 0.34 - aviation_synfuels_share
+        aviation_kero_share = 1 - aviation_synfuels_share - aviation_bio_share
 
     elif investment_year == 2050:
-        aviation_hydrogen_share = 0.35
-        aviation_bio_share = 0.70 - aviation_hydrogen_share
-        aviation_kero_share = 1 - aviation_hydrogen_share - aviation_bio_share
+        aviation_synfuels_share = 0.35
+        aviation_bio_share = 0.70 - aviation_synfuels_share
+        aviation_kero_share = 1 - aviation_synfuels_share - aviation_bio_share
 
-    total_share = aviation_kero_share + aviation_bio_share + aviation_hydrogen_share
+    total_share = aviation_kero_share + aviation_bio_share + aviation_synfuels_share
     if total_share != 1:
         logger.warning(
             f"Total aviation shares sum up to {total_share:.2%},"
             "corresponding to increased or decreased demand assumptions."
         )
 
-    return aviation_kero_share, aviation_bio_share, aviation_hydrogen_share
+    return aviation_kero_share, aviation_bio_share, aviation_synfuels_share
 
 
 def get_temp_efficency(
@@ -2511,7 +2515,7 @@ def add_land_transport(
     for engine in engine_types:
 
         if fidelio:
-            shares = calculate_land_transport_shares_ff55(n, number_cars, limit)
+            shares = calculate_land_transport_shares_ff55(number_cars, limit)
             logger.info(f"{engine} share: {shares[engine]*100}%")
         else:
             shares[engine] = get(options[f"land_transport_{engine}_share"], investment_year)
@@ -4201,23 +4205,25 @@ def add_industry(
 
     if fidelio:
         if limit == 'ff55':
-            shipping_oil_share, shipping_methanol_share, shipping_hydrogen_share = calculate_shipping_shares_ff55(n, limit)
+            shipping_oil_share, shipping_methanol_share, shipping_ammonia_share = calculate_shipping_shares_ff55()
+            shipping_hydrogen_share = 0
         else:
             shipping_oil_share = 1
             shipping_methanol_share = 0
+            shipping_ammonia_share = 0
             shipping_hydrogen_share = 0
     else:
         shipping_hydrogen_share = get(options["shipping_hydrogen_share"], investment_year)
         shipping_methanol_share = get(options["shipping_methanol_share"], investment_year)
         shipping_oil_share = get(options["shipping_oil_share"], investment_year)
 
-    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
+        total_share = shipping_hydrogen_share + shipping_methanol_share + shipping_oil_share
+        if total_share != 1:
+            logger.warning(
+                f"Total shipping shares sum up to {total_share:.2%}, corresponding to increased or decreased demand assumptions."
+            )
 
-    total_share = shipping_hydrogen_share + shipping_methanol_share + shipping_oil_share
-    if total_share != 1:
-        logger.warning(
-            f"Total shipping shares sum up to {total_share:.2%}, corresponding to increased or decreased demand assumptions."
-        )
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
 
     domestic_navigation = pop_weighted_energy_totals.loc[
         nodes, ["total domestic navigation"]
@@ -4275,6 +4281,50 @@ def add_industry(
             bus=shipping_bus,
             carrier="H2 for shipping",
             p_set=p_set_hydrogen,
+        )
+
+    if shipping_ammonia_share:
+        oil_efficiency = options.get(
+            "shipping_oil_efficiency", options.get("shipping_average_efficiency", 0.4)
+        )
+        ammonia_efficiency = options.get("shipping_ammonia_efficiency", 0.36)
+
+        efficiency = oil_efficiency / ammonia_efficiency
+
+        p_set_ammonia = shipping_ammonia_share * p_set * efficiency
+
+        n.add("Carrier", "NH3")
+
+        n.add(
+            "Bus", spatial.ammonia.nodes, location=spatial.ammonia.locations, carrier="NH3"
+        )
+
+        n.add(
+            "Load",
+            nodes,
+            suffix=" NH3 for shipping",
+            bus=spatial.ammonia.nodes,
+            carrier="NH3 for shipping",
+            p_set=p_set_ammonia,
+        )
+
+        n.add(
+            "Link",
+            nodes,
+            suffix=" Haber-Bosch",
+            bus0=nodes,
+            bus1=spatial.ammonia.nodes,
+            bus2=nodes + " H2",
+            p_nom_extendable=True,
+            carrier="Haber-Bosch",
+            efficiency=1 / costs.at["Haber-Bosch", "electricity-input"],
+            efficiency2=-costs.at["Haber-Bosch", "hydrogen-input"]
+            / costs.at["Haber-Bosch", "electricity-input"],
+            capital_cost=costs.at["Haber-Bosch", "fixed"]
+            / costs.at["Haber-Bosch", "electricity-input"],
+            marginal_cost=costs.at["Haber-Bosch", "VOM"]
+            / costs.at["Haber-Bosch", "electricity-input"],
+            lifetime=costs.at["Haber-Bosch", "lifetime"],
         )
 
     if shipping_methanol_share:
@@ -4594,7 +4644,7 @@ def add_industry(
     )
 
     if fidelio and limit == 'ff55':
-        aviation_kero_share, aviation_bio_share, aviation_hydrogen_share = calculate_aviation_shares_ff55(n)
+        aviation_kero_share, aviation_bio_share, aviation_synfuels_share = calculate_aviation_shares_ff55()
 
         n.add(
             "Load",
@@ -4648,30 +4698,24 @@ def add_industry(
         # Adding synthetic fuels
         n.add(
             "Bus",
-            spatial.h2.aviation,
+            spatial.oil.synkerosene,
             location=spatial.oil.demand_locations,
-            carrier="H2 for aviation",
+            carrier="synfuels for aviation",
             unit="MWh_LHV",
         )
 
-        efficiency = aviation_kero_efficiency / costs.at["fuel cell", "efficiency"]
+        efficiency = 1 # Same compound burnt in aircrafts
 
         n.add(
             "Load",
-            spatial.h2.aviation,
-            bus = spatial.h2.aviation,
-            carrier="H2 for aviation",
-            p_set=p_set * aviation_hydrogen_share * efficiency,
+            spatial.oil.synkerosene,
+            bus = spatial.oil.synkerosene,
+            carrier="synfuels for aviation",
+            p_set=p_set * aviation_synfuels_share * efficiency,
         )
 
-        n.add(
-            "Link",
-            nodes + " H2 for aviation",
-            bus0=nodes + " H2",
-            bus1=spatial.h2.aviation,
-            carrier="H2 for aviation",
-            p_nom_extendable=True,
-        )
+        add_methanol_to_kerosene(n,costs) # MODIFIED TO HAVE THE RIGHT BUS, MIGHT BE PROBLEMATIC IF IN THE FUTURE I DECIDE TO ADD METHANOL TO KEROSENE IN GENERAL
+
 
     else:
         n.add(

@@ -6,9 +6,9 @@
 run:
   prefix: ""
   name: 
-  #- baseline
-  #- ff55
-  - hist
+  - baseline
+  - ff55
+  #- hist
   scenarios:
     enable: true
     file: config/scenarios_pypsa_run1.yaml
@@ -176,6 +176,7 @@ sector:
   biomass_to_liquid: false
   solid_biomass_import:
     enable: true
+  shipping_ammonia_efficiency: 0.36 # https://www.frontiersin.org/journals/mechanical-engineering/articles/10.3389/fmech.2022.944201/full
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#industry
 industry:
@@ -281,5 +282,6 @@ plotting:
     co2_ets: "#235ebc"
     co2_ets2: "black"
     co2_nonets: "white"
-    hydrogen for aviation: 'white'
+    NH3 for shipping: "green"
+    synfuels for aviation: 'white'
     biofuels for aviation: 'green'

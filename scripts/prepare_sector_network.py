@@ -187,7 +187,7 @@ def define_spatial(nodes, options):
 
     if options['fidelio']['enable']:
         spatial.biomass.aviation = ["EU biofuels for aviation"]
-        spatial.h2.aviation = ["EU hydrogen for aviation"]
+        spatial.h2.aviation = ["EU H2 for aviation"]
 
     # uranium
     spatial.uranium = SimpleNamespace()
@@ -2092,7 +2092,7 @@ def calculate_land_transport_shares_ff55(n, number_cars, limit):
     # Function to calculate ef_allcars for a given range of years
     def calculate_ef_allcars(start_year, end_year, base_ef):
         return sum(share_new_cars_per_year * ef_newcars[year] for year in range(start_year, end_year)) + \
-            (1 - (share_new_cars_per_year * len(range(start_year, end_year)))) * base_ef
+            (1 - (share_new_cars_per_year ** len(range(start_year, end_year)))) * base_ef
 
     if limit == 'ff55':
         ef_newcars_2030_ff55 = ef_newcars_2021 * (1 - 0.55)
@@ -2123,7 +2123,13 @@ def calculate_land_transport_shares_ff55(n, number_cars, limit):
     share_ev_cars_2040 = (ef_allcars_2021 - ef_allcars_2040) / ef_allcars_2021
     share_ev_cars_2050 = (ef_allcars_2021 - ef_allcars_2050) / ef_allcars_2021
 
-    if investment_year == 2030:
+    if investment_year == 2020:
+
+        fuel_cell_share = 0
+        electric_share = 0
+        ice_share = 1
+
+    elif investment_year == 2030:
 
         fuel_cell_share = 0
         electric_share = round(share_ev_cars_2030,2)
@@ -4644,7 +4650,7 @@ def add_industry(
             "Bus",
             spatial.h2.aviation,
             location=spatial.oil.demand_locations,
-            carrier="hydrogen for aviation",
+            carrier="H2 for aviation",
             unit="MWh_LHV",
         )
 
@@ -4654,16 +4660,16 @@ def add_industry(
             "Load",
             spatial.h2.aviation,
             bus = spatial.h2.aviation,
-            carrier="hydrogen for aviation",
+            carrier="H2 for aviation",
             p_set=p_set * aviation_hydrogen_share * efficiency,
         )
 
         n.add(
             "Link",
-            nodes + " hydrogen for aviation",
+            nodes + " H2 for aviation",
             bus0=nodes + " H2",
             bus1=spatial.h2.aviation,
-            carrier="hydrogen for aviation",
+            carrier="H2 for aviation",
             p_nom_extendable=True,
         )
 

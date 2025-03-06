@@ -1114,6 +1114,8 @@ rule prepare_sector_network:
         limited_heat_sources=config_provider(
             "sector", "district_heating", "limited_heat_sources"
         ),
+        weather_years=config_provider("weather_years","enable"),
+        renewable_carriers=config_provider("electricity","renewable_carriers"),
         fidelio=config_provider("sector","fidelio","enable"),
         fidelio_scenario=config_provider("sector","fidelio","scenario"),
     input:
@@ -1210,6 +1212,11 @@ rule prepare_sector_network:
         ),
         direct_heat_source_utilisation_profiles=resources(
             "direct_heat_source_utilisation_profiles_base_s_{clusters}_{planning_horizons}.nc"
+        ),
+        zenodo_timeseries=lambda w: (
+            "data/zenodo_timeseries"
+            if config_provider("weather_years", "enable")(w)
+            else []
         ),
     output:
         resources(

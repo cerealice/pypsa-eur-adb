@@ -12,8 +12,9 @@
 #       renewable_carriers: [wind, solar] # override the list of renewable carriers
 
 hist:
-  planning_horizons:
-  - 2020
+  scenario:
+    planning_horizons:
+    - 2020
   energy:
     base_emissions_year: 2018
 

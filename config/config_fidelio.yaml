@@ -6,9 +6,9 @@
 run:
   prefix: ""
   name: 
-  - baseline
-  - ff55
-  #- hist
+  #- baseline
+  #- ff55
+  - hist
   scenarios:
     enable: true
     file: config/scenarios_pypsa_run1.yaml
@@ -40,7 +40,6 @@ scenario:
   - 2050
 
 validation: true # Should be turned on when 2020 as planning_horizon
-autarky: false
 second_iter: true # Should be turned on if it is the coupling iteration with fidelio is above 1 and you want to shock the demand # https://open.spotify.com/intl-it/track/2SiXAy7TuUkycRVbbWDEpo?si=63fa084002284337
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#countries
@@ -56,6 +55,16 @@ fidelio:
   fidelio_shocks: false
   scenario: baseline
 
+
+weather_years:
+  enable: true
+  rcp: 4-5
+# RCP 2.6 is 2-6, RCP 4.5 is 4-5, RCP 8.5 is 8-5
+  global_regional_models: CNRM-CERFACS-CM5--CNRM-ALADIN63
+# Global Climate Models (GCMs): CNRM-CERFACS-CM5, MPI-M-MPI-ESM-LR, MIROC-MIROC5
+# Regional Climate Models (RCMs): CNRM-ALADIN63, ICTP-RegCM4-6, CLMcom-CLM-CCLM4-8-17
+# Global model 1 has to be connected to regional model 1, so e.g. CNRM_CERFACS_CM5__CNRM_ALADIN63 but not CNRM_CERFACS_ICTP-RegCM4-6
+  
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#electricity
 electricity:

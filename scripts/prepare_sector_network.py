@@ -5455,7 +5455,6 @@ if __name__ == "__main__":
     if options["allam_cycle_gas"]:
         add_allam_gas(n, costs)
 
-    print(f"Weather year {snakemake.params.weather_years}")
     if snakemake.params.weather_years:
         adjust_renewable_profiles(
             n,
@@ -5550,7 +5549,7 @@ if __name__ == "__main__":
 
     n.meta = dict(snakemake.config, **dict(wildcards=dict(snakemake.wildcards)))
 
-    if investment_year == 2020: # Validation, so no expansion
+    if investment_year == 2021: # Validation, so no expansion
         fixed_capacity = ['CCGT','OCGT','nuclear','lignite','coal','CC','charger']#,'H2','battery','SMR']#,'DC','DAC','Sabatier','Fischer']#'Fuel','charger','heat','CHP'] 
 
         filtered_index = [
@@ -5581,8 +5580,8 @@ if __name__ == "__main__":
             scaling0 = (46*1e6/8760) * (it_0.iloc[0]/(it_0.iloc[0] + it_1.iloc[0]))
             scaling1 = (46*1e6/8760) * (it_1.iloc[0]/(it_0.iloc[0] + it_1.iloc[0])) 
             
-        n.loads_t.p_set.loc[:,n.loads_t.p_set.columns.str.endswith('IT0 0')] *= scaling0
-        n.loads_t.p_set.loc[:,n.loads_t.p_set.columns.str.endswith('IT1 0')] *= scaling1
+        n.loads_t.p.loc[:,n.loads_t.p.columns.str.endswith('IT0 0')] *= scaling0
+        n.loads_t.p.loc[:,n.loads_t.p.columns.str.endswith('IT1 0')] *= scaling1
 
     sanitize_carriers(n, snakemake.config)
     sanitize_locations(n)

@@ -11,11 +11,22 @@ Release Notes
 Upcoming Release
 ================
 
+* Introduced heat-venting in all heating systems at given marginal cost and added marginal cost for water tank charging. Renamed config setting for marginal cost of home-battery charging to ``marginal_cost_home_battery_storage``. (https://github.com/PyPSA/pypsa-eur/pull/1563)
+* Added option to specify the cutout directory in the configuration file. This allows to the user to specify the directory where the cutouts are stored. Use it by setting ``atlite: cutout_directory:`` in the configuration file. (https://github.com/PyPSA/pypsa-eur/pull/1515)
+
+* Add the options to overwrite investment, lifetime, FOM, VOM, efficiency and fuel attributes from the configuration file under ``costs: overwrites:``. This mimics the existing capital and marginal cost behaviour. (https://github.com/PyPSA/pypsa-eur/pull/1532)
+* Change: Rename "fixed" to "capital_cost" for annualised investment costs in sector-coupled networks.
+
+- Bugfix: Changed setting ``central_heat_vent`` (default: ``true``), because the  water tanks charger and discharger were used as heat vents with an efficiency of 0.9.
+
 * Bugfix: Geothermal heat potentials are now restricted to those in close proximity to future district heating areas as projected by Manz et al. 2024. Includes a refactoring change: Building of generic technical potentials from heat utilisation potentials was changed to specific computation of geothermal heat potentials.
 
-- ...
-
 - Bug fix: Added setting ``run: use_shadow_directory:`` (default: ``true``) which sets the ``shadow`` parameter of the snakemake workflow. Configuring to ``true`` sets snakemake ``shadow`` parameter to ``shalloow``, ``false`` to `Ǹone``. Should be set to ``false`` for those cases, where snakemake has an issue with finding missing input/output files in solving rules.
+
+* Extended pre-built `weather data cutouts
+  <https://zenodo.org/records/14936211>`__. Cutouts are now available for the
+  years 1996, 2010, 2012, 2013, 2019, 2020 and 2023.
+  (https://github.com/PyPSA/pypsa-eur/pull/1559)
 
 PyPSA-Eur v2025.01.0 (24th January 2025)
 ========================================

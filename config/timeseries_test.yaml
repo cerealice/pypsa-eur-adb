@@ -34,8 +34,8 @@ scenario:
   - ''
   planning_horizons:
   - 2020
-  - 2030
-  - 2040
+  #- 2030
+  #- 2040
   #- 2050
 
 countries: ['IT']
@@ -109,6 +109,7 @@ pypsa_eur:
 
 existing_capacities:
   default_heating_lifetime: 40
+  grouping_years_power: [2020]
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#sector
 sector:
@@ -140,6 +141,7 @@ sector:
     fuel:
     - solid biomass # For solid biomass, CHP with and without CC are added
     micro_chp: false # Only gas is used for micro_chp
+  electricity_distribution_grid: false
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#clustering
 clustering:

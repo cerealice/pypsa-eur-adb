@@ -5672,7 +5672,7 @@ if __name__ == "__main__":
 
     n.meta = dict(snakemake.config, **dict(wildcards=dict(snakemake.wildcards)))
 
-    if investment_year == 2021: # Validation, so no expansion
+    if investment_year == 2020: # Validation, so no expansion
         fixed_capacity = ['CCGT','OCGT','nuclear','lignite','coal','CC','charger']#,'H2','battery','SMR']#,'DC','DAC','Sabatier','Fischer']#'Fuel','charger','heat','CHP'] 
 
         filtered_index = [

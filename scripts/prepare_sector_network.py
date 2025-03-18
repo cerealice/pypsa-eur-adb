@@ -5673,7 +5673,7 @@ if __name__ == "__main__":
     n.meta = dict(snakemake.config, **dict(wildcards=dict(snakemake.wildcards)))
 
     if investment_year == 2020: # Validation, so no expansion
-        fixed_capacity = ['CCGT','OCGT','nuclear','lignite','coal','CC','charger']#,'H2','battery','SMR']#,'DC','DAC','Sabatier','Fischer']#'Fuel','charger','heat','CHP'] 
+        fixed_capacity = ['CCGT','OCGT','nuclear','lignite','coal','CC','charger','heat pump','heater','CHP']#,'H2','battery','SMR']#,'DC','DAC','Sabatier','Fischer']#'Fuel','charger','heat','CHP'] 
 
         filtered_index = [
             idx for idx in n.links.index 
@@ -5692,19 +5692,20 @@ if __name__ == "__main__":
         it_1 = aloads[aloads.index.str.endswith("IT1 0")]
 
         if investment_year == 2020:
-            scaling0 = (51*1e6/8760) * (it_0.iloc[0]/(it_0.iloc[0] + it_1.iloc[0]))
-            scaling1 = (51*1e6/8760) * (it_1.iloc[0]/(it_0.iloc[0] + it_1.iloc[0])) 
+            share_import = 51*1e6/(it_0.iloc[0] + it_1.iloc[0])
 
         elif investment_year == 2030:
-            scaling0 = (43*1e6/8760) * (it_0.iloc[0]/(it_0.iloc[0] + it_1.iloc[0]))
-            scaling1 = (43*1e6/8760) * (it_1.iloc[0]/(it_0.iloc[0] + it_1.iloc[0])) 
+            share_import = 43*1e6/(it_0.iloc[0] + it_1.iloc[0])
 
         elif investment_year == 2040:
-            scaling0 = (46*1e6/8760) * (it_0.iloc[0]/(it_0.iloc[0] + it_1.iloc[0]))
-            scaling1 = (46*1e6/8760) * (it_1.iloc[0]/(it_0.iloc[0] + it_1.iloc[0])) 
-            
-        n.loads_t.p.loc[:,n.loads_t.p.columns.str.endswith('IT0 0')] *= scaling0
-        n.loads_t.p.loc[:,n.loads_t.p.columns.str.endswith('IT1 0')] *= scaling1
+            share_import = 46*1e6/(it_0.iloc[0] + it_1.iloc[0])
+        
+        scaling0 = share_import * (it_0.iloc[0]/(it_0.iloc[0] + it_1.iloc[0]))
+        scaling1 = share_import * (it_1.iloc[0]/(it_0.iloc[0] + it_1.iloc[0])) 
+
+        n.loads_t.p_set.loc[:,n.loads_t.p_set.columns.str.endswith('IT0 0')] *= (1-scaling0)
+        n.loads_t.p_set.loc[:,n.loads_t.p_set.columns.str.endswith('IT1 0')] *= (1-scaling1)
+
 
     sanitize_carriers(n, snakemake.config)
     sanitize_locations(n)

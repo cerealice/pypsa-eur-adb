@@ -15,6 +15,7 @@ hist:
   scenario:
     planning_horizons:
     - 2020
+    # This not always work, better to run hist only and set the planning horizon to 2020 in config_fidelio.yaml
   energy:
     base_emissions_year: 2018
 

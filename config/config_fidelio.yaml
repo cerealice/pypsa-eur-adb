@@ -6,9 +6,9 @@
 run:
   prefix: ""
   name: 
-  - baseline
-  - ff55
-  #- hist
+  #- baseline
+  #- ff55
+  - hist
   scenarios:
     enable: true
     file: config/scenarios_pypsa_run1.yaml
@@ -277,12 +277,11 @@ industry:
   H2_network: false
 
 
-
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#clustering
 clustering:
   temporal:
     resolution_elec: false
-    resolution_sector: 24h
+    resolution_sector: 3h
 
 plotting:
   tech_colors:

@@ -174,9 +174,16 @@ sector:
     2045: 200
     2050: 200
   biomass_to_liquid: false
+  biomass_to_liquid_cc: false
+  tes: false
+  electricity_distribution_grid: false
   solid_biomass_import:
     enable: true
   shipping_ammonia_efficiency: 0.36 # https://www.frontiersin.org/journals/mechanical-engineering/articles/10.3389/fmech.2022.944201/full
+  heat_vent:
+    urban central: false
+    urban decentral: false
+    rural: false
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#industry
 industry:
@@ -267,6 +274,7 @@ industry:
   hotmaps_locate_missing: false
   reference_year: 2019
   oil_refining_emissions: 0.013
+  H2_network: false
 
 
 
@@ -274,7 +282,7 @@ industry:
 clustering:
   temporal:
     resolution_elec: false
-    resolution_sector: 2920h
+    resolution_sector: 24h
 
 plotting:
   tech_colors:

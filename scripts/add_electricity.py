@@ -221,6 +221,7 @@ def load_costs(tech_costs, config, max_hours, Nyears=1.0):
 
     for attr in ("investment", "lifetime", "FOM", "VOM", "efficiency", "fuel"):
         overwrites = config["overwrites"].get(attr)
+        print(f"Overwrites {overwrites}")
         if overwrites is not None:
             overwrites = pd.Series(overwrites)
             costs.loc[overwrites.index, attr] = overwrites

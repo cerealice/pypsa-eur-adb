@@ -1194,7 +1194,7 @@ def add_dac(n, costs):
             bus2=co2_label,
             bus3=spatial.co2.df.loc[locations, "nodes"].values,
             carrier="DAC",
-            capital_cost=costs.at["direct air capture", "fixed"] / electricity_input,
+            capital_cost=costs.at["direct air capture", "capital_cost"] / electricity_input,
             efficiency=-heat_input / electricity_input,
             efficiency2=-1 / electricity_input,
             efficiency3=1 / electricity_input,
@@ -4424,7 +4424,7 @@ def add_industry(
 
         n.add(
             "Load",
-            nodes,
+            spatial.ammonia.nodes,
             suffix=" NH3 for shipping",
             bus=spatial.ammonia.nodes,
             carrier="NH3 for shipping",
@@ -4443,7 +4443,7 @@ def add_industry(
             efficiency=1 / costs.at["Haber-Bosch", "electricity-input"],
             efficiency2=-costs.at["Haber-Bosch", "hydrogen-input"]
             / costs.at["Haber-Bosch", "electricity-input"],
-            capital_cost=costs.at["Haber-Bosch", "fixed"]
+            capital_cost=costs.at["Haber-Bosch", "capital_cost"]
             / costs.at["Haber-Bosch", "electricity-input"],
             marginal_cost=costs.at["Haber-Bosch", "VOM"]
             / costs.at["Haber-Bosch", "electricity-input"],
@@ -4814,7 +4814,7 @@ def add_industry(
             efficiency2=-costs.at["solid biomass", "CO2 intensity"]
             + costs.at["BtL", "CO2 stored"],
             p_nom_extendable=True,
-            capital_cost=costs.at["BtL", "fixed"] * costs.at["BtL", "efficiency"],
+            capital_cost=costs.at["BtL", "capital_cost"] * costs.at["BtL", "efficiency"],
             marginal_cost=costs.at["BtL", "VOM"] * costs.at["BtL", "efficiency"],
         )
 
@@ -5955,6 +5955,19 @@ if __name__ == "__main__":
     )
 
     n.meta = dict(snakemake.config, **dict(wildcards=dict(snakemake.wildcards)))
+
+    if investment_year == 2020: # Validation, so no expansion
+        fixed_capacity = ['CCGT','OCGT','nuclear','lignite','coal','CC','charger','heat pump','heater','CHP']#,'H2','battery','SMR']#,'DC','DAC','Sabatier','Fischer']#'Fuel','charger','heat','CHP'] 
+
+        filtered_index = [
+            idx for idx in n.links.index 
+            if any(capacity.lower() in idx.lower() for capacity in fixed_capacity) 
+            and not idx[0].islower() 
+            and not idx.startswith("EU")
+        ]
+
+        n.links.loc[filtered_index, 'p_nom_extendable'] = False
+        n.generators.loc[~n.generators.index.str.startswith('EU') & ~n.generators.index.str.contains('thermal'), 'p_nom_extendable'] = False
 
     sanitize_carriers(n, snakemake.config)
     sanitize_locations(n)

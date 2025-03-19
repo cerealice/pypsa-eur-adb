@@ -6,9 +6,9 @@
 run:
   prefix: ""
   name: 
-  #- baseline
-  #- ff55
-  - hist
+  - baseline
+  - ff55
+  #- hist
   scenarios:
     enable: true
     file: config/scenarios_pypsa_run1.yaml

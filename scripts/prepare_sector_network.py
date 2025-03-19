@@ -4413,8 +4413,11 @@ def add_industry(
         ammonia_efficiency = options.get("shipping_ammonia_efficiency", 0.36)
 
         efficiency = oil_efficiency / ammonia_efficiency
-
-        p_set_ammonia = shipping_ammonia_share * p_set * efficiency
+        p_set_ammonia = shipping_ammonia_share * efficiency * p_set.rename(lambda x: x + " NH3 for shipping")
+        
+        if options['ammonia'] != "regional":
+            p_set_ammonia = p_set_ammonia.sum()
+        
 
         n.add("Carrier", "NH3")
 

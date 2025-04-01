@@ -4424,7 +4424,7 @@ def add_industry(
         n.add(
             "Bus", spatial.ammonia.nodes, location=spatial.ammonia.locations, carrier="NH3"
         )
-
+        print(f"Ammoniìa")
         n.add(
             "Load",
             spatial.ammonia.nodes,

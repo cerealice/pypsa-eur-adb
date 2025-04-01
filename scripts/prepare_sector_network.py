@@ -632,13 +632,13 @@ def add_carrier_buses(
                 carrier=carrier + " primary",
                 unit=unit,
             )
-
+            co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
             n.add(
                 "Link",
                 nodes + " refining",
                 bus0=nodes + " primary",
                 bus1=nodes,
-                bus2="co2 atmosphere",
+                bus2=co2_labels,
                 location=location,
                 carrier=carrier + " refining",
                 p_nom=1e6,

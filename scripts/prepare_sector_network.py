@@ -1059,6 +1059,35 @@ def add_biomass_to_methanol_cc(n, costs):
         / costs.at["biomass-to-methanol", "efficiency"],
     )
 
+def add_methanol_to_kerosene_fidelio(n,costs):
+    tech = "methanol-to-kerosene"
+
+    logger.info(f"Adding {tech}.")
+
+    capital_cost = costs.at[tech, "capital_cost"] / costs.at[tech, "methanol-input"]
+
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
+    kerosene_bus = spatial.oil.synkerosene if fidelio else spatial.oil.kerosene
+
+    n.add(
+        "Link",
+        spatial.h2.locations,
+        suffix=f" {tech}",
+        carrier=tech,
+        capital_cost=capital_cost,
+        marginal_cost=costs.at[tech, "VOM"] / costs.at[tech, "methanol-input"],
+        bus0=spatial.methanol.nodes,
+        bus1=kerosene_bus,
+        bus2=spatial.h2.nodes,
+        bus3=co2_labels,
+        efficiency=1 / costs.at[tech, "methanol-input"],
+        efficiency2=-costs.at[tech, "hydrogen-input"]
+        / costs.at[tech, "methanol-input"],
+        efficiency3=costs.at["oil","CO2 intensity"] /
+        costs.at[tech, "methanol-input"],
+        p_nom_extendable=True,
+        lifetime=costs.at[tech, "lifetime"],
+    )
 
 def add_methanol_to_power(n, costs, pop_layout, types=None):
     if types is None:
@@ -4814,213 +4843,11 @@ def add_industry(
         efficiency3=-options["MWh_MeOH_per_MWh_H2"] / options["MWh_MeOH_per_tCO2"],
     )
 
-    if fidelio:
-        if limit == 'ff55':
-            shipping_oil_share, shipping_methanol_share, shipping_ammonia_share = calculate_shipping_shares_ff55()
-            shipping_hydrogen_share = 0
-        else:
-            shipping_oil_share = 1
-            shipping_methanol_share = 0
-            shipping_ammonia_share = 0
-            shipping_hydrogen_share = 0
-    else:
-        shipping_hydrogen_share = get(options["shipping_hydrogen_share"], investment_year)
-        shipping_methanol_share = get(options["shipping_methanol_share"], investment_year)
-        shipping_oil_share = get(options["shipping_oil_share"], investment_year)
-
-        total_share = shipping_hydrogen_share + shipping_methanol_share + shipping_oil_share
-        if total_share != 1:
-            logger.warning(
-                f"Total shipping shares sum up to {total_share:.2%}, corresponding to increased or decreased demand assumptions."
-            )
-
-    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
-
-    domestic_navigation = pop_weighted_energy_totals.loc[
-        nodes, ["total domestic navigation"]
-    ].squeeze()
-    international_navigation = (
-        pd.read_csv(shipping_demand_file, index_col=0).squeeze(axis=1) * nyears
-    )
-    all_navigation = domestic_navigation + international_navigation
-    p_set = all_navigation * 1e6 / nhours
-
-    if shipping_hydrogen_share:
-        oil_efficiency = options.get(
-            "shipping_oil_efficiency", options.get("shipping_average_efficiency", 0.4)
-        )
-        efficiency = oil_efficiency / costs.at["fuel cell", "efficiency"]
-        shipping_hydrogen_share = get(
-            options["shipping_hydrogen_share"], investment_year
-        )
-
-        if options["shipping_hydrogen_liquefaction"]:
-            n.add(
-                "Bus",
-                nodes,
-                suffix=" H2 liquid",
-                carrier="H2 liquid",
-                location=nodes,
-                unit="MWh_LHV",
-            )
-
-            n.add(
-                "Link",
-                nodes + " H2 liquefaction",
-                bus0=nodes + " H2",
-                bus1=nodes + " H2 liquid",
-                carrier="H2 liquefaction",
-                efficiency=costs.at["H2 liquefaction", "efficiency"],
-                capital_cost=costs.at["H2 liquefaction", "capital_cost"],
-                p_nom_extendable=True,
-                lifetime=costs.at["H2 liquefaction", "lifetime"],
-            )
-
-            shipping_bus = nodes + " H2 liquid"
-        else:
-            shipping_bus = nodes + " H2"
-
-        efficiency = (
-            options["shipping_oil_efficiency"] / costs.at["fuel cell", "efficiency"]
-        )
-        p_set_hydrogen = shipping_hydrogen_share * p_set * efficiency
-
-        n.add(
-            "Load",
-            nodes,
-            suffix=" H2 for shipping",
-            bus=shipping_bus,
-            carrier="H2 for shipping",
-            p_set=p_set_hydrogen,
-        )
-
-    if shipping_ammonia_share:
-        oil_efficiency = options.get(
-            "shipping_oil_efficiency", options.get("shipping_average_efficiency", 0.4)
-        )
-        ammonia_efficiency = options.get("shipping_ammonia_efficiency", 0.36)
-
-        efficiency = oil_efficiency / ammonia_efficiency
-        p_set_ammonia = shipping_ammonia_share * efficiency * p_set.rename(lambda x: x + " NH3 for shipping")
-        
-        if options['ammonia'] != "regional":
-            p_set_ammonia = p_set_ammonia.sum()
-        
-
-        n.add("Carrier", "NH3")
-
-        n.add(
-            "Bus", spatial.ammonia.nodes, location=spatial.ammonia.locations, carrier="NH3"
-        )
-        print(f"Ammoniìa")
-        n.add(
-            "Load",
-            spatial.ammonia.nodes,
-            suffix=" NH3 for shipping",
-            bus=spatial.ammonia.nodes,
-            carrier="NH3 for shipping",
-            p_set=p_set_ammonia,
-        )
-
-        n.add(
-            "Link",
-            nodes,
-            suffix=" Haber-Bosch",
-            bus0=nodes,
-            bus1=spatial.ammonia.nodes,
-            bus2=nodes + " H2",
-            p_nom_extendable=True,
-            carrier="Haber-Bosch",
-            efficiency=1 / costs.at["Haber-Bosch", "electricity-input"],
-            efficiency2=-costs.at["Haber-Bosch", "hydrogen-input"]
-            / costs.at["Haber-Bosch", "electricity-input"],
-            capital_cost=costs.at["Haber-Bosch", "capital_cost"]
-            / costs.at["Haber-Bosch", "electricity-input"],
-            marginal_cost=costs.at["Haber-Bosch", "VOM"]
-            / costs.at["Haber-Bosch", "electricity-input"],
-            lifetime=costs.at["Haber-Bosch", "lifetime"],
-        )
-
-    if shipping_methanol_share:
-        efficiency = (
-            options["shipping_oil_efficiency"] / options["shipping_methanol_efficiency"]
-        )
-
-        p_set_methanol_shipping = (
-            shipping_methanol_share
-            * p_set.rename(lambda x: x + " shipping methanol")
-            * efficiency
-        )
-
-        if not options["methanol"]["regional_methanol_demand"]:
-            p_set_methanol_shipping = p_set_methanol_shipping.sum()
-
-        n.add(
-            "Bus",
-            spatial.methanol.shipping,
-            location=spatial.methanol.demand_locations,
-            carrier="shipping methanol",
-            unit="MWh_LHV",
-        )
-
-        n.add(
-            "Load",
-            spatial.methanol.shipping,
-            bus=spatial.methanol.shipping,
-            carrier="shipping methanol",
-            p_set=p_set_methanol_shipping,
-        )
-
-        n.add(
-            "Link",
-            spatial.methanol.shipping,
-            bus0=spatial.methanol.nodes,
-            bus1=spatial.methanol.shipping,
-            bus2=co2_labels,
-            carrier="shipping methanol",
-            p_nom_extendable=True,
-            efficiency2=1
-            / options[
-                "MWh_MeOH_per_tCO2"
-            ],  # CO2 intensity methanol based on stoichiometric calculation with 22.7 GJ/t methanol (32 g/mol), CO2 (44 g/mol), 277.78 MWh/TJ = 0.218 t/MWh
-        )
-
-    if shipping_oil_share:
-        p_set_oil = shipping_oil_share * p_set.rename(lambda x: x + " shipping oil")
-
-        if not options["regional_oil_demand"]:
-            p_set_oil = p_set_oil.sum()
-
-        n.add(
-            "Bus",
-            spatial.oil.shipping,
-            location=spatial.oil.demand_locations,
-            carrier="shipping oil",
-            unit="MWh_LHV",
-        )
-
-        n.add(
-            "Load",
-            spatial.oil.shipping,
-            bus=spatial.oil.shipping,
-            carrier="shipping oil",
-            p_set=p_set_oil,
-        )
-
-        n.add(
-            "Link",
-            spatial.oil.shipping,
-            bus0=spatial.oil.nodes,
-            bus1=spatial.oil.shipping,
-            bus2=co2_labels,
-            carrier="shipping oil",
-            p_nom_extendable=True,
-            efficiency2=costs.at["oil", "CO2 intensity"],
-        )
-
     if options["oil_boilers"]:
         nodes = pop_layout.index
 
+        co2_labels = "co2_ets2" if fidelio else "co2 atmosphere"
+        
         for heat_system in HeatSystem:
             if not heat_system == HeatSystem.URBAN_CENTRAL:
                 n.add(
@@ -5029,7 +4856,7 @@ def add_industry(
                     p_nom_extendable=True,
                     bus0=spatial.oil.nodes,
                     bus1=nodes + f" {heat_system} heat",
-                    bus2="co2 atmosphere",
+                    bus2=co2_labels,
                     carrier=f"{heat_system} oil boiler",
                     efficiency=costs.at["decentral oil boiler", "efficiency"],
                     efficiency2=costs.at["oil", "CO2 intensity"],
@@ -5230,132 +5057,6 @@ def add_industry(
             efficiency3=process_co2_per_naphtha,
         )
 
-    # aviation
-    demand_factor = options["aviation_demand_factor"]
-    if demand_factor != 1:
-        logger.warning(
-            f"Changing aviation demand by {demand_factor * 100 - 100:+.2f}%."
-        )
-
-    all_aviation = ["total international aviation", "total domestic aviation"]
-
-    p_set = (
-        demand_factor
-        * pop_weighted_energy_totals.loc[nodes, all_aviation].sum(axis=1)
-        * 1e6
-        / nhours
-    ).rename(lambda x: x + " kerosene for aviation")
-
-    if not options["regional_oil_demand"]:
-        p_set = p_set.sum()
-
-    n.add(
-        "Bus",
-        spatial.oil.kerosene,
-        location=spatial.oil.demand_locations,
-        carrier="kerosene for aviation",
-        unit="MWh_LHV",
-    )
-
-    if fidelio and limit == 'ff55':
-        aviation_kero_share, aviation_bio_share, aviation_synfuels_share = calculate_aviation_shares_ff55()
-
-        n.add(
-            "Load",
-            spatial.oil.kerosene,
-            bus=spatial.oil.kerosene,
-            carrier="kerosene for aviation",
-            p_set=p_set * aviation_kero_share,
-        )
-
-        # Adding biofuels SAF
-        n.add(
-            "Bus",
-            spatial.biomass.aviation,
-            location=spatial.oil.demand_locations,
-            carrier="biofuels for aviation",
-            unit="MWh_LHV",
-        )
-
-        aviation_kero_efficiency = 0.50084 # Figure 4, Cruise in Ogur et al. https://www.sciencedirect.com/science/article/pii/S0016236124024736 
-        aviation_bio_efficiency = aviation_kero_efficiency * (1 + 0.1818) # Akdeniz et al. https://doi.org/10.1007/s10973-023-11982-z 
-        # If biofuel is selected over jet-kerosene fuel, it is observed that the engine has better energy efficiency performance by 18.18%.
-
-        efficiency = aviation_kero_efficiency / aviation_bio_efficiency
-
-        n.add(
-            "Load",
-            spatial.biomass.aviation,
-            bus=spatial.biomass.aviation,
-            carrier="biofuels for aviation",
-            p_set=p_set * aviation_bio_share * efficiency,
-        )
-
-        add_carrier_buses(n, "oil")
-        n.add(
-            "Link",
-            spatial.biomass.nodes,
-            suffix=" to aviation biofuels",
-            bus0=spatial.biomass.nodes,
-            bus1=spatial.biomass.aviation,
-            bus2="co2_ets",
-            carrier="biofuels for aviation",
-            lifetime=costs.at["BtL", "lifetime"],
-            efficiency=costs.at["BtL", "efficiency"],
-            efficiency2=-costs.at["solid biomass", "CO2 intensity"]
-            + costs.at["BtL", "CO2 stored"],
-            p_nom_extendable=True,
-            capital_cost=costs.at["BtL", "capital_cost"] * costs.at["BtL", "efficiency"],
-            marginal_cost=costs.at["BtL", "VOM"] * costs.at["BtL", "efficiency"],
-        )
-
-        # Adding synthetic fuels
-        n.add(
-            "Bus",
-            spatial.oil.synkerosene,
-            location=spatial.oil.demand_locations,
-            carrier="synfuels for aviation",
-            unit="MWh_LHV",
-        )
-
-        efficiency = 1 # Same compound burnt in aircrafts
-
-        n.add(
-            "Load",
-            spatial.oil.synkerosene,
-            bus = spatial.oil.synkerosene,
-            carrier="synfuels for aviation",
-            p_set=p_set * aviation_synfuels_share * efficiency,
-        )
-
-        add_methanol_to_kerosene(n,costs) # MODIFIED TO HAVE THE RIGHT BUS, MIGHT BE PROBLEMATIC IF IN THE FUTURE I DECIDE TO ADD METHANOL TO KEROSENE IN GENERAL
-
-
-    else:
-        n.add(
-            "Load",
-            spatial.oil.kerosene,
-            bus=spatial.oil.kerosene,
-            carrier="kerosene for aviation",
-            p_set=p_set,
-        )
-    
-    
-    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
-    n.add(
-        "Link",
-        spatial.oil.kerosene,
-        bus0=spatial.oil.nodes,
-        bus1=spatial.oil.kerosene,
-        bus2=co2_labels,
-        carrier="kerosene for aviation",
-        p_nom_extendable=True,
-        efficiency2=costs.at["oil", "CO2 intensity"],
-    )
-
-    if options["methanol"]["methanol_to_kerosene"]:
-        add_methanol_to_kerosene(n, costs)
-
     # TODO simplify bus expression
     n.add(
         "Load",
@@ -5526,6 +5227,7 @@ def add_aviation(
     pop_weighted_energy_totals: pd.DataFrame,
     options: dict,
     spatial: SimpleNamespace,
+    limit: str | float,
 ) -> None:
     logger.info("Add aviation")
 
@@ -5558,20 +5260,97 @@ def add_aviation(
         unit="MWh_LHV",
     )
 
-    n.add(
-        "Load",
-        spatial.oil.kerosene,
-        bus=spatial.oil.kerosene,
-        carrier="kerosene for aviation",
-        p_set=p_set,
-    )
+    if fidelio and limit == 'ff55':
+        aviation_kero_share, aviation_bio_share, aviation_synfuels_share = calculate_aviation_shares_ff55()
+
+        n.add(
+            "Load",
+            spatial.oil.kerosene,
+            bus=spatial.oil.kerosene,
+            carrier="kerosene for aviation",
+            p_set=p_set * aviation_kero_share,
+        )
+
+        # Adding biofuels SAF
+        n.add(
+            "Bus",
+            spatial.biomass.aviation,
+            location=spatial.oil.demand_locations,
+            carrier="biofuels for aviation",
+            unit="MWh_LHV",
+        )
+
+        aviation_kero_efficiency = 0.50084 # Figure 4, Cruise in Ogur et al. https://www.sciencedirect.com/science/article/pii/S0016236124024736 
+        aviation_bio_efficiency = aviation_kero_efficiency * (1 + 0.1818) # Akdeniz et al. https://doi.org/10.1007/s10973-023-11982-z 
+        # If biofuel is selected over jet-kerosene fuel, it is observed that the engine has better energy efficiency performance by 18.18%.
+
+        efficiency = aviation_kero_efficiency / aviation_bio_efficiency
+
+        n.add(
+            "Load",
+            spatial.biomass.aviation,
+            bus=spatial.biomass.aviation,
+            carrier="biofuels for aviation",
+            p_set=p_set * aviation_bio_share * efficiency,
+        )
+
+        add_carrier_buses(n, "oil")
+        n.add(
+            "Link",
+            spatial.biomass.nodes,
+            suffix=" to aviation biofuels",
+            bus0=spatial.biomass.nodes,
+            bus1=spatial.biomass.aviation,
+            bus2="co2_ets",
+            carrier="biofuels for aviation",
+            lifetime=costs.at["BtL", "lifetime"],
+            efficiency=costs.at["BtL", "efficiency"],
+            efficiency2=-costs.at["solid biomass", "CO2 intensity"]
+            + costs.at["BtL", "CO2 stored"],
+            p_nom_extendable=True,
+            capital_cost=costs.at["BtL", "capital_cost"] * costs.at["BtL", "efficiency"],
+            marginal_cost=costs.at["BtL", "VOM"] * costs.at["BtL", "efficiency"],
+        )
+
+        # Adding synthetic fuels
+        n.add(
+            "Bus",
+            spatial.oil.synkerosene,
+            location=spatial.oil.demand_locations,
+            carrier="synfuels for aviation",
+            unit="MWh_LHV",
+        )
+
+        efficiency = 1 # Same compound burnt in aircrafts
+
+        n.add(
+            "Load",
+            spatial.oil.synkerosene,
+            bus = spatial.oil.synkerosene,
+            carrier="synfuels for aviation",
+            p_set=p_set * aviation_synfuels_share * efficiency,
+        )
+
+        add_methanol_to_kerosene_fidelio(n,costs)
+        # Modified for kerosen bus, could be the same as below but I keep it separate for mergin reasons
+
+    else:
+        n.add(
+            "Load",
+            spatial.oil.kerosene,
+            bus=spatial.oil.kerosene,
+            carrier="kerosene for aviation",
+            p_set=p_set,
+        )
+    
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
 
     n.add(
         "Link",
         spatial.oil.kerosene,
         bus0=spatial.oil.nodes,
         bus1=spatial.oil.kerosene,
-        bus2="co2 atmosphere",
+        bus2=co2_labels,
         carrier="kerosene for aviation",
         p_nom_extendable=True,
         efficiency2=costs.at["oil", "CO2 intensity"],
@@ -5594,7 +5373,7 @@ def add_aviation(
             bus0=spatial.methanol.nodes,
             bus1=spatial.oil.kerosene,
             bus2=spatial.h2.nodes,
-            bus3="co2 atmosphere",
+            bus3=co2_labels,
             efficiency=1 / costs.at[tech, "methanol-input"],
             efficiency2=-costs.at[tech, "hydrogen-input"]
             / costs.at[tech, "methanol-input"],
@@ -5614,6 +5393,7 @@ def add_shipping(
     options: dict,
     spatial: SimpleNamespace,
     investment_year: int,
+    limit: str | float,
 ) -> None:
     logger.info("Add shipping")
 
@@ -5621,9 +5401,27 @@ def add_shipping(
     nhours = n.snapshot_weightings.generators.sum()
     nyears = nhours / 8760
 
-    shipping_hydrogen_share = get(options["shipping_hydrogen_share"], investment_year)
-    shipping_methanol_share = get(options["shipping_methanol_share"], investment_year)
-    shipping_oil_share = get(options["shipping_oil_share"], investment_year)
+    if fidelio:
+        if limit == 'ff55':
+            shipping_oil_share, shipping_methanol_share, shipping_ammonia_share = calculate_shipping_shares_ff55()
+            shipping_hydrogen_share = 0
+        else:
+            shipping_oil_share = 1
+            shipping_methanol_share = 0
+            shipping_ammonia_share = 0
+            shipping_hydrogen_share = 0
+    else:
+        shipping_hydrogen_share = get(options["shipping_hydrogen_share"], investment_year)
+        shipping_methanol_share = get(options["shipping_methanol_share"], investment_year)
+        shipping_oil_share = get(options["shipping_oil_share"], investment_year)
+
+        total_share = shipping_hydrogen_share + shipping_methanol_share + shipping_oil_share
+        if total_share != 1:
+            logger.warning(
+                f"Total shipping shares sum up to {total_share:.2%}, corresponding to increased or decreased demand assumptions."
+            )
+
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
 
     total_share = shipping_hydrogen_share + shipping_methanol_share + shipping_oil_share
     if total_share != 1:
@@ -5688,6 +5486,52 @@ def add_shipping(
             carrier="H2 for shipping",
             p_set=p_set_hydrogen,
         )
+    
+    if shipping_ammonia_share:
+        oil_efficiency = options.get(
+            "shipping_oil_efficiency", options.get("shipping_average_efficiency", 0.4)
+        )
+        ammonia_efficiency = options.get("shipping_ammonia_efficiency", 0.36)
+
+        efficiency = oil_efficiency / ammonia_efficiency
+        p_set_ammonia = shipping_ammonia_share * efficiency * p_set.rename(lambda x: x + " NH3 for shipping")
+        
+        if options['ammonia'] != "regional":
+            p_set_ammonia = p_set_ammonia.sum()
+        
+        n.add("Carrier", "NH3")
+
+        n.add(
+            "Bus", spatial.ammonia.nodes, location=spatial.ammonia.locations, carrier="NH3"
+        )
+
+        n.add(
+            "Load",
+            spatial.ammonia.nodes,
+            suffix=" NH3 for shipping",
+            bus=spatial.ammonia.nodes,
+            carrier="NH3 for shipping",
+            p_set=p_set_ammonia,
+        )
+
+        n.add(
+            "Link",
+            nodes,
+            suffix=" Haber-Bosch",
+            bus0=nodes,
+            bus1=spatial.ammonia.nodes,
+            bus2=nodes + " H2",
+            p_nom_extendable=True,
+            carrier="Haber-Bosch",
+            efficiency=1 / costs.at["Haber-Bosch", "electricity-input"],
+            efficiency2=-costs.at["Haber-Bosch", "hydrogen-input"]
+            / costs.at["Haber-Bosch", "electricity-input"],
+            capital_cost=costs.at["Haber-Bosch", "capital_cost"]
+            / costs.at["Haber-Bosch", "electricity-input"],
+            marginal_cost=costs.at["Haber-Bosch", "VOM"]
+            / costs.at["Haber-Bosch", "electricity-input"],
+            lifetime=costs.at["Haber-Bosch", "lifetime"],
+        )
 
     if shipping_methanol_share:
         efficiency = (
@@ -5724,7 +5568,7 @@ def add_shipping(
             spatial.methanol.shipping,
             bus0=spatial.methanol.nodes,
             bus1=spatial.methanol.shipping,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             carrier="shipping methanol",
             p_nom_extendable=True,
             efficiency2=1
@@ -5760,7 +5604,7 @@ def add_shipping(
             spatial.oil.shipping,
             bus0=spatial.oil.nodes,
             bus1=spatial.oil.shipping,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             carrier="shipping oil",
             p_nom_extendable=True,
             efficiency2=costs.at["oil", "CO2 intensity"],
@@ -6741,19 +6585,38 @@ if __name__ == "__main__":
         options=options,
     )
 
-    if options["transport"]:
-        add_land_transport(
-            n=n,
-            costs=costs,
-            transport_demand_file=snakemake.input.transport_demand,
-            transport_data_file=snakemake.input.transport_data,
-            avail_profile_file=snakemake.input.avail_profile,
-            dsm_profile_file=snakemake.input.dsm_profile,
-            temp_air_total_file=snakemake.input.temp_air_total,
-            options=options,
-            investment_year=investment_year,
-            nodes=spatial.nodes,
-        )
+    co2_budget = snakemake.params.co2_budget
+    if isinstance(co2_budget, str) and co2_budget.startswith("cb"):
+        fn = "results/" + snakemake.params.RDIR + "/csvs/carbon_budget_distribution.csv"
+        if not os.path.exists(fn):
+            emissions_scope = snakemake.params.emissions_scope
+            input_co2 = snakemake.input.co2
+            build_carbon_budget(
+                co2_budget,
+                snakemake.input.eurostat,
+                fn,
+                emissions_scope,
+                input_co2,
+                options,
+                snakemake.params.countries,
+                snakemake.params.planning_horizons,
+            )
+        co2_cap = pd.read_csv(fn, index_col=0).squeeze()
+        limit = co2_cap.loc[investment_year]
+
+    elif fidelio:
+        limit = options['fidelio']['scenario']
+    else:
+        limit = get(co2_budget, investment_year)
+    add_co2limit(
+        n,
+        options,
+        fidelio,
+        snakemake.input.co2_totals_name,
+        snakemake.params.countries,
+        nyears,
+        limit,
+    )
 
     if options["heating"]:
         add_heat(
@@ -6809,6 +6672,7 @@ if __name__ == "__main__":
             options=options,
             spatial=spatial,
             investment_year=investment_year,
+            limit=limit,
         )
 
     if options["aviation"]:
@@ -6819,6 +6683,7 @@ if __name__ == "__main__":
             pop_weighted_energy_totals=pop_weighted_energy_totals,
             options=options,
             spatial=spatial,
+            limit=limit,
         )
 
     if options["heating"]:
@@ -6860,39 +6725,6 @@ if __name__ == "__main__":
         n, snakemake.params.time_resolution, snakemake.input.snapshot_weightings
     )
 
-    co2_budget = snakemake.params.co2_budget
-    if isinstance(co2_budget, str) and co2_budget.startswith("cb"):
-        fn = "results/" + snakemake.params.RDIR + "/csvs/carbon_budget_distribution.csv"
-        if not os.path.exists(fn):
-            emissions_scope = snakemake.params.emissions_scope
-            input_co2 = snakemake.input.co2
-            build_carbon_budget(
-                co2_budget,
-                snakemake.input.eurostat,
-                fn,
-                emissions_scope,
-                input_co2,
-                options,
-                snakemake.params.countries,
-                snakemake.params.planning_horizons,
-            )
-        co2_cap = pd.read_csv(fn, index_col=0).squeeze()
-        limit = co2_cap.loc[investment_year]
-
-    elif fidelio:
-        limit = snakemake.params.fidelio_scenario
-    else:
-        limit = get(co2_budget, investment_year)
-    add_co2limit(
-        n,
-        options,
-        fidelio,
-        snakemake.input.co2_totals_name,
-        snakemake.params.countries,
-        nyears,
-        limit,
-    )
-
     if options["transport"]:
         add_land_transport(
             n=n,
@@ -6902,11 +6734,11 @@ if __name__ == "__main__":
             avail_profile_file=snakemake.input.avail_profile,
             dsm_profile_file=snakemake.input.dsm_profile,
             temp_air_total_file=snakemake.input.temp_air_total,
+            cf_industry=cf_industry,
             options=options,
             investment_year=investment_year,
             nodes=spatial.nodes,
-            limit=limit,
-            logger=logger,
+            limit=limit
         )
 
 
@@ -6915,7 +6747,6 @@ if __name__ == "__main__":
             n=n,
             costs=costs,
             industrial_demand_file=snakemake.input.industrial_demand,
-            shipping_demand_file=snakemake.input.shipping_demand,
             pop_layout=pop_layout,
             pop_weighted_energy_totals=pop_weighted_energy_totals,
             options=options,

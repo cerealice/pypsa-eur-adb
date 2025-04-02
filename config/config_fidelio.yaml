@@ -116,6 +116,7 @@ sector:
     scenario: baseline
   bev_dsm: false
   v2g: false
+  cluster_heat_buses: false
   land_transport_fuel_cell_share:
     2020: 0
     2025: 0

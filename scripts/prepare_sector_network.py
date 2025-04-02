@@ -4127,6 +4127,15 @@ def add_biomass(
             e_sum_min=unsustainable_liquid_biofuel_potentials_spatial,
             e_sum_max=unsustainable_liquid_biofuel_potentials_spatial,
         )
+        
+        add_carrier_buses(
+            n,
+            carrier="oil",
+            costs=costs,
+            spatial=spatial,
+            options=options,
+            cf_industry=cf_industry,
+        )
 
         co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
         n.add(
@@ -5294,7 +5303,15 @@ def add_aviation(
             p_set=p_set * aviation_bio_share * efficiency,
         )
 
-        add_carrier_buses(n, "oil")
+        add_carrier_buses(
+            n,
+            carrier="oil",
+            costs=costs,
+            spatial=spatial,
+            options=options,
+            cf_industry=cf_industry,
+        )
+
         n.add(
             "Link",
             spatial.biomass.nodes,

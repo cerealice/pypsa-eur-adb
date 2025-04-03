@@ -17,6 +17,7 @@ gurobi.log
 /resources
 /resources*
 /results
+/results_*h
 /results_juno
 /networks
 /benchmarks

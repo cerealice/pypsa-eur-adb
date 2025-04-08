@@ -17,7 +17,7 @@ run:
   shared_cutouts: true
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#foresight
-foresight: myopic
+foresight: overnight
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#scenario
 # Wildcard docs in https://pypsa-eur.readthedocs.io/en/latest/wildcards.html
@@ -33,12 +33,23 @@ scenario:
   sector_opts:
   - ''
   planning_horizons:
-  - 2020
+  #- 2020
   - 2030
-  - 2040
+  #- 2040
   #- 2050
 
 countries: ['IT']
+
+# docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#snapshots
+snapshots:
+  start: "2013-01-01"
+  end: "2014-01-01"
+  inclusive: 'left'
+
+atlite:
+  default_cutout:
+  - europe-2013-sarah3-era5
+  - europe-2014-sarah3-era5
 
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#enable
@@ -55,7 +66,7 @@ enable:
 co2_budget:
   2020: 10 # average emissions of 2019 to 2021 relative to 1990, CO2 excl LULUCF, EEA data, European Environment Agency. (2023a). Annual European Union greenhouse gas inventory 1990–2021 and inventory report 2023 - CRF Table. https://unfccc.int/documents/627830
   2025: 10 # With additional measures (WAM) projection, CO2 excl LULUCF, European Environment Agency. (2023e). Member States’ greenhouse gas (GHG) emission projections 2023. https://www.eea.europa.eu/en/datahub/datahubitem-view/4b8d94a4-aed7-4e67-a54c-0623a50f48e8
-  2030: 10 
+  2030: 10
   2035: 10
   2040: 10
   2045: 10
@@ -71,7 +82,7 @@ weather_years:
 # Global model 1 has to be connected to regional model 1, so e.g. CNRM_CERFACS_CM5__CNRM_ALADIN63 but not CNRM_CERFACS_ICTP-RegCM4-6
   
 
-remove_import: true
+remove_import: false
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#electricity
 electricity:
@@ -132,7 +143,7 @@ sector:
   min_part_load_fischer_tropsch: 0.5
   H2_network: false
   apply_ctax:
-    enable: true
+    enable: false
     file: "data/200225 Carbon Tax Alice.xlsx"
   tes: false
   # This wildcard is not working if only in config.default.yaml (I have no idea why)

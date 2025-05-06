@@ -282,7 +282,7 @@ industry:
 clustering:
   temporal:
     resolution_elec: false
-    resolution_sector: false
+    resolution_sector: 2920h
 
 plotting:
   tech_colors:

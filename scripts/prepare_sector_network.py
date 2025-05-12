@@ -4994,6 +4994,7 @@ def add_industry(
     )
     e_max_pu.iloc[-1, :] = 0
 
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
     n.add(
         "Store",
         spatial.oil.non_sequestered_hvc,
@@ -5010,7 +5011,7 @@ def add_industry(
         spatial.oil.demand_locations,
         suffix=" HVC to air",
         bus0=spatial.oil.non_sequestered_hvc,
-        bus1="co2 atmosphere",
+        bus1=co2_labels,
         carrier="HVC to air",
         p_nom_extendable=True,
         efficiency=costs.at["oil", "CO2 intensity"],
@@ -5018,7 +5019,7 @@ def add_industry(
 
     if cf_industry["waste_to_energy"] or cf_industry["waste_to_energy_cc"]:
         if options["biomass"] and options["municipal_solid_waste"]:
-            co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
+            
             n.add(
                 "Link",
                 spatial.msw.locations,

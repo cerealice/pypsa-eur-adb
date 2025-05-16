@@ -130,14 +130,14 @@ rule all:
             run=config["run"]["name"],
             carrier=config_provider("plotting", "balance_map", "bus_carriers")(w),
         ),
-        directory(
-            expand(
-                RESULTS
-                + "graphics/balance_timeseries/s_{clusters}_{opts}_{sector_opts}_{planning_horizons}",
-                run=config["run"]["name"],
-                **config["scenario"],
-            ),
-        ),
+        #directory(
+        #    expand(
+        #        RESULTS
+        #        + "graphics/balance_timeseries/s_{clusters}_{opts}_{sector_opts}_{planning_horizons}",
+        #        run=config["run"]["name"],
+        #        **config["scenario"],
+        #    ),
+        #),
         directory(
             expand(
                 RESULTS

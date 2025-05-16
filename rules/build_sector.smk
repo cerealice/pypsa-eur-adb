@@ -1201,6 +1201,11 @@ rule prepare_sector_network:
         limited_heat_sources=config_provider(
             "sector", "district_heating", "limited_heat_sources"
         ),
+        fidelio_shocks=lambda w: (
+            "../scripts_coupling/elec_demand.csv"
+            if config_provider("sector", "fidelio", "fidelio_shocks")(w)
+            else []
+        ),
     input:
         unpack(input_profile_offwind),
         unpack(input_heat_source_power),

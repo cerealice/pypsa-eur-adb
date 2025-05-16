@@ -11,8 +11,14 @@
 #   electricity:
 #       renewable_carriers: [wind, solar] # override the list of renewable carriers
 
-ff552:
-  sector_opts:
-  - 'ff55'
-  enable:
-    fidelio_shocks: true
+ff55_iter_1:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+
+  # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#clustering
+  clustering:
+    temporal:
+      resolution_elec: false
+      resolution_sector: 2920h

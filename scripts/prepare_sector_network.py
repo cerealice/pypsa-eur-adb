@@ -6504,6 +6504,25 @@ def add_import_options(
             marginal_cost=import_options["H2"],
         )
 
+def load_shocks(n, load_coeffs):
+
+    # This function modifies the electric load for commercial and residential with the desired parameters in %
+
+    load_coeffs = pd.read_csv(load_coeffs)
+    load_coeffs.set_index('n', inplace=True)
+    load_coeffs = load_coeffs.pivot(columns='t', values='share_var')
+
+    # Update values for loads that have a p_set equal for the whole year
+    for col_name in n.loads.p_set.index:
+        if col_name.split(' ')[0][:2] in load_coeffs.index and "emissions" not in col_name:
+            print(f"Load coeff {load_coeffs} ")
+            n.loads.p_set[col_name] *= (1 + load_coeffs.loc[col_name.split(' ')[0][:2], investment_year]/100)
+
+    for col_name in n.loads_t.p_set.columns:
+        if col_name.split(' ')[0][:2] in load_coeffs.index and "emissions" not in col_name:
+            n.loads_t.p_set.loc[:, col_name] *= (1 + load_coeffs.loc[col_name.split(' ')[0][:2], investment_year]/100)
+
+
 
 if __name__ == "__main__":
     if "snakemake" not in globals():
@@ -6857,5 +6876,14 @@ if __name__ == "__main__":
 
     sanitize_carriers(n, snakemake.config)
     sanitize_locations(n)
+
+    # Change the load with FIDELIO shocks if we want to iterate the two models
+    if snakemake.params.fidelio_shocks:
+
+        #ADB I filter only the low-voltage residential and commercial electricity, electricity for industry, agriculture, heating and transport should derive from the endogenous optimization of the model
+        load_shocks(
+            n,
+            snakemake.input.fidelio_load_coeffs,
+        )
 
     n.export_to_netcdf(snakemake.output[0])

@@ -5,13 +5,13 @@
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#run
 run:
   prefix: ""
-  name: 
-  - baseline
-  - ff55
+  name: "all"
+  #- baseline
+  #- ff55
   #- hist
   scenarios:
     enable: true
-    file: config/scenarios_pypsa_run1.yaml
+    file: config/scenarios_iter_1.yaml
   disable_progressbar: false
   shared_resources:
     policy: false
@@ -48,12 +48,6 @@ second_iter: true # Should be turned on if it is the coupling iteration with fid
 # Just EU countries
 # Removed Countries (Not in the EU): Albania (AL), Bosnia and Herzegovina (BA), United Kingdom (GB), Montenegro (ME), North Macedonia (MK), Norway (NO), Serbia (RS), Kosovo (XK)
 countries: ['AT', 'BE', 'BG', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'GB', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK']
-
-
-fidelio:
-  enable: true
-  fidelio_shocks: false
-  scenario: baseline
 
 
 weather_years:

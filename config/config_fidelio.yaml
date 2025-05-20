@@ -179,6 +179,12 @@ sector:
     urban central: false
     urban decentral: false
     rural: false
+  district_heating:
+    ptes:
+      dynamic_capacity: true
+      supplemental_heating:
+        enable: false
+        booster_heat_pump: false
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#industry
 industry:

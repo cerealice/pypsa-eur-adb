@@ -5663,7 +5663,7 @@ def add_shipping(
         n.add(
             "Load",
             spatial.ammonia.nodes,
-            suffix=" NH3 for shipping",
+            suffix=" for shipping",
             bus=spatial.ammonia.nodes,
             carrier="NH3 for shipping",
             p_set=p_set_ammonia,
@@ -6624,24 +6624,81 @@ def add_import_options(
             marginal_cost=import_options["H2"],
         )
 
-def load_shocks(n, load_coeffs):
+def load_shocks(n, elec_coeffs, ener_coeffs):
 
-    # This function modifies the electric load for commercial and residential with the desired parameters in %
+    # This function modifies the electric and energy load with the desired parameters in %
+    # Some energy demand are exogenously set, thus they are excluded from the shocks:
+    # Transport (land, shipping and aviation) and heating for residential uses
 
-    load_coeffs = pd.read_csv(load_coeffs)
-    load_coeffs.set_index('n', inplace=True)
-    load_coeffs = load_coeffs.pivot(columns='t', values='share_var')
+    # ELECTRICITY
+    elec_coeffs = pd.read_csv(elec_coeffs)
+    elec_coeffs.set_index('n', inplace=True)
+    elec_coeffs = elec_coeffs.pivot(columns='t', values='share_var')
 
     # Update values for loads that have a p_set equal for the whole year
-    for col_name in n.loads.p_set.index:
-        if col_name.split(' ')[0][:2] in load_coeffs.index and "emissions" not in col_name:
-            print(f"Load coeff {load_coeffs} ")
-            n.loads.p_set[col_name] *= (1 + load_coeffs.loc[col_name.split(' ')[0][:2], investment_year]/100)
+    elec_words = ['electricity']
+    # EV are excluded because they are exogenously set
+    for ind_name in n.loads.p_set.index:
+        # Skip if p_set is zero
+        if n.loads.loc[ind_name,'p_set'] == 0:
+            continue
 
+        if any(word in ind_name for word in elec_words):
+
+            prefix = ind_name.split(' ')[0][:2]
+            if prefix in elec_coeffs.index:
+                n.loads.loc[ind_name,'p_set'] *= (1 + elec_coeffs.loc[prefix, investment_year]/100)
+            elif prefix == 'EU':
+                avg_coeff = elec_coeffs[investment_year].mean()
+                n.loads.loc[ind_name, 'p_set'] *= (1 + avg_coeff / 100)
+
+    # Update values for time variable loads
     for col_name in n.loads_t.p_set.columns:
-        if col_name.split(' ')[0][:2] in load_coeffs.index and "emissions" not in col_name:
-            n.loads_t.p_set.loc[:, col_name] *= (1 + load_coeffs.loc[col_name.split(' ')[0][:2], investment_year]/100)
+        # Skip if any exclude word is in the column name
+        if any(word in col_name for word in elec_words) or col_name.endswith(' 0'):
 
+            prefix = col_name.split(' ')[0][:2]
+            if prefix in elec_coeffs.index:
+                n.loads_t.p_set.loc[:, col_name] *= (1 + elec_coeffs.loc[prefix, investment_year]/100)
+
+            elif prefix == 'EU':
+                avg_coeff = elec_coeffs[investment_year].mean()
+                n.loads_t.p_set.loc[:,col_name] *= (1 + avg_coeff / 100)
+
+    # ENERGY
+    ener_coeffs = pd.read_csv(ener_coeffs)
+    ener_coeffs.set_index('n', inplace=True)
+    ener_coeffs = ener_coeffs.pivot(columns='t', values='share_var')
+
+    # Update values for loads that have a p_set equal for the whole year
+    ener_words = ['H2','industry methanol','naphtha','coal','solid biomass','agriculture heat','machinery oil','services','urban central heat','gas for industry','heat for industry']
+    # EV are excluded because they are exogenously set
+    for ind_name in n.loads.p_set.index:
+        # Skip if p_set is zero
+        if n.loads.loc[ind_name,'p_set'] == 0:
+            continue
+
+        if any(word in ind_name for word in ener_words):
+
+            prefix = ind_name.split(' ')[0][:2]
+            if prefix in ener_coeffs.index:
+                n.loads.loc[ind_name,'p_set'] *= (1 + ener_coeffs.loc[prefix, investment_year]/100)
+            elif prefix == 'EU':
+                avg_coeff = ener_coeffs[investment_year].mean()
+                n.loads.loc[ind_name, 'p_set'] *= (1 + avg_coeff / 100)
+
+    # Update values for time variable loads
+    for col_name in n.loads_t.p_set.columns:
+        # Skip if any exclude word is in the column name
+        if any(word in col_name for word in ener_words):
+
+            prefix = col_name.split(' ')[0][:2]
+            if prefix in ener_coeffs.index:
+                n.loads_t.p_set.loc[:, col_name] *= (1 + ener_coeffs.loc[prefix, investment_year]/100)
+
+            elif prefix == 'EU':
+                avg_coeff = ener_coeffs[investment_year].mean()
+                n.loads_t.p_set.loc[:,col_name] *= (1 + avg_coeff / 100)
 
 
 if __name__ == "__main__":
@@ -7010,12 +7067,13 @@ if __name__ == "__main__":
     sanitize_locations(n)
 
     # Change the load with FIDELIO shocks if we want to iterate the two models
-    if snakemake.params.fidelio_shocks:
+    if options['fidelio']['fidelio_shocks']:
 
         #ADB I filter only the low-voltage residential and commercial electricity, electricity for industry, agriculture, heating and transport should derive from the endogenous optimization of the model
         load_shocks(
             n,
-            snakemake.input.fidelio_load_coeffs,
+            snakemake.params.fidelio_elec_file,
+            snakemake.params.fidelio_ener_file,
         )
 
     n.export_to_netcdf(snakemake.output[0])

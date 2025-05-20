@@ -21,4 +21,4 @@ ff55_iter_1:
   clustering:
     temporal:
       resolution_elec: false
-      resolution_sector: 2920h
+      resolution_sector: 8h

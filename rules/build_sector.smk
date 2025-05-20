@@ -1309,8 +1309,13 @@ rule prepare_sector_network:
         temperature_limited_stores=config_provider(
             "sector", "district_heating", "temperature_limited_stores"
         ),
-        fidelio_shocks=lambda w: (
+        fidelio_elec_file=lambda w: (
             "../scripts_coupling/elec_demand.csv"
+            if config_provider("sector", "fidelio", "fidelio_shocks")(w)
+            else []
+        ),
+        fidelio_ener_file=lambda w: (
+            "../scripts_coupling/ener_demand.csv"
             if config_provider("sector", "fidelio", "fidelio_shocks")(w)
             else []
         ),
@@ -1432,8 +1437,10 @@ rule prepare_sector_network:
         direct_heat_source_utilisation_profiles=resources(
             "direct_heat_source_utilisation_profiles_base_s_{clusters}_{planning_horizons}.nc"
         ),
-        ates_potentials=resources(
-            "ates_potentials_base_s_{clusters}_{planning_horizons}.csv"
+        ates_potentials=lambda w: (
+            resources("ates_potentials_base_s_{clusters}_{planning_horizons}.csv")
+            if config_provider("sector", "district_heating", "ates", "enable")(w)
+            else []
         ),
     output:
         resources(

@@ -5,9 +5,10 @@
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#run
 run:
   prefix: ""
-  name: "all"
+  name: #"all"
   #- baseline
   #- ff55
+  - ff55_iter_1
   #- hist
   scenarios:
     enable: true
@@ -108,6 +109,7 @@ sector:
     enable: true
     fidelio_shocks: false
     scenario: baseline
+    fidelio_folder: "../scripts_coupling/fidelio_output/"
   bev_dsm: false
   v2g: false
   cluster_heat_buses: false

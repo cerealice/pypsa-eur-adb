@@ -2505,6 +2505,117 @@ def calculate_aviation_shares_ff55():
     return aviation_kero_share, aviation_bio_share, aviation_synfuels_share
 
 
+def get_fidelio_shocks(nodes, shock_file, investment_year, options):
+    """
+    Generate shock multipliers to adjust demand values per node using national FIDELIO shock data.
+
+    Parameters:
+        nodes (list or pd.Index): List of node names (e.g., ["DE01", "FR01", ...]).
+        shock_file (str): Path to the CSV file containing FIDELIO national shocks 
+                          with columns ['n', 't', 'share_var'].
+        investment_year (int or str): The simulation year for which to apply shocks.
+        options (dict): Dictionary with FIDELIO configuration. Expects:
+                        options['fidelio']['fidelio_shocks'] (bool)
+                        options['fidelio']['fidelio_folder'] (str)
+
+    Returns:
+        pd.Series: Shock multipliers indexed by node. All values are 1.0 if shocks are disabled.
+    """
+    # Default: no shocks (multiplier = 1.0)
+    shock_multiplier = pd.Series(1.0, index=nodes)
+
+    # Only proceed if FIDELIO shocks are enabled
+    if options['fidelio'].get('fidelio_shocks', False):
+        print("Applying FIDELIO shocks to demand")
+
+        # Load the CSV file with national-level shock data
+        shock_data = pd.read_csv(shock_file)
+
+        # Check required columns exist
+        if not all(col in shock_data.columns for col in ['n', 't', 'share_var']):
+            raise ValueError(f"Missing required columns in {shock_file}. Expected: 'n', 't', 'share_var'.")
+
+        # Pivot to get a matrix: rows = country codes, columns = years
+        shock_data = shock_data.pivot(index='n', columns='t', values='share_var')
+        shock_data.columns = shock_data.columns.astype(str)  # ensure column names are strings
+
+        # Ensure the investment year is in the data
+        investment_year = str(investment_year)
+        if investment_year not in shock_data.columns:
+            raise ValueError(f"Year {investment_year} not found in {shock_file} columns. Available: {shock_data.columns.tolist()}")
+
+        # Get the national-level shock for the specified year
+        national_shocks = shock_data[investment_year]  # Series: index = country code, value = share_var
+
+        # Extract the 2-letter country code from each node
+        node_country_codes = pd.Series(nodes).str[:2].values
+
+        # Create the shock multiplier per node using country-to-shock mapping
+        country_to_shock = national_shocks.to_dict()
+        shock_multiplier = pd.Series(
+            [1 + country_to_shock.get(cc, 0.0) for cc in node_country_codes],
+            index=nodes
+        )
+
+    return shock_multiplier
+
+
+def apply_fidelio_shocks_to_demand(demand_df, shock_file, investment_year, sector_name, nodes_in="index"):
+    """
+    Apply national-level FIDELIO shocks to a node-level demand DataFrame.
+
+    Parameters:
+        demand_df (pd.DataFrame): DataFrame with either index or columns as node identifiers.
+        shock_file (str): Path to CSV file with columns ['n', 't', 'share_var'].
+        investment_year (int or str): Year for which the shock should be applied.
+        sector_name (str): Descriptive name for logging (e.g., "industry", "agriculture").
+        nodes_in (str): "index" (default) or "columns" to indicate where node identifiers are.
+
+    Returns:
+        pd.DataFrame: Adjusted demand DataFrame with shocks applied.
+    """
+    if nodes_in not in ["index", "columns"]:
+        raise ValueError("`nodes_in` must be either 'index' or 'columns'")
+
+    # Default multiplier: all ones
+    shock_multiplier = pd.Series(1.0, index=demand_df.index if nodes_in == "index" else demand_df.columns)
+
+    # Read and validate the shock file
+    shock_df = pd.read_csv(shock_file)
+    if not all(col in shock_df.columns for col in ['n', 't', 'share_var']):
+        raise ValueError(f"Missing required columns in {shock_file}")
+
+    # Pivot: rows = country code, columns = years
+    shock_df = shock_df.pivot(index='n', columns='t', values='share_var')
+    shock_df.columns = shock_df.columns.astype(str)
+
+    # Ensure investment_year exists
+    if str(investment_year) not in shock_df.columns:
+        raise ValueError(f"Year {investment_year} not found in {shock_file} columns")
+
+    # Get national shocks for the year
+    national_shocks = shock_df[str(investment_year)]
+
+    # Extract node IDs and map country codes to shocks
+    node_ids = demand_df.index if nodes_in == "index" else demand_df.columns
+    node_country_codes = pd.Series(node_ids).str[:2].values
+    country_to_shock = national_shocks.to_dict()
+
+    # Create shock multiplier
+    shock_multiplier = pd.Series(
+        [1 + country_to_shock.get(cc, 0.0) for cc in node_country_codes],
+        index=node_ids
+    )
+
+    print(f"Mean shock multipliers in {sector_name}:\n{shock_multiplier.mean()}")
+
+    # Apply shocks
+    if nodes_in == "index":
+        return demand_df.multiply(shock_multiplier, axis=0)  # row-wise
+    else:
+        return demand_df.multiply(shock_multiplier, axis=1)  # column-wise
+    
+
 def get_temp_efficency(
     car_efficiency,
     temperature,
@@ -2953,6 +3064,18 @@ def add_land_transport(
     avail_profile = pd.read_csv(avail_profile_file, index_col=0, parse_dates=True)
     dsm_profile = pd.read_csv(dsm_profile_file, index_col=0, parse_dates=True)
 
+    if options['fidelio']['fidelio_shocks']:
+        shock_file = options['fidelio']['fidelio_folder'] + 'hh_trans_var.csv'
+        # We take the household value because PyPSA-Eur only includes passenger land transport
+        transport = apply_fidelio_shocks_to_demand(
+            transport,
+            shock_file=shock_file,
+            investment_year=investment_year,
+            sector_name="hh_land_transport",
+            nodes_in="columns"
+        )
+
+
     # exogenous share of passenger car type
     engine_types = ["fuel_cell", "electric", "ice"]
     shares = pd.Series()
@@ -3261,6 +3384,27 @@ def add_heat(
                     factor * (1 + options["district_heating"]["district_heating_loss"])
                 )
             )
+
+        if options['fidelio']['fidelio_shocks']:
+            name = str(heat_system)
+            if "services" in name:
+                shock_file = options['fidelio']['fidelio_folder'] + 'services_var.csv'
+                heat_load = apply_fidelio_shocks_to_demand(
+                    heat_load,
+                    shock_file=shock_file,
+                    investment_year=investment_year,
+                    sector_name="services heat",
+                    nodes_in="columns",
+                )
+            elif "residential" in name or "urban central" in name:
+                shock_file = options['fidelio']['fidelio_folder'] + 'hh_cons_var.csv'
+                heat_load = apply_fidelio_shocks_to_demand(
+                    heat_load,
+                    shock_file=shock_file,
+                    investment_year=investment_year,
+                    sector_name="heat hh consumption",
+                    nodes_in="columns",
+                )
 
         n.add(
             "Load",
@@ -4803,7 +4947,18 @@ def add_industry(
     co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
 
     # 1e6 to convert TWh to MWh
+    # Read and scale the industrial demand
     industrial_demand = pd.read_csv(industrial_demand_file, index_col=0) * 1e6 * nyears
+
+    if options['fidelio']['fidelio_shocks']:
+        shock_file = options['fidelio']['fidelio_folder'] + 'industry_var.csv'
+        industrial_demand = apply_fidelio_shocks_to_demand(
+            industrial_demand,
+            shock_file=shock_file,
+            investment_year=investment_year,
+            sector_name="industry",
+            nodes_in="index",
+        )
 
     n.add(
         "Bus",
@@ -5396,8 +5551,14 @@ def add_aviation(
         / nhours
     ).rename(lambda x: x + " kerosene for aviation")
 
+    shock_file = options["fidelio"]["fidelio_folder"] + "air_transport_var.csv"
+    shock_multiplier = get_fidelio_shocks(nodes, shock_file, investment_year, options)
+    shock_multiplier_oil = shock_multiplier
+
+    # The shock might not work when regional_oil_demand is on
     if not options["regional_oil_demand"]:
         p_set = p_set.sum()
+        shock_multiplier = shock_multiplier.mean()
 
     n.add(
         "Bus",
@@ -5415,7 +5576,7 @@ def add_aviation(
             spatial.oil.kerosene,
             bus=spatial.oil.kerosene,
             carrier="kerosene for aviation",
-            p_set=p_set * aviation_kero_share,
+            p_set=p_set * aviation_kero_share * shock_multiplier,
         )
 
         # Adding biofuels SAF
@@ -5438,7 +5599,7 @@ def add_aviation(
             spatial.biomass.aviation,
             bus=spatial.biomass.aviation,
             carrier="biofuels for aviation",
-            p_set=p_set * aviation_bio_share * efficiency,
+            p_set=p_set * aviation_bio_share * efficiency * shock_multiplier,
         )
 
         add_carrier_buses(
@@ -5483,7 +5644,7 @@ def add_aviation(
             spatial.oil.synkerosene,
             bus = spatial.oil.synkerosene,
             carrier="synfuels for aviation",
-            p_set=p_set * aviation_synfuels_share * efficiency,
+            p_set=p_set * aviation_synfuels_share * efficiency * shock_multiplier,
         )
 
         add_methanol_to_kerosene_fidelio(n,costs)
@@ -5495,7 +5656,7 @@ def add_aviation(
             spatial.oil.kerosene,
             bus=spatial.oil.kerosene,
             carrier="kerosene for aviation",
-            p_set=p_set,
+            p_set=p_set * shock_multiplier_oil,
         )
     
     co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
@@ -5591,6 +5752,17 @@ def add_shipping(
         pd.read_csv(shipping_demand_file, index_col=0).squeeze(axis=1) * nyears
     )
     all_navigation = domestic_navigation + international_navigation
+
+    if options['fidelio']['fidelio_shocks']:
+        shock_file = options['fidelio']['fidelio_folder'] + 'water_transport_var.csv'
+        all_navigation = apply_fidelio_shocks_to_demand(
+            all_navigation,
+            shock_file=shock_file,
+            investment_year=investment_year,
+            sector_name="water_transport",
+            nodes_in="index"
+        )
+
     p_set = all_navigation * 1e6 / nhours
 
     if shipping_hydrogen_share:
@@ -5955,7 +6127,10 @@ def add_agriculture(
     nhours = n.snapshot_weightings.generators.sum()
     co2_labels = "co2_nonets" if fidelio else "co2 atmosphere"
 
-    # electricity
+    shock_file = options["fidelio"]["fidelio_folder"] + "agriculture_var.csv"
+    shock_multiplier = get_fidelio_shocks(nodes, shock_file, investment_year, options)
+
+    # Add electricity load with shock multiplier applied
     n.add(
         "Load",
         nodes,
@@ -5964,7 +6139,7 @@ def add_agriculture(
         carrier="agriculture electricity",
         p_set=pop_weighted_energy_totals.loc[nodes, "total agriculture electricity"]
         * 1e6
-        / nhours,
+        / nhours * shock_multiplier,
     )
 
     # heat
@@ -5976,7 +6151,7 @@ def add_agriculture(
         carrier="agriculture heat",
         p_set=pop_weighted_energy_totals.loc[nodes, "total agriculture heat"]
         * 1e6
-        / nhours,
+        / nhours * shock_multiplier,
     )
 
     # machinery
@@ -6008,7 +6183,7 @@ def add_agriculture(
             suffix=" agriculture machinery electric",
             bus=nodes,
             carrier="agriculture machinery electric",
-            p_set=electric_share / efficiency_gain * machinery_nodal_energy / nhours,
+            p_set=electric_share / efficiency_gain * machinery_nodal_energy / nhours  * shock_multiplier,
         )
 
     if oil_share > 0:
@@ -6020,6 +6195,7 @@ def add_agriculture(
 
         if not options["regional_oil_demand"]:
             p_set = p_set.sum()
+            shock_multiplier = shock_multiplier.mean()
 
         n.add(
             "Bus",
@@ -6034,7 +6210,7 @@ def add_agriculture(
             spatial.oil.agriculture_machinery,
             bus=spatial.oil.agriculture_machinery,
             carrier="agriculture machinery oil",
-            p_set=p_set,
+            p_set=p_set  * shock_multiplier,
         )
 
         n.add(
@@ -7069,11 +7245,14 @@ if __name__ == "__main__":
     # Change the load with FIDELIO shocks if we want to iterate the two models
     if options['fidelio']['fidelio_shocks']:
 
-        #ADB I filter only the low-voltage residential and commercial electricity, electricity for industry, agriculture, heating and transport should derive from the endogenous optimization of the model
-        load_shocks(
-            n,
-            snakemake.params.fidelio_elec_file,
-            snakemake.params.fidelio_ener_file,
-        )
+        shock_file = options['fidelio']['fidelio_folder'] + 'hh_cons_var.csv'
+        shock_multipliers = get_fidelio_shocks(spatial.nodes, shock_file, investment_year, options)
+
+        # Update values for time variable loads
+        for col_name in n.loads_t.p_set.columns:
+            if col_name.endswith(' 0'):
+                print(f"Right {col_name}")
+                print(f"Multi {shock_multipliers.loc[col_name]}")
+                n.loads_t.p_set.loc[:, col_name] *= shock_multipliers.loc[col_name]
 
     n.export_to_netcdf(snakemake.output[0])

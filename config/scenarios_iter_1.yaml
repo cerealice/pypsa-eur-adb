@@ -17,8 +17,14 @@ ff55_iter_1:
       fidelio_shocks: true
       scenario: 'ff55'
 
-  # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#clustering
-  clustering:
-    temporal:
-      resolution_elec: false
-      resolution_sector: 8h
+baseline:
+  sector:
+    fidelio:
+      fidelio_shocks: false
+      scenario: baseline
+
+ff55:
+  sector:
+    fidelio:
+      fidelio_shocks: false
+      scenario: ff55

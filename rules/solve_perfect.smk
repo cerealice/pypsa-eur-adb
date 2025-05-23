@@ -11,6 +11,7 @@ rule add_existing_baseyear:
         costs=config_provider("costs"),
         heat_pump_sources=config_provider("sector", "heat_pump_sources"),
         energy_totals_year=config_provider("energy", "energy_totals_year"),
+        industry=config_provider("industry"),
     input:
         network=resources(
             "networks/base_s_{clusters}_{opts}_{sector_opts}_{planning_horizons}.nc"
@@ -29,33 +30,13 @@ rule add_existing_baseyear:
             "existing_heating_distribution_base_s_{clusters}_{planning_horizons}.csv"
         ),
         heating_efficiencies=resources("heating_efficiencies.csv"),
-        steel_capacities=lambda w: (
-            resources("steel/gem_capacities_s_{clusters}.csv")
+        endoindustry_capacities=lambda w: (
+            resources("endo_industry/capacities_s_{clusters}.csv")
             if config_provider("sector", "endo_industry", "enable")(w)
             else []
         ),
-        steel_start_dates=lambda w: (
-            resources("steel/gem_start_dates_s_{clusters}.csv")
-            if config_provider("sector", "endo_industry", "enable")(w)
-            else []
-        ),
-        cement_capacities=lambda w: (
-            resources("cement/sfi_capacities_s_{clusters}.csv")
-            if config_provider("sector", "endo_industry", "enable")(w)
-            else []
-        ),
-        cement_start_dates=lambda w: (
-            resources("cement/sfi_start_dates_s_{clusters}.csv")
-            if config_provider("sector", "endo_industry", "enable")(w)
-            else []
-        ),
-        chemicals_capacities=lambda w: (
-            resources("chemicals/ecm_capacities_s_{clusters}.csv")
-            if config_provider("sector", "endo_industry", "enable")(w)
-            else []
-        ),
-        chemicals_start_dates=lambda w: (
-            resources("chemicals/ecm_start_dates_s_{clusters}.csv")
+        endoindustry_start_dates=lambda w: (
+            resources("endo_industry/start_dates_s_{clusters}.csv")
             if config_provider("sector", "endo_industry", "enable")(w)
             else []
         ),
@@ -149,7 +130,7 @@ rule solve_sector_network_perfect:
         + "configs/config.base_s_{clusters}_{opts}_{sector_opts}_brownfield_all_years.yaml",
     threads: solver_threads
     resources:
-        mem_mb=config_provider("solving", "mem"),
+        mem_mb=config_provider("solving", "mem"), # 400000,
     shadow:
         shadow_config
     log:
@@ -184,6 +165,8 @@ rule make_summary_perfect:
     input:
         unpack(input_networks_make_summary_perfect),
         costs=resources("costs_2020.csv"),
+    params:
+        run=config_provider("run", "name"),
     output:
         nodal_capacities=RESULTS + "csvs/nodal_capacities.csv",
         costs=RESULTS + "csvs/costs.csv",
@@ -209,3 +192,11 @@ rule make_summary_perfect:
         "../envs/environment.yaml"
     script:
         "../scripts/make_summary_perfect.py"
+
+
+rule all_perfect:
+    input:
+        expand(
+            RESULTS + "csvs/costs.csv",
+            run=config_provider("run", "name"),
+        ),

@@ -610,8 +610,10 @@ if __name__ == "__main__":
         snakemake = mock_snakemake(
             "prepare_perfect_foresight",
             opts="",
-            clusters="37",
-            sector_opts="1p7-4380H-T-H-B-I-A-dist1",
+            clusters="39",
+            sector_opts="",
+            run="base_eu_deindustrial",
+            configfiles="config/industry_config.yaml"
         )
     configure_logging(snakemake)  # pylint: disable=E0606
     set_scenario_config(snakemake)
@@ -662,7 +664,7 @@ if __name__ == "__main__":
 
     # update heat pump efficiency
     update_heat_pump_efficiency(n=n, years=years)
-
+    # TONI TODO: adjust the existing industry plants because of decreasing demand!
     # export network
     sanitize_custom_columns(n)
     sanitize_carriers(n, snakemake.config)

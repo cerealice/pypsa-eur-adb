@@ -6,15 +6,15 @@
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#run
 run:
   prefix: ""
-  name: "all"
-  #- base_eu_regain
-  #- base_eu_deindustrial
-  #- base_reg_regain
-  #- policy_reg_regain
-  #- base_reg_deindustrial
-  #- policy_reg_deindustrial
-  #- policy_eu_regain
-  #- policy_eu_deindustrial
+  name: # "all"
+  - base_eu_regain
+  - base_eu_deindustrial
+  - base_reg_regain
+  - policy_reg_regain
+  - base_reg_deindustrial
+  - policy_reg_deindustrial
+  - policy_eu_regain
+  - policy_eu_deindustrial
   scenarios:
     enable: true
     file: config/industry_policy_scenarios.yaml
@@ -25,7 +25,7 @@ run:
   shared_cutouts: true
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#foresight
-foresight: myopic
+foresight: perfect
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#scenario
 # Wildcard docs in https://pypsa-eur.readthedocs.io/en/latest/wildcards.html
@@ -48,11 +48,11 @@ scenario:
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#enable
 enable:
-  retrieve: auto
-  retrieve_databundle: true
-  retrieve_cost_data: true
+  retrieve: false
+  retrieve_databundle: false
+  retrieve_cost_data: false
   build_cutout: false
-  retrieve_cutout: true
+  retrieve_cutout: false
   custom_busmap: false
   drop_leap_day: true
 
@@ -146,6 +146,8 @@ sector:
   biomass_to_liquid_cc: false
   tes: false
   electricity_distribution_grid: false
+  solid_biomass_import:
+    enable: true
 
   # This wildcard is not working if only in config.default.yaml (I have no idea why)
   chp:
@@ -157,7 +159,7 @@ sector:
   heat_vent:
     urban central: false
     urban decentral: false
-    rural: false
+    rural: true
   # No heat integration to not mess up with the rest of the optimization
   use_fischer_tropsch_waste_heat: false
   use_haber_bosch_waste_heat: false
@@ -170,7 +172,7 @@ sector:
 clustering:
   temporal:
     resolution_elec: false
-    resolution_sector: 8h
+    resolution_sector: 8760H
 
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#plotting

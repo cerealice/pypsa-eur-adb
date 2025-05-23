@@ -709,13 +709,15 @@ if __name__ == "__main__":
     if "snakemake" not in globals():
         from scripts._helpers import mock_snakemake
 
-        snakemake = mock_snakemake("make_summary_perfect")
+        snakemake = mock_snakemake("make_summary_perfect", configfiles="config/industry_config.yaml", run="base_reg_deindustrial")
     set_scenario_config(snakemake)
 
-    run = snakemake.config["run"]["name"]
+    run = snakemake.params.run
     if run != "":
         run += "/"
-
+    # for run in snakemake.params.run:
+    #     if run != "":
+    #         run +="/"
     networks_dict = {
         (clusters, opts + sector_opts): "results/"
         + run

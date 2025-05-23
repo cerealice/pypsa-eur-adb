@@ -758,8 +758,10 @@ def add_steel_industry_existing(n):
         bus3=nodes,
         bus4=spatial.co2.bof,
         carrier="BF-BOF",
-        p_nom=p_nom_bof/cap_decrease * bof['iron input'],
-        p_nom_extendable=False,
+        p_min=0,
+        p_max=p_nom_bof * bof['iron input'],
+        # capital_cost=-bof['capital cost'],
+        p_nom_extendable=True,
         p_min_pu=min_part_load_steel,
         #marginal_cost=-0.1,#opex_bof,
         efficiency=1 / bof['iron input'],
@@ -779,9 +781,11 @@ def add_steel_industry_existing(n):
         bus2=spatial.syngas_dri.nodes,  # in this process is the reducing agent, it is not burnt
         bus3=nodes,
         carrier="DRI-EAF",
-        p_nom=p_nom_eaf/cap_decrease *  eaf_ng['iron input'],
-        p_nom_extendable=False,
+        p_nom_extendable=True,
+        p_min=0,
+        p_max=p_nom_eaf *  eaf_ng['iron input'],
         p_min_pu=min_part_load_steel,
+        # capital_cost=-eaf_ng['capital cost'],
         #marginal_cost=-0.1,#opex_eaf,
         efficiency=1 / eaf_ng['iron input'],
         efficiency2= -1 / eaf_ng['iron input'], # one unit of dri gas per kt iron
@@ -841,8 +845,10 @@ def add_cement_industry_existing(n):
         bus2=spatial.gas.nodes,
         bus3=spatial.co2.cement,
         carrier="cement plant",
-        p_nom=p_nom/cap_decrease,
-        p_nom_extendable=False,
+        p_min=0,
+        p_max=p_nom,
+        # capital_cost=-capex_cement,
+        p_nom_extendable=True,
         p_min_pu=min_part_load_cement,
         efficiency=1/1.28, # kt limestone/ kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
         efficiency2= - 3420.1 / 3.6 * (1/1.28) / 0.5, # MWh/kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
@@ -893,15 +899,16 @@ def add_chemicals_industry_existing(n, options):
         bus0=nodes,
         bus1=spatial.ammonia.nodes,
         bus2=nodes + " H2",
-        p_nom_extendable=False,
-        p_nom=p_nom_nh3/cap_decrease,
+        p_nom_extendable=True,
+        p_min=0,
+        p_max=p_nom_nh3,
         p_min_pu=min_part_load_hb,
         carrier="Haber-Bosch",
         efficiency=1 / costs.at["Haber-Bosch", "electricity-input"],
         efficiency2=-costs.at["Haber-Bosch", "hydrogen-input"]
         / costs.at["Haber-Bosch", "electricity-input"],
-        capital_cost=costs.at["Haber-Bosch", "capital_cost"]
-        / costs.at["Haber-Bosch", "electricity-input"],
+        # capital_cost=-costs.at["Haber-Bosch", "capital_cost"]
+        # / costs.at["Haber-Bosch", "electricity-input"],
         marginal_cost=costs.at["Haber-Bosch", "VOM"]
         / costs.at["Haber-Bosch", "electricity-input"],
         lifetime=costs.at["Haber-Bosch", "lifetime"],
@@ -943,11 +950,12 @@ def add_chemicals_industry_existing(n, options):
         bus2=nodes,
         bus3=spatial.co2.nodes,
         carrier="methanolisation",
-        p_nom_extendable=False,
-        p_nom=p_nom_meth/cap_decrease,
+        p_nom_extendable=True,
+        p_min=0,
+        p_max=p_nom_meth,
         p_min_pu=options["min_part_load_methanolisation"],
-        capital_cost=costs.at["methanolisation", "capital_cost"]
-        * options["MWh_MeOH_per_MWh_H2"],  # EUR/MW_H2/a
+        # capital_cost=-costs.at["methanolisation", "capital_cost"]
+        # * options["MWh_MeOH_per_MWh_H2"],  # EUR/MW_H2/a
         marginal_cost=options["MWh_MeOH_per_MWh_H2"]
         * costs.at["methanolisation", "VOM"],
         lifetime=costs.at["methanolisation", "lifetime"],
@@ -988,8 +996,8 @@ def add_chemicals_industry_existing(n, options):
         decay_emis = costs.at["oil", "CO2 intensity"]  # tCO2/MWh_th oil 
         min_part_load_hvc = 0.3
 
-        #if options['endo_industry']['regional_hvc']:
-        #    min_part_load_hvc = 0
+        if options['endo_industry']['regional_hvc']:
+           min_part_load_hvc = 0
         
         n.add(
             "Link",
@@ -1001,10 +1009,11 @@ def add_chemicals_industry_existing(n, options):
             bus3="co2 atmosphere",
             bus4=nodes,
             carrier="naphtha steam cracker",
-            p_nom_extendable=False,
+            p_nom_extendable=True,
             p_min_pu=min_part_load_hvc,
-            p_nom=p_nom_hvc/cap_decrease,
-            capital_cost=2050 * 1e3 * 0.8865 / naphtha_to_hvc, #€/kt HVC
+            p_min=0,
+            p_max=p_nom_hvc,
+            # capital_cost=-2050 * 1e3 * 0.8865 / naphtha_to_hvc, #€/kt HVC
             efficiency=1/ naphtha_to_hvc, # MWh oil / kt HVC
             efficiency2= 21 * 33.3 / naphtha_to_hvc, # MWh H2 / kt HVC
             efficiency3= 819 / naphtha_to_hvc + decay_emis, # tCO2 / kt HVC

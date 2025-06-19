@@ -29,7 +29,8 @@ if __name__ == "__main__":
     else:
         baseurl = f"https://raw.githubusercontent.com/PyPSA/technology-data/{version}/outputs/"
     filepath = Path(snakemake.output[0])
-    url = baseurl + filepath.name
+    clean_name = filepath.name.replace("_raw", "")
+    url = baseurl + clean_name
 
     print(url)
 

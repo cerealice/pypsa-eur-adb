@@ -168,6 +168,7 @@ if config["enable"]["retrieve"] and config["enable"].get("retrieve_cutout", True
             move(input[0], output[0])
             validate_checksum(output[0], input[0])
 
+ruleorder: retrieve_cost_data > change_discount_rate
 
 if config["enable"]["retrieve"] and config["enable"].get("retrieve_cost_data", True):
 
@@ -175,7 +176,7 @@ if config["enable"]["retrieve"] and config["enable"].get("retrieve_cost_data", T
         params:
             version=config_provider("costs", "version"),
         output:
-            resources("costs_{year}.csv"),
+            resources("costs_raw_{year}.csv"),
         log:
             logs("retrieve_cost_data_{year}.log"),
         resources:
@@ -185,6 +186,24 @@ if config["enable"]["retrieve"] and config["enable"].get("retrieve_cost_data", T
             "../envs/environment.yaml"
         script:
             "../scripts/retrieve_cost_data.py"
+
+    rule change_discount_rate:
+        params:
+            javier=config_provider("javier"),
+            discount_rate=config_provider("costs", "fill_values"),
+        input:
+            costs_raw=resources("costs_raw_{year}.csv"),
+        output:
+            costs=resources("costs_{year}.csv"),
+        log:
+            logs("change_discount_rate_{year}.log"),
+        resources:
+            mem_mb=1000,
+        retries: 2
+        conda:
+            "../envs/environment.yaml"
+        script:
+            "../scripts/change_discount_rate.py"
 
 
 if config["enable"]["retrieve"]:

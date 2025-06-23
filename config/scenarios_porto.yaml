@@ -6,11 +6,22 @@
 # This file is used to define the scenarios that are run by snakemake. Each entry on the first level is a scenario. Each scenario can contain configuration overrides with respect to the config/config.yaml settings.
 #
 
+# s1: low carbon price
+# s2: high carbon price
 s1:
   sector:
     apply_ctax:
-    enable: true
-    file: "data/ctax_s1.xlsx"
+      enable: true
+      file: "data/ctax_s1.xlsx"
+
+  costs:
+    fill_values:
+      "discount rate": 0.04
+
+s1_noctax:
+  sector:
+    apply_ctax:
+      enable: false
 
   costs:
     fill_values:

@@ -11,21 +11,20 @@
 #   electricity:
 #       renewable_carriers: [wind, solar] # override the list of renewable carriers
 
-hist:
-  scenario:
-    planning_horizons:
-    - 2020
-    # This not always work, better to run hist only and set the planning horizon to 2020 in config_fidelio.yaml
-  energy:
-    base_emissions_year: 2018
-
+ff55_iter_2:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
 
 baseline:
   sector:
     fidelio:
+      fidelio_shocks: false
       scenario: baseline
 
 ff55:
   sector:
     fidelio:
+      fidelio_shocks: false
       scenario: ff55

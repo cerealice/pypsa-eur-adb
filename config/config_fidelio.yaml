@@ -8,11 +8,11 @@ run:
   name: #"all"
   #- baseline
   #- ff55_iter_1
-  #- ff55_iter_2
-  - hist
+  - ff55_iter_3
+  #- hist
   scenarios:
     enable: true
-    file: config/scenarios_iter_1.yaml
+    file: config/scenarios_iter_2.yaml
   disable_progressbar: false
   shared_resources:
     policy: false
@@ -35,10 +35,10 @@ scenario:
   sector_opts:
   - ''
   planning_horizons:
-  - 2020
-  #- 2030
-  #- 2040
-  #- 2050
+  #- 2020
+  - 2030
+  - 2040
+  - 2050
 
 validation: true # Should be turned on when 2020 as planning_horizon
 second_iter: true # Should be turned on if it is the coupling iteration with fidelio is above 1 and you want to shock the demand # https://open.spotify.com/intl-it/track/2SiXAy7TuUkycRVbbWDEpo?si=63fa084002284337
@@ -109,7 +109,7 @@ sector:
     enable: true
     fidelio_shocks: false
     scenario: baseline
-    fidelio_folder: "../scripts_coupling/fidelio_output/"
+    fidelio_folder: "../coupling/from_fidelio/iter_1/"
   bev_dsm: false
   v2g: false
   cluster_heat_buses: false

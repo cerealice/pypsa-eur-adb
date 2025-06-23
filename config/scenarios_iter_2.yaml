@@ -11,11 +11,21 @@
 #   electricity:
 #       renewable_carriers: [wind, solar] # override the list of renewable carriers
 
+
+ff55_iter_3:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/iter_2/"
+
+
 ff55_iter_2:
   sector:
     fidelio:
       fidelio_shocks: true
       scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/iter_1/"
 
 baseline:
   sector:
@@ -23,8 +33,3 @@ baseline:
       fidelio_shocks: false
       scenario: baseline
 
-ff55:
-  sector:
-    fidelio:
-      fidelio_shocks: false
-      scenario: ff55

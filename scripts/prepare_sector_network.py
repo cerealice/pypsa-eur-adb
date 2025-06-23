@@ -5563,12 +5563,13 @@ def add_aviation(
         / nhours
     ).rename(lambda x: x + " kerosene for aviation")
 
+
     shock_file = options["fidelio"]["fidelio_folder"] + "air_transport_var.csv"
     shock_multiplier = get_fidelio_shocks(nodes, shock_file, investment_year, options)
-    shock_multiplier_oil = shock_multiplier
 
     # The shock might not work when regional_oil_demand is on
     if not options["regional_oil_demand"]:
+        #p_set = p_set.sum()
         p_set = p_set.sum()
         shock_multiplier = shock_multiplier.mean()
 
@@ -5668,7 +5669,7 @@ def add_aviation(
             spatial.oil.kerosene,
             bus=spatial.oil.kerosene,
             carrier="kerosene for aviation",
-            p_set=p_set * shock_multiplier_oil,
+            p_set=p_set * shock_multiplier,
         )
     
     co2_labels = "co2_ets" if fidelio else "co2 atmosphere"

@@ -37,3 +37,41 @@ s2:
   costs:
     fill_values:
       "discount rate": 0.02
+
+  
+# NEW ONES
+low_ctax:
+  sector:
+    apply_ctax:
+      enable: true
+      file: "data/ctax_s1.xlsx"
+
+  javier: false
+
+high_ctax:
+  sector:
+    apply_ctax:
+      enable: true
+      file: "data/ctax_s2.xlsx"
+
+  javier: false
+
+low_discount:
+  sector:
+    apply_ctax:
+      enable: false
+
+  javier: true
+  costs:
+    fill_values:
+      "discount rate": 0.02
+
+high_discount:
+  sector:
+    apply_ctax:
+      enable: false
+
+  javier: true
+  costs:
+    fill_values:
+      "discount rate": 0.04

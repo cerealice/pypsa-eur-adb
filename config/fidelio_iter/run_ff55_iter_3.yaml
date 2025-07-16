@@ -7,12 +7,11 @@ run:
   prefix: ""
   name: #"all"
   #- baseline
-  - ff55_iter_2
-  #- ff55_iter_5
+  - ff55_iter_3
   #- hist
   scenarios:
-    enable: true
-    file: config/scenarios_iter_2.yaml
+    enable: false
+    file: config/scenarios.yaml
   disable_progressbar: false
   shared_resources:
     policy: false
@@ -106,9 +105,9 @@ energy:
 sector:
   fidelio:
     enable: true
-    fidelio_shocks: false
-    scenario: baseline
-    fidelio_folder: "../coupling/from_fidelio/iter_1/"
+    fidelio_shocks: true
+    scenario: ff55
+    fidelio_folder: "../coupling/from_fidelio/iter_2/"
   bev_dsm: false
   v2g: false
   cluster_heat_buses: false

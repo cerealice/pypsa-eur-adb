@@ -470,19 +470,6 @@ rule build_ptes_operations:
             "ptes",
             "min_bottom_temperature",
         ),
-        # enable_supplemental_heating=config_provider(
-        #     "sector",
-        #     "district_heating",
-        #     "ptes",
-        #     "supplemental_heating",
-        #     "enable",
-        # ),
-        # enable_dynamic_capacity=config_provider(
-        #     "sector",
-        #     "district_heating",
-        #     "ptes",
-        #     "dynamic_capacity",
-        # ),
         snapshots=config_provider("snapshots"),
     input:
         central_heating_forward_temperature_profiles=resources(
@@ -1311,6 +1298,7 @@ rule prepare_sector_network:
         temperature_limited_stores=config_provider(
             "sector", "district_heating", "temperature_limited_stores"
         ),
+        base=config_provider("electricity", "base_network"),
         weather_years=config_provider("weather_years","enable"),
         renewable_carriers=config_provider("electricity","renewable_carriers"),
         remove_import=config_provider("remove_import"),

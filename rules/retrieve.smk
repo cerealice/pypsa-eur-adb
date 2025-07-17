@@ -170,6 +170,19 @@ if config["enable"]["retrieve"] and config["enable"].get("retrieve_cutout", True
 
 ruleorder: retrieve_cost_data > change_discount_rate
 
+if config["enable"]["retrieve"]:
+
+    rule retrieve_tyndp_bundle:
+        output:
+            reference_grid="data/tyndp_2024_bundle/Line data/ReferenceGrid_Electricity.xlsx",
+            buses="data/tyndp_2024_bundle/Nodes/LIST OF NODES.xlsx",
+        log:
+            "logs/retrieve_tyndp_bundle.log",
+        retries: 2
+        script:
+            "../scripts/retrieve_tyndp_bundle.py"
+
+
 if config["enable"]["retrieve"] and config["enable"].get("retrieve_cost_data", True):
 
     rule retrieve_cost_data:

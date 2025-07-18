@@ -41,9 +41,16 @@ ff55_iter_2:
       scenario: 'ff55'
       fidelio_folder: "../coupling/from_fidelio/iter_1/"
 
-baseline:
+baseline_iter_1:
   sector:
     fidelio:
       fidelio_shocks: false
       scenario: baseline
+
+baseline_iter_2:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_1/"
 

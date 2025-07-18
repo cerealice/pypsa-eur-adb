@@ -12,7 +12,7 @@ run:
   #- hist
   scenarios:
     enable: true
-    file: config/scenarios_iter_2.yaml
+    file: config/scenarios_fidelio_coupling.yaml
   disable_progressbar: false
   shared_resources:
     policy: false

@@ -26,8 +26,16 @@ if Path("config/config.yaml").exists():
 
     configfile: "config/config.yaml"
 
-
 run = config["run"]
+
+override_run_name = config.get("override_run_name", False)
+
+if override_run_name:
+    print(f"Overriding run['name'] with: {override_run_name}")
+    run["name"] = override_run_name
+else:
+    print(f"No override, keeping run['name']: {run['name']}")
+
 scenarios = get_scenarios(run)
 RDIR = get_rdir(run)
 shadow_config = get_shadow(run)

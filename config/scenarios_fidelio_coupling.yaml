@@ -16,7 +16,7 @@ ff55_iter_5:
     fidelio:
       fidelio_shocks: true
       scenario: 'ff55'
-      fidelio_folder: "../coupling/from_fidelio/iter_4/"
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_4/"
 
 
 ff55_iter_4:
@@ -24,14 +24,14 @@ ff55_iter_4:
     fidelio:
       fidelio_shocks: true
       scenario: 'ff55'
-      fidelio_folder: "../coupling/from_fidelio/iter_3/"
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_3/"
 
 ff55_iter_3:
   sector:
     fidelio:
       fidelio_shocks: true
       scenario: 'ff55'
-      fidelio_folder: "../coupling/from_fidelio/iter_2/"
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_2/"
 
 
 ff55_iter_2:
@@ -39,7 +39,14 @@ ff55_iter_2:
     fidelio:
       fidelio_shocks: true
       scenario: 'ff55'
-      fidelio_folder: "../coupling/from_fidelio/iter_1/"
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_1/"
+
+ff55_iter_1:
+  sector:
+    fidelio:
+      fidelio_shocks: false
+      scenario: 'ff55'
+      
 
 baseline_iter_1:
   sector:

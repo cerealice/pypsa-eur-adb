@@ -2277,6 +2277,7 @@ def add_storage_and_grids(
             bus2="co2 atmosphere",
             bus3=spatial.co2.nodes,
             p_nom_extendable=True,
+            p_nom_min = 0.3, #ADB
             carrier="SMR CC",
             efficiency=costs.at["SMR CC", "efficiency"],
             efficiency2=costs.at["gas", "CO2 intensity"] * (1 - options["cc_fraction"]),
@@ -2293,6 +2294,7 @@ def add_storage_and_grids(
             bus1=nodes + " H2",
             bus2="co2 atmosphere",
             p_nom_extendable=True,
+            p_nom_min = 0.3, #ADB
             carrier="SMR",
             efficiency=costs.at["SMR", "efficiency"],
             efficiency2=costs.at["gas", "CO2 intensity"],
@@ -5174,7 +5176,9 @@ def calculate_steel_parameters(options, nyears=1):
     discount_rate = 0.04
 
     capex_bof_mpp = 871.85 * 1e3 * 8760  # €/kt steel/h
+    capex_bof_mpp = 1066.851 * 1e3 * 8760  # €/kt steel/h
     opex_bof_mpp = (123.67 * 1e3 / capex_bof_mpp) * 100  # €/kt steel/yr -> € of CAPEX
+    opex_bof_mpp = (129.75 * 1e3 / capex_bof_mpp) * 100  # €/kt steel/yr -> € of CAPEX
 
     capital_cost_bof = (
         (calculate_annuity(lifetime_bof, discount_rate) + opex_bof_mpp / 100.0)
@@ -5418,7 +5422,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         bus0=spatial.gas.nodes,
         bus1=spatial.syngas_dri.nodes,
         bus2=spatial.co2.dri,
-        carrier="DRI-EAF",
+        carrier="DRI",
         p_nom_extendable=True,
         efficiency=1 / eaf_ng["gas input"],  # MWh natural gas per one unit of dri gas
         efficiency2=eaf_ng["emission factor"]
@@ -5432,7 +5436,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         suffix=" H2 to syn gas DRI",
         bus0=nodes + " H2",
         bus1=spatial.syngas_dri.nodes,
-        carrier="DRI-EAF",
+        carrier="DRI",
         p_nom_extendable=True,
         efficiency=1 / eaf_h2["h2 input"],  # MWh hydrogen per one unit of dri gas
     )
@@ -5504,20 +5508,39 @@ def add_steel_industry(n, investment_year, steel_data, options):
     )
 
     # Retrieve value for steel scrap constraint
-
-    # Load CSV
     max_scrap_file = "data/max_scrap.csv"
     max_scrap_df = pd.read_csv(max_scrap_file, index_col=0)
 
-    # Retrieve the value in Mt
-    max_scrap_mt = max_scrap_df.loc[scenario, investment_year]  # value in Mt
+    # Value in Mt (convert to kt if needed for units)
+    max_scrap_mt = max_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
+    max_scrap_kt = max_scrap_mt * 1000  # [kt] if your system uses kt as energy unit
+
+    # Availability profile: available all year, then exhausted
+    e_max_pu = pd.DataFrame(1, index=n.snapshots, columns=["EU steel scrap availability"])
+    e_max_pu.iloc[-1, :] = 0 
+
+    e_max_pu = pd.Series(1.0, index=n.snapshots, name="EU steel scrap availability")
+    e_max_pu.iloc[-1] = 0  
+
+    # Add a store representing the total scrap stock
+    #n.add(
+    #    "Store",
+    #    "EU steel scrap availability",
+    #    bus="EU steel scrap",
+    #    carrier="steel scrap",
+    #    e_nom=max_scrap_kt,         # cap total scrap supply
+    #    marginal_cost=0,
+    #    e_initial=max_scrap_kt,     # start full
+    #    e_max_pu=e_max_pu,          # availability profile
+    #)
+
 
     n.add(
         "GlobalConstraint",
         "steel scrap limit",
         carrier_attribute="steel scrap",
         sense="<=",
-        constant=max_scrap_mt * 1e3,
+        constant=max_scrap_kt,
         type="operational_limit",
     )
 
@@ -5818,6 +5841,14 @@ def add_ammonia_load(n, investment_year, ammonia_data, options):
 
     # Remove the previous ammonia load, which is based on a different quantification of energy demand
     n.loads.drop(n.loads.index[n.loads.carrier == "NH3"], inplace=True)
+
+    n.add(
+        "Bus",
+        spatial.ammonia.nodes,
+        location=spatial.ammonia.locations,
+        carrier="NH3",
+        unit="MWh_th",
+    )
 
     # Add the new ammonia load to the network
     n.add(

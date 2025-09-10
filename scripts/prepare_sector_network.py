@@ -2277,7 +2277,7 @@ def add_storage_and_grids(
             bus2="co2 atmosphere",
             bus3=spatial.co2.nodes,
             p_nom_extendable=True,
-            p_nom_min = 0.3, #ADB
+            p_min_pu = 0.2, #ADB
             carrier="SMR CC",
             efficiency=costs.at["SMR CC", "efficiency"],
             efficiency2=costs.at["gas", "CO2 intensity"] * (1 - options["cc_fraction"]),
@@ -2294,7 +2294,7 @@ def add_storage_and_grids(
             bus1=nodes + " H2",
             bus2="co2 atmosphere",
             p_nom_extendable=True,
-            p_nom_min = 0.3, #ADB
+            p_min_pu = 0.3, #ADB
             carrier="SMR",
             efficiency=costs.at["SMR", "efficiency"],
             efficiency2=costs.at["gas", "CO2 intensity"],
@@ -5499,7 +5499,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
     n.add(
         "Generator",
         "EU steel scrap",
-        bus="EU HBI",
+        bus="EU steel scrap",
         carrier="steel scrap",
         p_nom=1e7,
         # https://www.scrapmonster.com/metal/steel-price/europe/300?utm_source=chatgpt.com
@@ -5546,8 +5546,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
 
     n.add(
         "Link",
-        nodes,
-        suffix=" steel scrap to HBI",
+        "EU steel scrap to HBI",
         bus0="EU steel scrap",
         bus1="EU HBI",
         carrier="steel scrap to HBI",

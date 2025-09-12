@@ -1936,6 +1936,38 @@ def add_storage_and_grids(
         lifetime=costs.at["electrolysis", "lifetime"],
     )
 
+    """
+    if investment_year == 2030:
+
+        # Adding target GW of electrolysis
+        # https://observatory.clean-hydrogen.europa.eu/eu-policy/eu-hydrogen-strategy-under-eu-green-deal
+        n.add(
+            "Link",
+            nodes + " H2 Electrolysis-EU-2030",
+            bus1=nodes + " H2",
+            bus0=nodes,
+            p_nom=40000/len(nodes),
+            build_year=2030,
+            p_nom_extendable=False,
+            carrier="H2 Electrolysis",
+            efficiency=costs.at["electrolysis", "efficiency"],
+            capital_cost=costs.at["electrolysis", "capital_cost"],
+            lifetime=costs.at["electrolysis", "lifetime"],
+        )
+
+    if investment_year == 2040:
+        n.add(
+            "GlobalConstraint",
+            "H2 Electrolysis limit",
+            carrier_attribute="H2 Electrolysis",
+            sense="<=",
+            constant=1160 * 1e6 / 3, #https://www.negawatt.org/IMG/pdf/2040_scenario_comparison_-_ambition_and_feasibility.pdf
+            # confirmed by 35 Mt * 33.3 TWh / Mt https://hydrogeneurope.eu/hydrogen-is-key-building-block-2040-targets/
+            # Dividing by 3 is wrong but needed to understand if it works -> snapshot_weightings
+            type="operational_limit",
+        )
+    """
+
     if options["hydrogen_fuel_cell"]:
         logger.info("Adding hydrogen fuel cell for re-electrification.")
 
@@ -2277,7 +2309,7 @@ def add_storage_and_grids(
             bus2="co2 atmosphere",
             bus3=spatial.co2.nodes,
             p_nom_extendable=True,
-            p_min_pu = 0.2, #ADB
+            p_min_pu = 0.5, #ADB
             carrier="SMR CC",
             efficiency=costs.at["SMR CC", "efficiency"],
             efficiency2=costs.at["gas", "CO2 intensity"] * (1 - options["cc_fraction"]),
@@ -2294,7 +2326,7 @@ def add_storage_and_grids(
             bus1=nodes + " H2",
             bus2="co2 atmosphere",
             p_nom_extendable=True,
-            p_min_pu = 0.3, #ADB
+            p_min_pu = 0.5, #ADB
             carrier="SMR",
             efficiency=costs.at["SMR", "efficiency"],
             efficiency2=costs.at["gas", "CO2 intensity"],
@@ -5847,6 +5879,7 @@ def add_ammonia_load(n, investment_year, ammonia_data, options):
         location=spatial.ammonia.locations,
         carrier="NH3",
         unit="MWh_th",
+        overwrite=True
     )
 
     # Add the new ammonia load to the network

@@ -11,7 +11,7 @@ run:
   #- import_policy_reg_regain
   #- base_reg_deindustrial
   #- base_reg_regain
-  #- policy_reg_regain
+  - policy_reg_regain
   #- policy_reg_deindustrial
   #- policy_reg_deindustrial_flex
   #- policy_eu_regain_flex
@@ -22,7 +22,8 @@ run:
   #- policy_eu_deindustrial
   #- policy_reg_maintain
   #- policy_reg_deindustrial_h2
-  - policy_reg_regain_h2
+  #- policy_reg_regain_h2
+  #- policy_reg_regain_highccs
   scenarios:
     enable: true
     file: config/industry_policy_scenarios_45.yaml

@@ -2299,6 +2299,14 @@ def add_storage_and_grids(
             lifetime=costs.at["coal", "lifetime"],
         )
 
+    min_part_load_smr = 0.5 #ADB
+    if (
+        (options["endo_industry"]["policy_scenario"] == "deindustrial")
+        and investment_year >= 2040
+        and options["imports"]["enable"] == False
+    ):
+        min_part_load_smr = 0.1
+
     if options["SMR_cc"]:
         n.add(
             "Link",
@@ -2309,7 +2317,7 @@ def add_storage_and_grids(
             bus2="co2 atmosphere",
             bus3=spatial.co2.nodes,
             p_nom_extendable=True,
-            p_min_pu = 0.5, #ADB
+            p_min_pu = min_part_load_smr, 
             carrier="SMR CC",
             efficiency=costs.at["SMR CC", "efficiency"],
             efficiency2=costs.at["gas", "CO2 intensity"] * (1 - options["cc_fraction"]),
@@ -2326,7 +2334,7 @@ def add_storage_and_grids(
             bus1=nodes + " H2",
             bus2="co2 atmosphere",
             p_nom_extendable=True,
-            p_min_pu = 0.5, #ADB
+            p_min_pu = min_part_load_smr,
             carrier="SMR",
             efficiency=costs.at["SMR", "efficiency"],
             efficiency2=costs.at["gas", "CO2 intensity"],
@@ -5548,11 +5556,11 @@ def add_steel_industry(n, investment_year, steel_data, options):
     max_scrap_kt = max_scrap_mt * 1000  # [kt] if your system uses kt as energy unit
 
     # Availability profile: available all year, then exhausted
-    e_max_pu = pd.DataFrame(1, index=n.snapshots, columns=["EU steel scrap availability"])
-    e_max_pu.iloc[-1, :] = 0 
+    #e_max_pu = pd.DataFrame(1, index=n.snapshots, columns=["EU steel scrap availability"])
+    #e_max_pu.iloc[-1, :] = 0 
 
-    e_max_pu = pd.Series(1.0, index=n.snapshots, name="EU steel scrap availability")
-    e_max_pu.iloc[-1] = 0  
+    #e_max_pu = pd.Series(1.0, index=n.snapshots, name="EU steel scrap availability")
+    #e_max_pu.iloc[-1] = 0  
 
     # Add a store representing the total scrap stock
     #n.add(
@@ -6011,10 +6019,8 @@ def add_hvc(n, investment_year, hvc_data, options):
         carrier="naphtha steam cracker",
         p_nom_extendable=True,
         p_min_pu=min_part_load_hvc,
-        capital_cost=2050
-        * 1e3
-        * 0.8865
-        / naphtha_to_hvc,  # €/kt HVC https://www.iea.org/data-and-statistics/charts/simplified-levelised-cost-of-petrochemicals-for-selected-feedstocks-and-regions-2017
+        capital_cost=2050 * 1e3 * 0.8865 / naphtha_to_hvc, 
+        # €/kt HVC https://www.iea.org/data-and-statistics/charts/simplified-levelised-cost-of-petrochemicals-for-selected-feedstocks-and-regions-2017
         # Raillard Cazanove says 725 but prices were too low
         efficiency=1 / naphtha_to_hvc,  # kt HVC / MWh oil
         efficiency2=0.021 * 33.3 / naphtha_to_hvc,  # MWh H2 / kt HVC
@@ -6023,6 +6029,58 @@ def add_hvc(n, investment_year, hvc_data, options):
         # efficiency3= (819 / naphtha_to_hvc) + decay_emis, # tCO2 / kt HVC # should remove the first process emissions term
         efficiency4=-135 / naphtha_to_hvc,  # MWh electricity / kt HVC
         lifetime=30,
+    )
+
+    # Tentative recycled plastics modelling
+
+    n.add(
+        "Bus",
+        "EU recycled HVC",
+        location="EU",
+        carrier="HVC",
+        unit="kt/yr",
+    )
+
+    n.add(
+        "Generator",
+        "EU recycled HVC",
+        bus="EU recycled HVC",
+        carrier="HVC",
+        p_nom=1e7,
+        # https://www.eea.europa.eu/en/circularity/sectoral-modules/plastics/average-yearly-price-of-plastic-scrap-eur-tonne
+        # 2022 466.7 € / t -> kt
+        marginal_cost=466.7 * 1e3,
+    )
+
+    
+    n.add(
+        "Link",
+        nodes,
+        suffix = " recycled HVC to HVC",
+        bus0="EU recycled HVC",
+        bus1=spatial.hvc.nodes,
+        carrier="recycled HVC to HVC",
+        p_nom_extendable=True,
+        capital_cost=0,
+        efficiency=1,
+    )
+    
+
+    # Retrieve value for HVC recycled constraint
+    max_recycled_file = "data/max_recycled_plastics.csv"
+    max_recycled_df = pd.read_csv(max_recycled_file, index_col=0)
+
+    # Value in Mt (convert to kt if needed for units)
+    max_recycled_mt = max_recycled_df.loc[scenario, str(investment_year)]  # [Mt]
+    max_recycled_kt = max_recycled_mt * 1000  # from Mt to kt
+
+    n.add(
+        "GlobalConstraint",
+        "recycled HVC limit",
+        carrier_attribute="recycled HVC",
+        sense="<=",
+        constant=max_recycled_kt,
+        type="operational_limit",
     )
 
 

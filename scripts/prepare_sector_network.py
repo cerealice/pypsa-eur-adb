@@ -6033,6 +6033,15 @@ def add_hvc(n, investment_year, hvc_data, options):
 
     # Tentative recycled plastics modelling
 
+    # Retrieve value for HVC recycled constraint
+    max_recycled_file = "data/max_recycled_plastics.csv"
+    max_recycled_df = pd.read_csv(max_recycled_file, index_col=0)
+
+    # Value in Mt (convert to kt if needed for units)
+    max_recycled_mt = max_recycled_df.loc[scenario, str(investment_year)]  # [Mt]
+    max_recycled_kt = max_recycled_mt * 1000  # from Mt to kt
+
+
     n.add(
         "Bus",
         "EU recycled HVC",
@@ -6050,6 +6059,8 @@ def add_hvc(n, investment_year, hvc_data, options):
         # https://www.eea.europa.eu/en/circularity/sectoral-modules/plastics/average-yearly-price-of-plastic-scrap-eur-tonne
         # 2022 466.7 € / t -> kt
         marginal_cost=466.7 * 1e3,
+        e_sum_min = 0,
+        e_sum_max = max_recycled_kt,
     )
 
     
@@ -6059,21 +6070,35 @@ def add_hvc(n, investment_year, hvc_data, options):
         suffix = " recycled HVC to HVC",
         bus0="EU recycled HVC",
         bus1=spatial.hvc.nodes,
+        bus2="co2 atmosphere",
         carrier="recycled HVC to HVC",
         p_nom_extendable=True,
         capital_cost=0,
         efficiency=1,
+        efficiency2=decay_emis,
+    )    
+
+    """
+    # Availability profile: available all year, then exhausted
+    e_max_pu = pd.DataFrame(1, index=n.snapshots, columns=["EU recycled HVC availability"])
+    e_max_pu.iloc[-1, :] = 0
+
+    e_max_pu = pd.Series(1.0, index=n.snapshots, name="EU recycled HVC availability")
+    e_max_pu.iloc[-1] = 0
+
+    # Add a store representing the total scrap stock
+    n.add(
+        "Store",
+        "EU recycled HVC availability",
+        bus="EU recycled HVC",
+        carrier="recycled HVC",
+        e_nom=max_recycled_kt,         # cap total scrap supply
+        marginal_cost=0,
+        e_initial=max_recycled_kt,     # start full
+        e_max_pu=e_max_pu,          # availability profile
     )
+
     
-
-    # Retrieve value for HVC recycled constraint
-    max_recycled_file = "data/max_recycled_plastics.csv"
-    max_recycled_df = pd.read_csv(max_recycled_file, index_col=0)
-
-    # Value in Mt (convert to kt if needed for units)
-    max_recycled_mt = max_recycled_df.loc[scenario, str(investment_year)]  # [Mt]
-    max_recycled_kt = max_recycled_mt * 1000  # from Mt to kt
-
     n.add(
         "GlobalConstraint",
         "recycled HVC limit",
@@ -6082,6 +6107,7 @@ def add_hvc(n, investment_year, hvc_data, options):
         constant=max_recycled_kt,
         type="operational_limit",
     )
+    """
 
 
 def add_aviation(

@@ -5528,6 +5528,14 @@ def add_steel_industry(n, investment_year, steel_data, options):
 
     # Tentative scrap modelling
 
+    # Retrieve value for steel scrap constraint
+    max_scrap_file = "data/max_scrap.csv"
+    max_scrap_df = pd.read_csv(max_scrap_file, index_col=0)
+
+    # Value in Mt (convert to kt if needed for units)
+    max_scrap_mt = max_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
+    max_scrap_kt = max_scrap_mt * 1000  # [kt] if your system uses kt as energy unit
+
     n.add(
         "Bus",
         "EU steel scrap",
@@ -5545,16 +5553,11 @@ def add_steel_industry(n, investment_year, steel_data, options):
         # https://www.scrapmonster.com/metal/steel-price/europe/300?utm_source=chatgpt.com
         # Grade 1 Old Steel to be conservative: 160 $/t -> *0.86 * 1000 = 137107 €/kt
         marginal_cost=137107,
+        e_sum_min = 0,
+        e_sum_max = max_scrap_kt,
     )
 
-    # Retrieve value for steel scrap constraint
-    max_scrap_file = "data/max_scrap.csv"
-    max_scrap_df = pd.read_csv(max_scrap_file, index_col=0)
-
-    # Value in Mt (convert to kt if needed for units)
-    max_scrap_mt = max_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
-    max_scrap_kt = max_scrap_mt * 1000  # [kt] if your system uses kt as energy unit
-
+    """
     # Availability profile: available all year, then exhausted
     #e_max_pu = pd.DataFrame(1, index=n.snapshots, columns=["EU steel scrap availability"])
     #e_max_pu.iloc[-1, :] = 0 
@@ -5574,7 +5577,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
     #    e_max_pu=e_max_pu,          # availability profile
     #)
 
-
+    
     n.add(
         "GlobalConstraint",
         "steel scrap limit",
@@ -5583,6 +5586,8 @@ def add_steel_industry(n, investment_year, steel_data, options):
         constant=max_scrap_kt,
         type="operational_limit",
     )
+    """
+    
 
     n.add(
         "Link",
@@ -6031,6 +6036,8 @@ def add_hvc(n, investment_year, hvc_data, options):
         lifetime=30,
     )
 
+    """
+
     # Tentative recycled plastics modelling
 
     # Retrieve value for HVC recycled constraint
@@ -6078,7 +6085,7 @@ def add_hvc(n, investment_year, hvc_data, options):
         efficiency2=decay_emis,
     )    
 
-    """
+    
     # Availability profile: available all year, then exhausted
     e_max_pu = pd.DataFrame(1, index=n.snapshots, columns=["EU recycled HVC availability"])
     e_max_pu.iloc[-1, :] = 0

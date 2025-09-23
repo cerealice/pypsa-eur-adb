@@ -1545,8 +1545,6 @@ def add_ammonia(
 
     if (
         (options["endo_industry"]["policy_scenario"] == "deindustrial")
-        and investment_year >= 2040
-        and options["imports"]["enable"] == False
     ):
         min_part_load_hb = 0.1
 
@@ -2302,8 +2300,6 @@ def add_storage_and_grids(
     min_part_load_smr = 0.5 #ADB
     if (
         (options["endo_industry"]["policy_scenario"] == "deindustrial")
-        and investment_year >= 2040
-        and options["imports"]["enable"] == False
     ):
         min_part_load_smr = 0.1
 
@@ -5212,8 +5208,8 @@ def calculate_steel_parameters(options, nyears=1):
 
     capex_bof = 442 * 1e3  # €/kt steel
     opex_bof = (53 * 1e3 / capex_bof) * 100  # €/kt steel/yr -> € of CAPEX
-    lifetime_bof = 25
-    discount_rate = 0.04
+    lifetime_bof = 40
+    discount_rate = 0.07
 
     capex_bof_mpp = 871.85 * 1e3 * 8760  # €/kt steel/h
     capex_bof_mpp = 1066.851 * 1e3 * 8760  # €/kt steel/h
@@ -5247,7 +5243,7 @@ def calculate_steel_parameters(options, nyears=1):
     # Reference: Raillard-Cazanove et al. https://doi.org/10.1016/j.apenergy.2024.125206
     capex_eaf_ng = 414 * 1e3  # €/kt steel
     opex_eaf_ng = (54 * 1e3 / capex_eaf_ng) * 100  # €/kt steel/yr -> % of CAPEX
-    lifetime_eaf_ng = 25
+    lifetime_eaf_ng = 40
     discount_rate = 0.04
 
     capex_eaf_mpp = 698.34 * 1e3 * 8760  # €/kt steel/h
@@ -5552,7 +5548,10 @@ def add_steel_industry(n, investment_year, steel_data, options):
         p_nom=1e7,
         # https://www.scrapmonster.com/metal/steel-price/europe/300?utm_source=chatgpt.com
         # Grade 1 Old Steel to be conservative: 160 $/t -> *0.86 * 1000 = 137107 €/kt
-        marginal_cost=137107,
+        # https://gmk.center/en/posts/global-scrap-prices-recovered-by-1-5-2-since-the-beginning-of-the-year/
+        # 302.5 €/t in Germany for E3, which has limited contamination, low quality than prime grades but a staple feedstock for EAF
+        # https://www.mgg-recycling.com/wp-content/uploads/2013/06/EFR_EU27_steel_scrap_specification.pdf
+        marginal_cost=302500, # €/kt
         e_sum_min = 0,
         e_sum_max = max_scrap_kt,
     )

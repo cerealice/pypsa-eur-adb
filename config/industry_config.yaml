@@ -8,11 +8,11 @@ run:
   prefix: ""
   name: #"all"
   #- import_policy_reg_deindustrial
+  #- base_reg_maintain
   #- import_policy_reg_regain
   #- base_reg_deindustrial
   #- base_reg_regain
   - policy_reg_regain
-  #- policy_reg_deindustrial
   #- policy_reg_deindustrial_flex
   #- policy_eu_regain_flex
   #- policy_reg_regain_flex
@@ -20,6 +20,8 @@ run:
   #- policy_eu_deindustrial_flex
   #- policy_eu_regain
   #- policy_eu_deindustrial
+  #- policy_reg_deindustrial
+  #- policy_reg_deindustrial_highccs
   #- policy_reg_maintain
   #- policy_reg_deindustrial_h2
   #- policy_reg_regain_h2
@@ -138,12 +140,9 @@ sector:
   co2_network: false
   co2_sequestration_potential:
     2020: 0
-    2025: 0
     2030: 50
-    2035: 100
-    2040: 200
-    2045: 200
-    2050: 200
+    2040: 250
+    2050: 400
   min_part_load_fischer_tropsch: 0.3 # 0.5 #ADB
   H2_network: false
   endo_industry:
@@ -163,11 +162,7 @@ sector:
   tes: false
   electricity_distribution_grid: false
   SMR_cc: true # to avoid bad results in 2030
-  #co2_sequestration_potential:
-  #    2020: 0
-  #    2030: 40
-  #    2040: 250
-  #    2050: 400
+
 
   # This wildcard is not working if only in config.default.yaml (I have no idea why)
   chp:

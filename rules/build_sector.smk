@@ -1037,46 +1037,6 @@ if config["sector"]["endo_industry"].get("enable", False):
             "../scripts/build_industrial_policies_projections.py"
 
 
-if config["sector"]["endo_industry"].get("enable", False)  and config["sector"]["endo_industry"].get("empirical_demand_growth", False):
-
-    rule build_industry_steel_production_projections:
-        input:
-            ssp="data/ssp_snapshot_1706291930_allcountries.xlsx",  #ADB manually uploaded data is freely available here upon registration https://data.ece.iiasa.ac.at/ssp/#/login
-        output:
-            steel_demand=resources("endo_industry/eu_steel_production.csv"),
-        log:
-            logs("build_industry_steel_production_projections.log"),
-        resources:
-            mem_mb=5000,
-        conda:
-            "../envs/environment.yaml"
-        script:
-            "../scripts/build_industry_steel_production_projections.py"
-
-if config["sector"]["endo_industry"].get("enable", False) and config["sector"]["endo_industry"].get("empirical_demnad_growth", False): 
-
-    rule build_industry_cement_production_projections:
-        params:
-            countries=config_provider("countries")
-        input:
-            ssp="data/ssp_snapshot_1706291930_allcountries.xlsx",  #ADB manually uploaded data is freely available here upon registration https://data.ece.iiasa.ac.at/ssp/#/login
-            cement_plants="data/sfi/SFI-Global-Cement-Database-July-2021.xlsx",
-            idees="data/jrc-idees-2021",
-            cement_extra_eu="data/cement_production_extra_eu27.xlsx",
-            industrial_distribution_key=resources("industrial_distribution_key_base_s_{clusters}.csv"),
-        output:
-            cement_prod=resources("endo_industry/cement_production_s_{clusters}.csv"),
-        log:
-            logs("build_industry_cement_production_projections_{clusters}.log"),
-        benchmark:
-            benchmarks("build_industry_cement_production_projections/s_{clusters}")
-        resources:
-            mem_mb=5000,
-        conda:
-            "../envs/environment.yaml"
-        script:
-            "../scripts/build_industry_cement_production_projections.py"
-
 rule build_retro_cost:
     params:
         retrofitting=config_provider("sector", "retrofitting"),
@@ -1438,7 +1398,7 @@ rule prepare_sector_network:
         ),
         industrial_production=resources(
             "industrial_production_base_s_{clusters}_{planning_horizons}.csv"
-        ), #ADB then use the one not projected for the future
+        ), # ADB then use the one not projected for the future
         district_heat_share=resources(
             "district_heat_share_base_s_{clusters}_{planning_horizons}.csv"
         ),

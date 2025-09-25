@@ -42,30 +42,6 @@ if snakemake.params.endo_industry:
         "Other non-ferrous metals": "Non-ferrous metals",
     }
 
-    sector_mapping_all = {
-        "Electric arc": "EAF",
-        "Integrated steelworks": "Integrated steelworks",
-        "DRI + Electric arc": "DRI + EAF",
-        "Ammonia": "Ammonia",
-        "HVC": "Chemical industry",
-        "HVC (mechanical recycling)": "Chemical industry",
-        "HVC (chemical recycling)": "Chemical industry",
-        "Methanol": "Chemical industry",
-        "Chlorine": "Chemical industry",
-        "Other chemicals": "Chemical industry",
-        "Pharmaceutical products etc.": "Chemical industry",
-        "Cement": "Cement",
-        "Ceramics & other NMM": "Non-metallic mineral products",
-        "Glass production": "Glass",
-        "Pulp production": "Paper and printing",
-        "Paper production": "Paper and printing",
-        "Printing and media reproduction": "Paper and printing",
-        "Alumina production": "Non-ferrous metals",
-        "Aluminium - primary production": "Non-ferrous metals",
-        "Aluminium - secondary production": "Non-ferrous metals",
-        "Other non-ferrous metals": "Non-ferrous metals",
-    }
-
 else:
     sector_mapping = {
         "Electric arc": "EAF",
@@ -112,7 +88,6 @@ def build_nodal_industrial_energy_demand():
 
     for country, sector in product(countries, sectors):
         buses = keys.index[keys.country == country]
-
         mapping = sector_mapping.get(sector, "population")
 
         key = keys.loc[buses, mapping]

@@ -1543,10 +1543,10 @@ def add_ammonia(
 
     min_part_load_hb = options["min_part_load_hb"]
 
-    if (
-        (options["endo_industry"]["policy_scenario"] == "deindustrial")
-    ):
+    if (options["endo_industry"]["policy_scenario"] == "deindustrial"):
         min_part_load_hb = 0.1
+    elif options["min_part_load_steel"] == 0: # proxy for flex scenarios
+        min_part_load_hb = 0.0
 
     n.add(
         "Link",
@@ -2298,10 +2298,10 @@ def add_storage_and_grids(
         )
 
     min_part_load_smr = 0.5 #ADB
-    if (
-        (options["endo_industry"]["policy_scenario"] == "deindustrial")
-    ):
+    if ((options["endo_industry"]["policy_scenario"] == "deindustrial")):
         min_part_load_smr = 0.1
+    elif options["min_part_load_steel"] == 0: # proxy for flex scenarios
+        min_part_load_smr = 0.0
 
     if options["SMR_cc"]:
         n.add(
@@ -5209,7 +5209,7 @@ def calculate_steel_parameters(options, nyears=1):
     capex_bof = 442 * 1e3  # €/kt steel
     opex_bof = (53 * 1e3 / capex_bof) * 100  # €/kt steel/yr -> € of CAPEX
     lifetime_bof = 40
-    discount_rate = 0.07
+    discount_rate = 0.04
 
     capex_bof_mpp = 871.85 * 1e3 * 8760  # €/kt steel/h
     capex_bof_mpp = 1066.851 * 1e3 * 8760  # €/kt steel/h
@@ -5511,7 +5511,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         * 1e3
         / eaf_ng["iron input"],
         p_nom_extendable=True,
-        # p_min_pu=min_part_load_steel,
+        #p_min_pu=0.1,
         bus0=spatial.iron.nodes,
         bus1="EU HBI",
         bus2=spatial.syngas_dri.nodes,
@@ -5548,10 +5548,10 @@ def add_steel_industry(n, investment_year, steel_data, options):
         p_nom=1e7,
         # https://www.scrapmonster.com/metal/steel-price/europe/300?utm_source=chatgpt.com
         # Grade 1 Old Steel to be conservative: 160 $/t -> *0.86 * 1000 = 137107 €/kt
-        # https://gmk.center/en/posts/global-scrap-prices-recovered-by-1-5-2-since-the-beginning-of-the-year/
+        # https://gmk.center/en/posts/the-global-scrap-market-showed-overwhelming-stability-in-july/
         # 302.5 €/t in Germany for E3, which has limited contamination, low quality than prime grades but a staple feedstock for EAF
         # https://www.mgg-recycling.com/wp-content/uploads/2013/06/EFR_EU27_steel_scrap_specification.pdf
-        marginal_cost=302500, # €/kt
+        marginal_cost=280000, # €/kt
         e_sum_min = 0,
         e_sum_max = max_scrap_kt,
     )

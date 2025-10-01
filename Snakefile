@@ -28,6 +28,7 @@ if Path("config/config.yaml").exists():
 
 
 run = config["run"]
+
 scenarios = get_scenarios(run)
 RDIR = get_rdir(run)
 shadow_config = get_shadow(run)

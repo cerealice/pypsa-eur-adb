@@ -5485,6 +5485,15 @@ def add_steel_industry(n, investment_year, steel_data, options):
         unit="kt/yr",
     )
 
+    n.add(
+        "Store",
+        "EU HBI",
+        bus="EU HBI",
+        carrier="HBI",
+        e_nom_extendable=True,
+        e_cyclic=True,
+        )
+
     if options["endo_industry"]["dri_import"]:
         mc_dri = 395 * 1e3 if investment_year >= 2040 else 1e7
         # €/ktHBI https://www.sciencedirect.com/science/article/pii/S0360544223006308
@@ -5530,7 +5539,15 @@ def add_steel_industry(n, investment_year, steel_data, options):
 
     # Value in Mt (convert to kt if needed for units)
     max_scrap_mt = max_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
-    max_scrap_kt = max_scrap_mt * 1000  # [kt] if your system uses kt as energy unit
+    max_scrap_kt = max_scrap_mt * 1000  # [kt]
+
+    # Retrieve minimum value for steel scrap for 2030
+    min_scrap_file = "data/min_scrap.csv"
+    min_scrap_df = pd.read_csv(min_scrap_file, index_col=0)
+
+    # Value in Mt (convert to kt if needed for units)
+    min_scrap_mt = min_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
+    min_scrap_kt = min_scrap_mt * 1000  # [kt] 
 
     n.add(
         "Bus",
@@ -5551,42 +5568,10 @@ def add_steel_industry(n, investment_year, steel_data, options):
         # https://gmk.center/en/posts/the-global-scrap-market-showed-overwhelming-stability-in-july/
         # 302.5 €/t in Germany for E3, which has limited contamination, low quality than prime grades but a staple feedstock for EAF
         # https://www.mgg-recycling.com/wp-content/uploads/2013/06/EFR_EU27_steel_scrap_specification.pdf
-        marginal_cost=280000, # €/kt
-        e_sum_min = 0,
+        marginal_cost=302.5 * 1e3, # €/kt
+        e_sum_min = min_scrap_kt,
         e_sum_max = max_scrap_kt,
     )
-
-    """
-    # Availability profile: available all year, then exhausted
-    #e_max_pu = pd.DataFrame(1, index=n.snapshots, columns=["EU steel scrap availability"])
-    #e_max_pu.iloc[-1, :] = 0 
-
-    #e_max_pu = pd.Series(1.0, index=n.snapshots, name="EU steel scrap availability")
-    #e_max_pu.iloc[-1] = 0  
-
-    # Add a store representing the total scrap stock
-    #n.add(
-    #    "Store",
-    #    "EU steel scrap availability",
-    #    bus="EU steel scrap",
-    #    carrier="steel scrap",
-    #    e_nom=max_scrap_kt,         # cap total scrap supply
-    #    marginal_cost=0,
-    #    e_initial=max_scrap_kt,     # start full
-    #    e_max_pu=e_max_pu,          # availability profile
-    #)
-
-    
-    n.add(
-        "GlobalConstraint",
-        "steel scrap limit",
-        carrier_attribute="steel scrap",
-        sense="<=",
-        constant=max_scrap_kt,
-        type="operational_limit",
-    )
-    """
-    
 
     n.add(
         "Link",
@@ -5689,6 +5674,16 @@ def add_steel_industry(n, investment_year, steel_data, options):
         * costs.at["cement capture", "capture_rate"],  # MWh el/tCO2 in
         lifetime=costs.at["cement capture", "lifetime"],
     )
+
+    if options["industrial_flexibility"]:
+        n.add(
+            "Store",
+            spatial.steel.nodes,
+            bus=spatial.steel.nodes,
+            carrier="steel",
+            e_nom_extendable=True,
+            e_cyclic=True,
+        )
 
 
 def add_cement_industry(n, investment_year, cement_data, options):
@@ -5852,6 +5847,16 @@ def add_cement_industry(n, investment_year, cement_data, options):
         lifetime=costs.at["cement capture", "lifetime"],
     )
 
+    if options["industrial_flexibility"]:
+        n.add(
+            "Store",
+            spatial.cement.nodes,
+            bus=spatial.cement.nodes,
+            carrier="cement",
+            e_nom_extendable=True,
+            e_cyclic=True,
+        )
+
 
 def add_ammonia_load(n, investment_year, ammonia_data, options):
     """
@@ -5903,6 +5908,16 @@ def add_ammonia_load(n, investment_year, ammonia_data, options):
         p_set=p_set,
     )
 
+    if options["industrial_flexibility"]:
+        n.add(
+            "Store",
+            spatial.ammonia.nodes,
+            bus=spatial.ammonia.nodes,
+            carrier="NH3",
+            e_nom_extendable=True,
+            e_cyclic=True,
+        )
+
 
 def add_methanol_load(n, investment_year, methanol_data, options):
     """
@@ -5948,6 +5963,15 @@ def add_methanol_load(n, investment_year, methanol_data, options):
         p_set=p_set,
     )
 
+    if options["industrial_flexibility"]:
+        n.add(
+            "Store",
+            spatial.methanol.nodes,
+            bus=spatial.methanol.nodes,
+            carrier="methanol",
+            e_nom_extendable=True,
+            e_cyclic=True,
+        )
 
 def add_hvc(n, investment_year, hvc_data, options):
     """
@@ -6034,6 +6058,16 @@ def add_hvc(n, investment_year, hvc_data, options):
         efficiency4=-135 / naphtha_to_hvc,  # MWh electricity / kt HVC
         lifetime=30,
     )
+
+    if options["industrial_flexibility"]:
+        n.add(
+            "Store",
+            spatial.hvc.nodes,
+            bus=spatial.hvc.nodes,
+            carrier="HVC",
+            e_nom_extendable=True,
+            e_cyclic=True,
+        )
 
     """
 
@@ -7408,18 +7442,6 @@ def add_import_options(
             carrier="import H2",
             p_nom=p_nom,
             marginal_cost=import_options["H2"],
-        )
-
-    # ADB dding extra import from other countries
-    if "steel_adb" in import_options:
-        n.add(
-            "Generator",
-            spatial.steel.nodes,
-            suffix=" import",
-            bus=spatial.steel.nodes,
-            carrier="import steel",
-            p_nom=1e7,
-            marginal_cost=import_options["steel_adb"],
         )
 
     if "methanol_adb" in import_options:

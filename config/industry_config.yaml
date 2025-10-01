@@ -6,16 +6,15 @@
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#run
 run:
   prefix: ""
-  name: #"all"
+  name: "all"
   #- import_policy_reg_deindustrial
   #- base_reg_maintain
   #- import_policy_reg_regain
   #- base_reg_deindustrial
   #- base_reg_regain
   #- policy_reg_regain
-  - policy_reg_deindustrial_flex
+  #- policy_reg_deindustrial_flex
   #- policy_eu_regain_flex
-  - policy_reg_regain_flex
   #- policy_reg_regain_flex
   #- policy_eu_deindustrial_flex
   #- policy_eu_regain
@@ -162,6 +161,7 @@ sector:
   tes: false
   electricity_distribution_grid: false
   SMR_cc: true # to avoid bad results in 2030
+  industrial_flexibility: false
 
 
   # This wildcard is not working if only in config.default.yaml (I have no idea why)

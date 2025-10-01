@@ -293,6 +293,7 @@ policy_eu_regain_flex:
     min_part_load_steel: 0
     min_part_load_cement: 0
     min_part_load_hvc: 0
+    industrial_flexibility: true
 
 
 # Climate policy: YES, Relocation: YES, Industrial policy: DEINDUSTRIAL
@@ -321,6 +322,7 @@ policy_eu_deindustrial_flex:
     min_part_load_steel: 0
     min_part_load_cement: 0
     min_part_load_hvc: 0
+    industrial_flexibility: true
 
 # Climate policy: YES, Relocation: NO, Industrial policy: DEINDUSTRIAL
 policy_reg_deindustrial_flex:
@@ -348,6 +350,7 @@ policy_reg_deindustrial_flex:
     min_part_load_steel: 0
     min_part_load_cement: 0
     min_part_load_hvc: 0
+    industrial_flexibility: true
 
 # Climate policy: YES, Relocation: NO, Industrial policy: REGAIN
 policy_reg_regain_flex:
@@ -375,6 +378,7 @@ policy_reg_regain_flex:
     min_part_load_steel: 0
     min_part_load_cement: 0
     min_part_load_hvc: 0
+    industrial_flexibility: true
 
 
 # Climate policy: YES, Relocation: NO, Industrial policy: REGAIN

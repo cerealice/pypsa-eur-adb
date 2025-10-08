@@ -44,7 +44,6 @@ toe_to_MWh = 11.630
 
 eu27 = cc.EU27as("ISO2").ISO2.tolist()
 
-
 sheet_names = {
     "Iron and steel": "ISI",
     "Chemicals Industry": "CHI",
@@ -277,14 +276,15 @@ def iron_and_steel():
 
     # Process emissions (per physical output)
 
-    s_emi = idees["emi"][3:51]
-    assert s_emi.index[0] == sector
-
     s_out = idees["out"][6:7]
     assert s_out.index[0] == sector
 
-    # tCO2/t material
-    df.loc["process emission", sector] = s_emi["Process emissions"] / s_out[sector]
+    if not endo_industry:
+        s_emi = idees["emi"][3:51]
+        assert s_emi.index[0] == sector
+
+        # tCO2/t material
+        df.loc["process emission", sector] = s_emi["Process emissions"] / s_out[sector]
 
     # final energy consumption MWh/t material
     sel = ["elec", "heat", "methane", "coke", "coal"]
@@ -1062,6 +1062,8 @@ def non_ferrous_metals():
 
     # Alumina
 
+    # ADB TO DO fix the accounting for energy and emissions
+
     # High-enthalpy heat is converted to methane.
     # Process heat at T>500C is required here.
     # Refining is electrified.
@@ -1520,6 +1522,7 @@ if __name__ == "__main__":
     set_scenario_config(snakemake)
 
     params = snakemake.params.industry
+    endo_industry = snakemake.params.endo_industry
 
     year = params["reference_year"]
 

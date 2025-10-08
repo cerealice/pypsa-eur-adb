@@ -8,7 +8,8 @@ run:
   name: #"all"
   #- baseline
   #- baseline_iter_2
-  - ff55_iter_5
+  #- ff55_iter_5
+  - steel_aluminum
   #- ff55_iter_5
   #- hist
   scenarios:
@@ -48,7 +49,34 @@ validation: true # Should be turned on when 2020 as planning_horizon
 
 # Just EU countries
 # Removed Countries (Not in the EU): Albania (AL), Bosnia and Herzegovina (BA), United Kingdom (GB), Montenegro (ME), North Macedonia (MK), Norway (NO), Serbia (RS), Kosovo (XK)
-countries: ['AT', 'BE', 'BG', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'GB', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK']
+#countries: ['AT', 'BE', 'BG', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'GB', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK']
+countries:
+- AT
+- BE
+- BG
+- CZ
+- DE
+- DK
+- EE
+- ES
+- FI
+- FR
+- GB
+- GR
+- HR
+- HU
+- IE
+- IT
+- LT
+- LU
+- LV
+- NL
+- PL
+- PT
+- RO
+- SE
+- SI
+- SK
 
 
 weather_years:
@@ -284,7 +312,7 @@ industry:
 clustering:
   temporal:
     resolution_elec: false
-    resolution_sector: 3h
+    resolution_sector: 2920h
 
 plotting:
   tech_colors:

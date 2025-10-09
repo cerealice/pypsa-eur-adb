@@ -121,7 +121,7 @@ dependencies:
   - et_xmlfile=2.0.0=pyhd8ed1ab_1
   - exceptiongroup=1.3.0=pyhd8ed1ab_0
   - executing=2.2.1=pyhd8ed1ab_0
-  - filelock=3.19.1=pyhd8ed1ab_0
+  - filelock=3.20.0=pyhd8ed1ab_0
   - findlibs=0.1.2=pyhd8ed1ab_0
   - fiona=1.10.1=py312h02b19dd_3
   - folium=0.20.0=pyhd8ed1ab_0
@@ -254,16 +254,16 @@ dependencies:
   - libffi=3.4.6=h2dba641_1
   - libfreetype=2.14.1=ha770c72_0
   - libfreetype6=2.14.1=h73754d4_0
-  - libgcc=15.2.0=h767d61c_6
-  - libgcc-ng=15.2.0=h69a702a_6
+  - libgcc=15.2.0=h767d61c_7
+  - libgcc-ng=15.2.0=h69a702a_7
   - libgd=2.3.3=h6f5c62b_11
   - libgdal-core=3.10.3=h02f45b3_13
   - libgdal-hdf4=3.10.3=ha810028_13
   - libgdal-hdf5=3.10.3=h966a9c2_13
   - libgdal-netcdf=3.10.3=h3888ec4_13
-  - libgfortran=15.2.0=h69a702a_6
-  - libgfortran-ng=15.2.0=h69a702a_6
-  - libgfortran5=15.2.0=hcd61629_6
+  - libgfortran=15.2.0=h69a702a_7
+  - libgfortran-ng=15.2.0=h69a702a_7
+  - libgfortran5=15.2.0=hcd61629_7
   - libgl=1.7.0=ha4b6fd6_2
   - libgl-devel=1.7.0=ha4b6fd6_2
   - libglib=2.84.3=hf39c6af_0
@@ -271,7 +271,7 @@ dependencies:
   - libglvnd=1.7.0=ha4b6fd6_2
   - libglx=1.7.0=ha4b6fd6_2
   - libglx-devel=1.7.0=ha4b6fd6_2
-  - libgomp=15.2.0=h767d61c_6
+  - libgomp=15.2.0=h767d61c_7
   - libgoogle-cloud=2.39.0=hdb79228_0
   - libgoogle-cloud-storage=2.39.0=hdbdcf42_0
   - libgrpc=1.73.1=h1e535eb_0
@@ -307,8 +307,8 @@ dependencies:
   - libspral=2025.05.20=hfabd9d1_1
   - libsqlite=3.50.4=h0c1763c_0
   - libssh2=1.11.1=hcf80075_0
-  - libstdcxx=15.2.0=h8f9b012_6
-  - libstdcxx-ng=15.2.0=h4852527_6
+  - libstdcxx=15.2.0=h8f9b012_7
+  - libstdcxx-ng=15.2.0=h4852527_7
   - libthrift=0.22.0=h454ac66_1
   - libtiff=4.7.1=h8261f1e_0
   - libutf8proc=2.11.0=hb04c3b8_0
@@ -340,7 +340,7 @@ dependencies:
   - minizip=4.0.10=h05a5f5f_0
   - mistune=3.1.4=pyhcf101f3_0
   - mpfr=4.2.1=h90cbb55_3
-  - msgpack-python=1.1.1=py312hd9148b4_1
+  - msgpack-python=1.1.2=py312hd9148b4_0
   - multidict=6.6.3=py312h178313f_0
   - multiurl=0.3.7=pyhd8ed1ab_0
   - mumps-include=5.7.3=h82cca05_10
@@ -382,7 +382,7 @@ dependencies:
   - pip=25.2=pyh8b19718_0
   - pixman=0.46.4=h54a6638_1
   - plac=1.4.5=pyhd8ed1ab_0
-  - platformdirs=4.4.0=pyhcf101f3_0
+  - platformdirs=4.5.0=pyhcf101f3_0
   - plotly=6.3.1=pyhd8ed1ab_0
   - pluggy=1.6.0=pyhd8ed1ab_0
   - polars=1.34.0=pyh6a1acc5_0
@@ -490,7 +490,7 @@ dependencies:
   - throttler=1.2.2=pyhd8ed1ab_0
   - tinycss2=1.4.0=pyhd8ed1ab_0
   - tk=8.6.13=noxft_hd72426e_102
-  - tomli=2.2.1=pyhe01879c_2
+  - tomli=2.3.0=pyhcf101f3_0
   - tomlkit=0.13.3=pyha770c72_0
   - toolz=1.0.0=pyhd8ed1ab_1
   - tornado=6.5.2=py312h4c3975b_1
@@ -508,7 +508,7 @@ dependencies:
   - uriparser=0.9.8=hac33072_0
   - urllib3=2.5.0=pyhd8ed1ab_0
   - validators=0.35.0=pyhd8ed1ab_0
-  - virtualenv=20.34.0=pyhd8ed1ab_0
+  - virtualenv=20.35.0=pyhd8ed1ab_0
   - wayland=1.24.0=h3e06ad9_0
   - wcwidth=0.2.14=pyhd8ed1ab_0
   - webcolors=24.11.1=pyhd8ed1ab_0

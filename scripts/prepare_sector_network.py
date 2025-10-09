@@ -5898,7 +5898,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         )
 
     electricity_input = (
-        costs.at["hydrogen direct iron reduction furnace", "electricity-input"] * 1e3
+        costs.at["direct iron reduction furnace", "electricity-input"] * 1e3
     )  # MWh/kt
 
     n.add(
@@ -5906,7 +5906,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         nodes,
         suffix=" DRI",
         carrier="DRI",
-        capital_cost=costs.at["natural gas direct iron reduction furnace", "capital_cost"]
+        capital_cost=costs.at["direct iron reduction furnace", "capital_cost"]
         * 1e3
         / eaf_ng["iron input"],
         p_nom_extendable=True,

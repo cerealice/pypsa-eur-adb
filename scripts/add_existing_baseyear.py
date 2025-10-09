@@ -807,7 +807,7 @@ def add_steel_industry_existing(n):
     )
 
     electricity_input = (
-        costs.at["hydrogen direct iron reduction furnace", "electricity-input"] * 1e3
+        costs.at["direct iron reduction furnace", "electricity-input"] * 1e3
     )  # MWh/kt
 
     n.add(

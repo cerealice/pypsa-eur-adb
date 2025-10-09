@@ -6230,9 +6230,11 @@ def add_aviation(
 
     # The shock might not work when regional_oil_demand is on
     if not options["regional_oil_demand"]:
-        #p_set = p_set.sum()
+
         p_set = p_set.sum()
         shock_multiplier = shock_multiplier.mean()
+    else:
+        p_set.index = p_set.index.str.split(" kerosene for aviation").str[0]
 
     n.add(
         "Bus",
@@ -6245,14 +6247,18 @@ def add_aviation(
     if fidelio and limit == 'ff55':
         aviation_kero_share, aviation_bio_share, aviation_synfuels_share = calculate_aviation_shares_ff55()
 
-        p_set.index = p_set.index.str.split(" kerosene for aviation").str[0]
+        p_set = p_set * aviation_kero_share * shock_multiplier
+
+        # To check if it is an array (regional oil demand true) or a float
+        if hasattr(p_set, "rename"):
+            p_set = p_set.rename(lambda x: x + " kerosene for aviation")
 
         n.add(
             "Load",
             spatial.oil.kerosene,
             bus=spatial.oil.kerosene,
             carrier="kerosene for aviation",
-            p_set = (p_set * aviation_kero_share * shock_multiplier).rename(lambda x: x + " kerosene for aviation")
+            p_set = p_set
         )
 
         # Adding biofuels SAF
@@ -6883,7 +6889,10 @@ def add_agriculture(
             unit="MWh_LHV",
         )
 
-        shock_multiplier.index = shock_multiplier.index + " agriculture machinery oil"
+        # Check if shock_multiplier is an array or a float
+        if hasattr(shock_multiplier, "index"):
+            shock_multiplier.index = shock_multiplier.index + " agriculture machinery oil"
+
 
         n.add(
             "Load",

@@ -201,6 +201,7 @@ sector:
   biomass_to_liquid: false
   biomass_to_liquid_cc: false
   tes: false
+  regional_oil_demand: false
   electricity_distribution_grid: false
   solid_biomass_import:
     enable: true
@@ -312,7 +313,7 @@ industry:
 clustering:
   temporal:
     resolution_elec: false
-    resolution_sector: 2920h
+    resolution_sector: 3h
 
 plotting:
   tech_colors:

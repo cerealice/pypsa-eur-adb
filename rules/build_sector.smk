@@ -965,8 +965,6 @@ rule build_industrial_energy_demand_per_node:
         "../scripts/build_industrial_energy_demand_per_node.py"
 
 
-print(f"SECTOR {config_provider('sector', 'fidelio','scenario')}")
-
 rule build_industrial_energy_demand_per_country_today:
     params:
         countries=config_provider("countries"),
@@ -1023,7 +1021,6 @@ rule build_industrial_energy_demand_per_node_today:
         "../scripts/build_industrial_energy_demand_per_node_today.py"
 
 if config_provider("sector", "endo_industry","enable", default=False):
-    print("Enable working")
 
     rule build_industrial_policies_projections:
         output:

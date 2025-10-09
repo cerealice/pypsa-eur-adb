@@ -48,7 +48,7 @@ dependencies:
   - azure-core-cpp=1.16.0=h3a458e0_1
   - azure-identity-cpp=1.12.0=ha729027_0
   - azure-storage-blobs-cpp=12.14.0=hb1c9500_1
-  - azure-storage-common-cpp=12.10.0=hebae86a_2
+  - azure-storage-common-cpp=12.10.0=h4bb41a7_3
   - azure-storage-files-datalake-cpp=12.12.0=h8b27e44_3
   - babel=2.17.0=pyhd8ed1ab_0
   - beautifulsoup4=4.14.2=pyha770c72_0
@@ -114,7 +114,7 @@ dependencies:
   - docutils=0.22.2=pyhd8ed1ab_0
   - double-conversion=3.3.1=h5888daf_0
   - dpath=2.2.0=pyha770c72_0
-  - eccodes=2.42.0=h5f92351_0
+  - eccodes=2.42.0=h83bc92c_1
   - ecmwf-datastores-client=0.4.0=pyhd8ed1ab_0
   - entsoe-py=0.7.5=pyhd8ed1ab_0
   - epoxy=1.5.10=hb03c661_2
@@ -140,19 +140,19 @@ dependencies:
   - fribidi=1.0.16=hb03c661_0
   - frozenlist=1.7.0=py312h447239a_0
   - fsspec=2025.9.0=pyhd8ed1ab_0
-  - gdk-pixbuf=2.42.12=h2b0a6b4_3
+  - gdk-pixbuf=2.44.3=h2b0a6b4_0
   - geographiclib=2.1=pyhd8ed1ab_0
   - geojson=3.2.0=pyhd8ed1ab_0
   - geopandas=1.1.1=pyhd8ed1ab_1
   - geopandas-base=1.1.1=pyha770c72_1
   - geopy=2.4.1=pyhd8ed1ab_2
-  - geos=3.13.1=h97f6797_0
-  - geotiff=1.7.4=h239500f_2
+  - geos=3.14.0=h480dda7_0
+  - geotiff=1.7.4=h1000f5c_4
   - gflags=2.2.2=h5888daf_1005
   - giflib=5.2.2=hd590300_0
   - gitdb=4.0.12=pyhd8ed1ab_0
   - gitpython=3.1.45=pyhff2d567_0
-  - glib-tools=2.84.3=hf516916_0
+  - glib-tools=2.86.0=hf516916_0
   - glog=0.7.1=hbabe93e_0
   - glpk=5.0=h445213a_0
   - gmp=6.3.0=hac33072_2
@@ -166,13 +166,13 @@ dependencies:
   - graphite2=1.3.14=hecca717_2
   - graphviz=13.1.2=h87b6fe6_0
   - grpcio=1.73.1=py312hf7a0c6d_0
-  - gtk3=3.24.43=h0c6a113_5
+  - gtk3=3.24.43=h021d004_4
   - gts=0.7.6=h977cf35_4
   - h11=0.16.0=pyhd8ed1ab_0
   - h2=4.3.0=pyhcf101f3_0
   - h5netcdf=1.6.4=pyhd8ed1ab_0
   - h5py=3.14.0=nompi_py312ha4f8f14_101
-  - harfbuzz=11.4.5=h15599e2_0
+  - harfbuzz=12.0.0=h15599e2_0
   - hdf4=4.2.15=h2a13503_7
   - hdf5=1.14.6=nompi_h6e4c0c1_103
   - hicolor-icon-theme=0.17=ha770c72_2
@@ -275,7 +275,7 @@ dependencies:
   - libgoogle-cloud=2.39.0=hdb79228_0
   - libgoogle-cloud-storage=2.39.0=hdbdcf42_0
   - libgrpc=1.73.1=h1e535eb_0
-  - libhwloc=2.12.1=default_h3d81e11_1000
+  - libhwloc=2.12.1=default_h7f8ec31_1002
   - libiconv=1.18=h3b78370_2
   - libjpeg-turbo=3.1.0=hb9d3cd8_0
   - libkml=1.3.0=hf539b9f_1021
@@ -296,14 +296,14 @@ dependencies:
   - libparquet=21.0.0=h790f06f_8_cpu
   - libpciaccess=0.18=hb9d3cd8_0
   - libpng=1.6.50=h421ea60_1
-  - libpq=17.6=h3675c94_2
+  - libpq=18.0=h3675c94_0
   - libprotobuf=6.31.1=h9ef548d_1
   - libre2-11=2025.08.12=h7b12aa8_1
   - librsvg=2.58.4=he92a37e_3
   - librttopo=1.1.0=hd718a1a_18
   - libscotch=7.0.4=h2fe6a88_5
   - libsodium=1.0.20=h4ab18f5_0
-  - libspatialite=5.1.0=he17ca71_14
+  - libspatialite=5.1.0=h6f15aba_17
   - libspral=2025.05.20=hfabd9d1_1
   - libsqlite=3.50.4=h0c1763c_0
   - libssh2=1.11.1=hcf80075_0
@@ -316,9 +316,11 @@ dependencies:
   - libwebp-base=1.6.0=hd42ef1d_0
   - libxcb=1.17.0=h8a09558_0
   - libxcrypt=4.4.36=hd590300_1
-  - libxkbcommon=1.11.0=he8b52b9_0
-  - libxml2=2.13.8=h04c0eec_1
-  - libxslt=1.1.43=h7a3aeb2_0
+  - libxkbcommon=1.11.0=hca5e8e5_1
+  - libxml2=2.15.0=h26afc86_1
+  - libxml2-16=2.15.0=ha9997c6_1
+  - libxml2-devel=2.15.0=h26afc86_1
+  - libxslt=1.1.43=h711ed8c_1
   - libzip=1.11.2=h6991a6a_0
   - libzlib=1.3.1=hb9d3cd8_2
   - linopy=0.5.7=pyhd8ed1ab_0
@@ -350,7 +352,7 @@ dependencies:
   - nbformat=5.10.4=pyhd8ed1ab_1
   - ncurses=6.5=h2d0b736_3
   - nest-asyncio=1.6.0=pyhd8ed1ab_1
-  - netcdf4=1.7.2=nompi_py312hdd76c12_103
+  - netcdf4=1.7.2=nompi_py312hf6400b3_104
   - networkx=3.5=pyhe01879c_0
   - nlohmann_json=3.12.0=h54a6638_1
   - nodeenv=1.9.1=pyhd8ed1ab_1
@@ -373,7 +375,7 @@ dependencies:
   - parso=0.8.5=pyhcf101f3_0
   - partd=1.4.2=pyhd8ed1ab_0
   - patsy=1.0.1=pyhd8ed1ab_1
-  - pcre2=10.45=hc749103_0
+  - pcre2=10.46=h1321c63_0
   - pexpect=4.9.0=pyhd8ed1ab_1
   - pickleshare=0.7.5=pyhd8ed1ab_1004
   - pillow=11.3.0=py312h7b42cdd_3
@@ -388,7 +390,7 @@ dependencies:
   - powerplantmatching=0.7.1=pyhd8ed1ab_0
   - pre-commit=4.3.0=pyha770c72_0
   - progressbar2=4.5.0=pyhd8ed1ab_1
-  - proj=9.6.2=h18fbb6c_2
+  - proj=9.7.0=hb72c0af_0
   - prometheus-cpp=1.3.0=ha5d0236_0
   - prometheus_client=0.23.1=pyhd8ed1ab_0
   - prompt-toolkit=3.0.52=pyha770c72_0
@@ -415,8 +417,8 @@ dependencies:
   - pyproj=3.7.2=py312h1c88c49_1
   - pypsa=0.35.2=pyhd8ed1ab_0
   - pyscipopt=5.6.0=py312h1289d80_1
-  - pyshp=3.0.2=pyhd8ed1ab_0
-  - pyside6=6.9.2=py312h5654102_1
+  - pyshp=3.0.1=pyhd8ed1ab_0
+  - pyside6=6.9.2=py312h9da60e5_2
   - pysocks=1.7.1=pyha55dd90_7
   - pytables=3.10.2=py312hefc0c3f_9
   - pytest=8.4.2=pyhd8ed1ab_0
@@ -457,7 +459,7 @@ dependencies:
   - seaborn-base=0.13.2=pyhd8ed1ab_3
   - send2trash=1.8.3=pyh0d859eb_1
   - setuptools=80.9.0=pyhff2d567_0
-  - shapely=2.0.7=py312h21f5128_1
+  - shapely=2.1.2=py312h950be2a_0
   - six=1.17.0=pyhe01879c_1
   - smart_open=7.3.1=pyhcf101f3_0
   - smmap=5.0.2=pyhd8ed1ab_0

@@ -932,7 +932,7 @@ rule build_industrial_production_per_node:
 
 rule build_industrial_energy_demand_per_node:
     params:
-        endo_industry=config_provider("sector","endo_industry","enable")
+        endo_industry=config_provider("sector","endo_industry","enable", default=False)
     input:
         industry_sector_ratios=resources(
             "industry_sector_ratios_{planning_horizons}.csv"
@@ -971,7 +971,7 @@ rule build_industrial_energy_demand_per_country_today:
         countries=config_provider("countries"),
         industry=config_provider("industry"),
         ammonia=config_provider("sector", "ammonia", default=False),
-        endo_industry=config_provider("sector", "endo_industry", default=False)
+        endo_industry=config_provider("sector", "endo_industry","enable", default=False)
     input:
         transformation_output_coke=resources("transformation_output_coke.csv"),
         jrc="data/jrc-idees-2021",
@@ -1327,12 +1327,9 @@ rule prepare_sector_network:
             "sector", "district_heating", "temperature_limited_stores"
         ),
         base=config_provider("electricity", "base_network"),
-        endo_industry=config_provider("sector", "endo_industry", "enable"),
-        endo_ammonia=config_provider("sector", "endo_industry","endo_ammonia"),
-        endo_hvc=config_provider("sector", "endo_industry","endo_hvc"),
+        #endo_industry=config_provider("sector", "endo_industry", "enable"),
         weather_years=config_provider("weather_years","enable"),
         renewable_carriers=config_provider("electricity","renewable_carriers"),
-        industrial_policy_scenario=config_provider("sector","endo_industry","policy_scenario")
     input:
         unpack(input_profile_offwind),
         unpack(input_heat_source_power),

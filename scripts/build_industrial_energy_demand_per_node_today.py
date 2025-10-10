@@ -43,6 +43,7 @@ if snakemake.params.endo_industry:
     }
 
 else:
+    
     sector_mapping = {
         "Electric arc": "EAF",
         "Integrated steelworks": "Integrated steelworks",
@@ -69,7 +70,7 @@ else:
 
 
 def build_nodal_industrial_energy_demand():
-    print(f"Sector mapping {sector_mapping}")
+    
     fn = snakemake.input.industrial_energy_demand_per_country_today
     industrial_demand = pd.read_csv(fn, header=[0, 1], index_col=0)
 

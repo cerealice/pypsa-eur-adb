@@ -263,6 +263,12 @@ def define_spatial(nodes, options):
             spatial.syngas_dri.nodes = ["EU syn gas for DRI"]
             spatial.syngas_dri.locations = ["EU"]
 
+        # Adding CO2 for tracking CCS in steel industry
+        spatial.co2.dri = nodes + " dri process emissions"
+        spatial.co2.dri_locations = nodes
+        spatial.co2.bof = nodes + " bof process emissions"
+        spatial.co2.bof_locations = nodes
+
         if options["endo_industry"]["regional_cement_demand"]:
             # Cement
             spatial.cement = SimpleNamespace()
@@ -284,11 +290,6 @@ def define_spatial(nodes, options):
         spatial.co2.cement_cc = nodes + " cement process emissions CC"
         spatial.co2.cement_cc_locations = nodes
 
-        # Adding CO2 for tracking CCS in steel industry
-        spatial.co2.dri = nodes + " dri process emissions"
-        spatial.co2.dri_locations = nodes
-        spatial.co2.bof = nodes + " bof process emissions"
-        spatial.co2.bof_locations = nodes
 
     return spatial
 
@@ -7550,7 +7551,6 @@ if __name__ == "__main__":
     fn = snakemake.input.heating_efficiencies
     year = int(snakemake.params["energy_totals_year"])
     heating_efficiencies = pd.read_csv(fn, index_col=[1, 0]).loc[year]
-    endo_industry = snakemake.params.endo_industry
 
     spatial = define_spatial(pop_layout.index, options)
 
@@ -7705,10 +7705,10 @@ if __name__ == "__main__":
 
     if options["ammonia"]:
         add_ammonia(
-            n, costs, pop_layout, spatial, cf_industry, snakemake.params.endo_ammonia
+            n, costs, pop_layout, spatial, cf_industry, options["endo_industry"]["endo_ammonia"]
         )
 
-    if endo_industry:
+    if options["endo_industry"]["enable"]:
         industry_production_scenarios = pd.read_csv(
             snakemake.input.industry_production_scenarios, index_col=0
         )

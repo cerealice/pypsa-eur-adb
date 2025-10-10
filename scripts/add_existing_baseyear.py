@@ -811,7 +811,7 @@ def add_steel_industry_existing(n):
         carrier="DRI",
         p_nom_extendable=False,
         p_nom=p_nom_eaf / cap_decrease * eaf_ng["iron input"],
-        p_min_pu=min_part_load_steel,
+        #p_min_pu=min_part_load_steel,
         bus0=spatial.iron.nodes,
         bus1="EU HBI",
         bus2=spatial.syngas_dri.nodes,
@@ -830,9 +830,7 @@ def add_steel_industry_existing(n):
         nodes,
         suffix=" EAF-2020",
         carrier="EAF",
-        capital_cost=costs.at["electric arc furnace", "capital_cost"]
-        * 1e3
-        / electricity_input,
+        #capital_cost=costs.at["electric arc furnace", "capital_cost"] * 1e3 / electricity_input,
         p_nom_extendable=False,
         # p_min_pu=min_part_load_steel,
         p_nom=1e7,  # fake capacity, the bottleneck is DRI
@@ -968,8 +966,8 @@ def add_chemicals_industry_existing(n, options):
         efficiency=1 / costs.at["Haber-Bosch", "electricity-input"],
         efficiency2=-costs.at["Haber-Bosch", "hydrogen-input"]
         / costs.at["Haber-Bosch", "electricity-input"],
-        capital_cost=costs.at["Haber-Bosch", "capital_cost"]
-        / costs.at["Haber-Bosch", "electricity-input"],
+        #capital_cost=costs.at["Haber-Bosch", "capital_cost"]
+        #/ costs.at["Haber-Bosch", "electricity-input"],
         marginal_cost=costs.at["Haber-Bosch", "VOM"]
         / costs.at["Haber-Bosch", "electricity-input"],
         lifetime=costs.at["Haber-Bosch", "lifetime"],
@@ -1026,8 +1024,8 @@ def add_chemicals_industry_existing(n, options):
         p_nom_extendable=False,
         p_nom=p_nom_meth / cap_decrease,
         p_min_pu=options["min_part_load_methanolisation"],
-        capital_cost=costs.at["methanolisation", "capital_cost"]
-        * options["MWh_MeOH_per_MWh_H2"],  # EUR/MW_H2/a
+        #capital_cost=costs.at["methanolisation", "capital_cost"]
+        #* options["MWh_MeOH_per_MWh_H2"],  # EUR/MW_H2/a
         marginal_cost=options["MWh_MeOH_per_MWh_H2"]
         * costs.at["methanolisation", "VOM"],
         lifetime=costs.at["methanolisation", "lifetime"],
@@ -1091,7 +1089,7 @@ def add_chemicals_industry_existing(n, options):
             p_nom_extendable=False,
             p_min_pu=min_part_load_hvc,
             p_nom=p_nom_hvc / cap_decrease,
-            capital_cost=2050 * 1e3 * 0.8865 / naphtha_to_hvc,  # €/kt HVC
+            #capital_cost=2050 * 1e3 * 0.8865 / naphtha_to_hvc,  # €/kt HVC
             efficiency=1 / naphtha_to_hvc,  # MWh oil / kt HVC
             efficiency2=21 * 33.3 / naphtha_to_hvc,  # MWh H2 / kt HVC
             efficiency3=819 / naphtha_to_hvc + decay_emis,  # tCO2 / kt HVC

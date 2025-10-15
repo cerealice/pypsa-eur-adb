@@ -48,6 +48,14 @@ ff55_iter_1:
       scenario: 'ff55'
       
 
+ff55_no_transport:
+  sector:
+    fidelio:
+      fidelio_shocks: false
+      scenario: 'ff55'
+      no_ice_ban: true
+
+
 baseline_iter_1:
   sector:
     fidelio:
@@ -77,6 +85,8 @@ steel_aluminum:
     endo_industry:
       enable: true
       policy_scenario: maintain
-      regional_steel_demand: true
+      regional_steel_demand: false
       endo_aluminum: false
     min_part_load_steel: 0.3
+
+

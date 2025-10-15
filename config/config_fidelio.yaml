@@ -10,6 +10,7 @@ run:
   #- baseline_iter_2
   #- ff55_iter_5
   - steel_aluminum
+  #- ff55_no_transport
   #- ff55_iter_5
   #- hist
   scenarios:
@@ -137,7 +138,13 @@ sector:
     enable: true
     fidelio_shocks: false
     scenario: baseline
+    no_ice_ban: false
     fidelio_folder: "../coupling/from_fidelio/iter_1/"
+  endo_industry:
+    enable: false
+    policy_scenario: maintain
+    regional_steel_demand: false
+    endo_aluminum: false
   bev_dsm: false
   v2g: false
   cluster_heat_buses: false
@@ -201,6 +208,7 @@ sector:
   biomass_to_liquid: false
   biomass_to_liquid_cc: false
   tes: false
+  biomass_boiler: false
   regional_oil_demand: false
   electricity_distribution_grid: false
   solid_biomass_import:
@@ -210,6 +218,15 @@ sector:
     urban central: false
     urban decentral: false
     rural: false
+  hydrogen_turbine: false
+  co2_spatial: false
+  co2_network: false
+  H2_network: false
+  methanol:
+    methanol_to_power:
+      ocgt: false
+    biomass_to_methanol: false
+  electrobiofuels: false
   district_heating:
     ptes:
       dynamic_capacity: true
@@ -306,14 +323,14 @@ industry:
   hotmaps_locate_missing: false
   reference_year: 2019
   oil_refining_emissions: 0.013
-  H2_network: false
+
 
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#clustering
 clustering:
   temporal:
     resolution_elec: false
-    resolution_sector: 3h
+    resolution_sector: 2920h
 
 plotting:
   tech_colors:

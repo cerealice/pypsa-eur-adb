@@ -1142,6 +1142,14 @@ def add_methanol_to_kerosene_fidelio(n,costs):
     kerosene_bus = spatial.oil.synkerosene if fidelio else spatial.oil.kerosene
 
     n.add(
+        "Bus",
+        spatial.methanol.nodes,
+        location=spatial.methanol.locations,
+        carrier="methanol",
+        unit="MWh_LHV",
+    )
+
+    n.add(
         "Link",
         spatial.h2.locations,
         suffix=f" {tech}",
@@ -2435,6 +2443,7 @@ def calculate_land_transport_shares_ff55(number_cars, limit):
             ((1 - share_new_cars_per_year) ** len(range(start_year, end_year))) * base_ef
 
     if limit == 'ff55':
+
         ef_newcars_2030_ff55 = ef_newcars_2021 * (1 - 0.55)
         annual_ef_cars_ff55 = (ef_newcars_2021 - ef_newcars_2030_ff55) / (2030 - 2021) / 100
         calculate_ef_newcars(annual_ef_cars_ff55)
@@ -2473,7 +2482,7 @@ def calculate_land_transport_shares_ff55(number_cars, limit):
 
         fuel_cell_share = 0
         electric_share = round(share_ev_cars_2030,2)
-        ice_share = 1 - share_ev_cars_2030
+        ice_share = round(1 - share_ev_cars_2030,2)
     
         # Values for no policy in 2030: FCEV share: 0% EV share: 23.8%, ICEV share: 76.2%
 
@@ -2481,17 +2490,17 @@ def calculate_land_transport_shares_ff55(number_cars, limit):
             # ASSUMING LINEAR GROWTH OF EV UPTAKE
             fuel_cell_share = 0
             electric_share = round(share_ev_cars_2040,2)
-            ice_share = 1 - electric_share
+            ice_share = round(1 - electric_share,2)
 
-        # Values for no policy in 2030: FCEV share: 0% EV share: 41.4%, ICEV share: 58.6%
+        # Values for no policy in 2040: FCEV share: 0% EV share: 41.4%, ICEV share: 58.6%
 
     elif investment_year == 2050:
 
             fuel_cell_share = 0
             electric_share = round(share_ev_cars_2050,2)
-            ice_share = 1 - electric_share
+            ice_share = round(1 - electric_share,2)
 
-        # Values for no policy in 2030: FCEV share: 0% EV share: 53.0%, ICEV share: 47%
+        # Values for no policy in 2050: FCEV share: 0% EV share: 53.0%, ICEV share: 47%
     
     output = pd.Series([fuel_cell_share, electric_share, ice_share], index=["fuel_cell", "electric", "ice"]) # Keep the order to match add_land_transport
     return output
@@ -5888,6 +5897,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         unit="kt/yr",
     )
 
+    """
     n.add(
         "Store",
         "EU HBI",
@@ -5896,6 +5906,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         e_nom_extendable=True,
         e_cyclic=True,
         )
+    """
 
     electricity_input = (
         costs.at["direct iron reduction furnace", "electricity-input"] * 1e3
@@ -7841,6 +7852,8 @@ if __name__ == "__main__":
     )
 
     if options["transport"]:
+        if options["fidelio"]["no_ice_ban"]:
+            limit = "no_ice_ban"
         add_land_transport(
             n=n,
             costs=costs,

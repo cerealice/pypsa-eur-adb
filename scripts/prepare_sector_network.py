@@ -5808,6 +5808,15 @@ def add_steel_industry(n, investment_year, steel_data, options):
         p_set=p_set,
     )
 
+    n.add(
+        "Store",
+        spatial.steel.nodes,
+        bus=spatial.steel.nodes,
+        carrier="steel",
+        e_nom_extendable=True,
+        e_cyclic=True,
+    )
+    
     # add CO2 process from steel industry
     n.add("Carrier", "steel process emissions")
     n.add("Carrier", "steel process emissions CC")
@@ -5897,7 +5906,6 @@ def add_steel_industry(n, investment_year, steel_data, options):
         unit="kt/yr",
     )
 
-    """
     n.add(
         "Store",
         "EU HBI",
@@ -5905,8 +5913,8 @@ def add_steel_industry(n, investment_year, steel_data, options):
         carrier="HBI",
         e_nom_extendable=True,
         e_cyclic=True,
-        )
-    """
+    )
+
 
     electricity_input = (
         costs.at["direct iron reduction furnace", "electricity-input"] * 1e3
@@ -5969,8 +5977,9 @@ def add_steel_industry(n, investment_year, steel_data, options):
         # https://gmk.center/en/posts/the-global-scrap-market-showed-overwhelming-stability-in-july/
         # 302.5 €/t in Germany for E3, which has limited contamination, low quality than prime grades but a staple feedstock for EAF
         # https://www.mgg-recycling.com/wp-content/uploads/2013/06/EFR_EU27_steel_scrap_specification.pdf
-        marginal_cost=302.5 * 1e3, # €/kt
-        e_sum_min = min_scrap_kt,
+        #marginal_cost=302.5 * 1e3, # €/kt
+        marginal_cost=280*1e3,
+        #e_sum_min = min_scrap_kt,
         e_sum_max = max_scrap_kt,
     )
 

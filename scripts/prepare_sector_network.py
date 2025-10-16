@@ -5749,9 +5749,11 @@ def add_steel_industry(n, investment_year, steel_data, options):
     keys = pd.read_csv(snakemake.input.industrial_distribution_key, index_col=0)
 
     scenario = options["endo_industry"]["policy_scenario"]
-    hourly_steel_production = (
-        steel_data.loc[investment_year, scenario] * 1e3 / nhours
-    )  # get the steel that needs to be produced hourly ktsteel/h
+    if investment_year == 2020:
+        hourly_steel_production = steel_data.loc[2030, "maintain"] * 1e3 / nhours # Same for all years in maintain case
+    else:
+        hourly_steel_production = steel_data.loc[investment_year, scenario] * 1e3 / nhours
+  # get the steel that needs to be produced hourly ktsteel/h
     capacities = capacities.sum(axis=1)
 
     # Share of steel production capacities -> assumption: keep producing the same share in the country, changing technology
@@ -5950,6 +5952,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
     max_scrap_mt = max_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
     max_scrap_kt = max_scrap_mt * 1000  # [kt]
 
+    """
     # Retrieve minimum value for steel scrap for 2030
     min_scrap_file = "data/min_scrap.csv"
     min_scrap_df = pd.read_csv(min_scrap_file, index_col=0)
@@ -5957,6 +5960,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
     # Value in Mt (convert to kt if needed for units)
     min_scrap_mt = min_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
     min_scrap_kt = min_scrap_mt * 1000  # [kt] 
+    """
 
     n.add(
         "Bus",
@@ -6044,7 +6048,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
 
     # Top Gas Recycling in BF-BOF
     # Costs for 2030 and 2050
-    if investment_year == 2030:
+    if investment_year <= 2030:
         capital_cost_tgr = tgr["capital cost 2030"]
     elif investment_year == 2040:
         capital_cost_tgr = (

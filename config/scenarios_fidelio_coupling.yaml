@@ -11,6 +11,15 @@
 #   electricity:
 #       renewable_carriers: [wind, solar] # override the list of renewable carriers
 
+hist:
+  scenario:
+    planning_horizons:
+    - 2020
+    # This not always work, better to run hist only and set the planning horizon to 2020 in config_fidelio.yaml
+  energy:
+    base_emissions_year: 2018
+
+# All scenarios should have steel now
 ff55_iter_5:
   sector:
     fidelio:
@@ -85,7 +94,7 @@ steel_aluminum:
     endo_industry:
       enable: true
       policy_scenario: maintain
-      regional_steel_demand: false
+      regional_steel_demand: true
       endo_aluminum: false
     min_part_load_steel: 0.3
 

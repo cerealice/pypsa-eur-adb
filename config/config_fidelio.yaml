@@ -9,10 +9,10 @@ run:
   #- baseline
   #- baseline_iter_2
   #- ff55_iter_5
-  - steel_aluminum
+  #- steel_aluminum
   #- ff55_no_transport
   #- ff55_iter_5
-  #- hist
+  - hist
   scenarios:
     enable: true
     file: config/scenarios_fidelio_coupling.yaml
@@ -38,10 +38,10 @@ scenario:
   sector_opts:
   - ''
   planning_horizons:
-  #- 2020
-  - 2030
-  - 2040
-  - 2050
+  - 2020
+  #- 2030
+  #- 2040
+  #- 2050
 
 validation: true # Should be turned on when 2020 as planning_horizon
 
@@ -141,10 +141,11 @@ sector:
     no_ice_ban: false
     fidelio_folder: "../coupling/from_fidelio/iter_1/"
   endo_industry:
-    enable: false
+    enable: true
     policy_scenario: maintain
-    regional_steel_demand: false
+    regional_steel_demand: true
     endo_aluminum: false
+  min_part_load_steel: 0.3
   bev_dsm: false
   v2g: false
   cluster_heat_buses: false
@@ -330,7 +331,7 @@ industry:
 clustering:
   temporal:
     resolution_elec: false
-    resolution_sector: 3h
+    resolution_sector: 2920h
 
 plotting:
   tech_colors:

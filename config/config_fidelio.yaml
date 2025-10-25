@@ -11,8 +11,9 @@ run:
   #- ff55_iter_5
   #- steel_aluminum
   #- ff55_no_transport
-  #- ff55_iter_5
-  - hist
+  #- ff55_iter_1
+  #- hist
+  - steel_aluminum
   scenarios:
     enable: true
     file: config/scenarios_fidelio_coupling.yaml
@@ -38,10 +39,10 @@ scenario:
   sector_opts:
   - ''
   planning_horizons:
-  - 2020
-  #- 2030
-  #- 2040
-  #- 2050
+  #- 2020
+  - 2030
+  - 2040
+  - 2050
 
 validation: true # Should be turned on when 2020 as planning_horizon
 
@@ -197,7 +198,7 @@ sector:
     2040: 0.3
     2045: 0.15
     2050: 0
-  methanation: true
+  methanation: false
   co2_sequestration_potential:
     2020: 0
     2025: 0
@@ -209,7 +210,6 @@ sector:
   biomass_to_liquid: false
   biomass_to_liquid_cc: false
   tes: false
-  biomass_boiler: false
   regional_oil_demand: false
   electricity_distribution_grid: false
   solid_biomass_import:
@@ -234,6 +234,11 @@ sector:
       supplemental_heating:
         enable: false
         booster_heat_pump: false
+  co2_sequestration_potential:
+    2020: 0
+    2030: 50
+    2040: 250
+    2050: 400
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#industry
 industry:
@@ -331,7 +336,7 @@ industry:
 clustering:
   temporal:
     resolution_elec: false
-    resolution_sector: 2920h
+    resolution_sector: 3h
 
 plotting:
   tech_colors:

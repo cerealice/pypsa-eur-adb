@@ -5809,15 +5809,6 @@ def add_steel_industry(n, investment_year, steel_data, options):
         carrier="steel",
         p_set=p_set,
     )
-
-    n.add(
-        "Store",
-        spatial.steel.nodes,
-        bus=spatial.steel.nodes,
-        carrier="steel",
-        e_nom_extendable=True,
-        e_cyclic=True,
-    )
     
     # add CO2 process from steel industry
     n.add("Carrier", "steel process emissions")
@@ -5900,68 +5891,80 @@ def add_steel_industry(n, investment_year, steel_data, options):
         efficiency=1 / eaf_h2["h2 input"],  # MWh hydrogen per one unit of dri gas
     )
 
-    n.add(
-        "Bus",
-        "EU HBI",
-        location="EU",
-        carrier="HBI",
-        unit="kt/yr",
-    )
+    # Parameters
+    electricity_input_dri = costs.at["direct iron reduction furnace", "electricity-input"] * 1e3  # MWh/kt
+    electricity_input_eaf = costs.at["electric arc furnace", "electricity-input"] * 1e3  # MWh/kt steel
+    total_electricity_input = electricity_input_dri + electricity_input_eaf
 
-    n.add(
-        "Store",
-        "EU HBI",
-        bus="EU HBI",
-        carrier="HBI",
-        e_nom_extendable=True,
-        e_cyclic=True,
-    )
-
-
-    electricity_input = (
-        costs.at["direct iron reduction furnace", "electricity-input"] * 1e3
-    )  # MWh/kt
+    capital_cost_dri = costs.at["direct iron reduction furnace", "capital_cost"] * 1e3 / eaf_ng["iron input"]
+    capital_cost_eaf = costs.at["electric arc furnace", "capital_cost"] * 1e3 / electricity_input_eaf
+    combined_capital_cost = capital_cost_dri + capital_cost_eaf
 
     n.add(
         "Link",
         nodes,
-        suffix=" DRI",
-        carrier="DRI",
-        capital_cost=costs.at["direct iron reduction furnace", "capital_cost"]
-        * 1e3
-        / eaf_ng["iron input"],
+        suffix=" DRI-EAF",
+        carrier="DRI-EAF",
+        capital_cost=combined_capital_cost,
         p_nom_extendable=True,
-        #p_min_pu=0.1,
+        p_min_pu=min_part_load_steel,
         bus0=spatial.iron.nodes,
-        bus1="EU HBI",
+        bus1=spatial.steel.nodes,
         bus2=spatial.syngas_dri.nodes,
         bus3=nodes,
+        # Outputs: 1 unit of steel per iron input
         efficiency=1 / eaf_ng["iron input"],
-        efficiency2=-1,  # one unit of dri gas per kt iron
-        efficiency3=-electricity_input / eaf_ng["iron input"],
+
+        # Negative efficiencies for inputs
+        efficiency2=-1,  # one unit of syn gas per kt iron
+        efficiency3=-total_electricity_input / eaf_ng["iron input"],
         lifetime=eaf_ng["lifetime"],
     )
 
-    # Tentative scrap modelling
+        # ============================================================
+    # --- UNIFIED STEEL PRODUCTION LINKS: DRI–EAF and SCRAP–EAF ---
+    # ============================================================
 
-    # Retrieve value for steel scrap constraint
+    # Parameters for DRI–EAF
+    electricity_input_dri = costs.at["direct iron reduction furnace", "electricity-input"] * 1e3  # MWh/kt
+    electricity_input_eaf = costs.at["electric arc furnace", "electricity-input"] * 1e3  # MWh/kt steel
+    total_electricity_input = electricity_input_dri + electricity_input_eaf
+
+    capital_cost_dri = costs.at["direct iron reduction furnace", "capital_cost"] * 1e3 / eaf_ng["iron input"]
+    capital_cost_eaf = costs.at["electric arc furnace", "capital_cost"] * 1e3 / electricity_input_eaf
+    combined_capital_cost = capital_cost_dri + capital_cost_eaf
+
+    # ---- DRI–EAF Link ----
+    n.add(
+        "Link",
+        nodes,
+        suffix=" DRI-EAF",
+        carrier="DRI-EAF",
+        capital_cost=combined_capital_cost,
+        p_nom_extendable=True,
+        p_min_pu=min_part_load_steel,
+        bus0=spatial.iron.nodes,
+        bus1=spatial.steel.nodes,
+        bus2=spatial.syngas_dri.nodes,
+        bus3=nodes,
+        efficiency=1 / eaf_ng["iron input"],                # kt steel per kt iron
+        efficiency2=-1,                                     # 1 unit of syn gas per kt iron
+        efficiency3=-total_electricity_input / eaf_ng["iron input"],  # MWh_el per kt iron
+        lifetime=eaf_ng["lifetime"],
+    )
+
+    # ============================================================
+    # --- SCRAP–EAF PATHWAY WITH MAXIMUM LIMIT -------------------
+    # ============================================================
+
+    # Retrieve maximum available scrap (kt) and per timestep limit
     max_scrap_file = "data/max_scrap.csv"
     max_scrap_df = pd.read_csv(max_scrap_file, index_col=0)
-
-    # Value in Mt (convert to kt if needed for units)
     max_scrap_mt = max_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
     max_scrap_kt = max_scrap_mt * 1000  # [kt]
+    # max_scrap_pertimestep = (max_scrap_kt / 8760) * n.snapshot_weightings.iloc[0, 0]
 
-    """
-    # Retrieve minimum value for steel scrap for 2030
-    min_scrap_file = "data/min_scrap.csv"
-    min_scrap_df = pd.read_csv(min_scrap_file, index_col=0)
-
-    # Value in Mt (convert to kt if needed for units)
-    min_scrap_mt = min_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
-    min_scrap_kt = min_scrap_mt * 1000  # [kt] 
-    """
-
+    # --- Scrap bus and generator ---
     n.add(
         "Bus",
         "EU steel scrap",
@@ -5987,36 +5990,25 @@ def add_steel_industry(n, investment_year, steel_data, options):
         e_sum_max = max_scrap_kt,
     )
 
-    n.add(
-        "Link",
-        "EU steel scrap to HBI",
-        bus0="EU steel scrap",
-        bus1="EU HBI",
-        carrier="steel scrap to HBI",
-        p_nom_extendable=True,
-        capital_cost=0,
-        efficiency=1,
+    # --- Scrap–EAF Link ---
+    electricity_input_scrap = costs.at["electric arc furnace", "electricity-input"] * 1e3  # MWh/kt steel
+    capital_cost_scrap_eaf = (
+        costs.at["electric arc furnace", "capital_cost"] * 1e3 / electricity_input_scrap
     )
-
-    electricity_input = (
-        costs.at["electric arc furnace", "electricity-input"] * 1e3
-    )  # MWh/kt steel
 
     n.add(
         "Link",
         nodes,
-        suffix=" EAF",
-        carrier="EAF",
-        capital_cost=costs.at["electric arc furnace", "capital_cost"]
-        * 1e3
-        / electricity_input,
+        suffix=" Scrap-EAF",
+        carrier="Scrap-EAF",
+        capital_cost=capital_cost_scrap_eaf,
         p_nom_extendable=True,
         p_min_pu=min_part_load_steel,
-        bus0=nodes,
-        bus1=spatial.steel.nodes,
-        bus2="EU HBI",
-        efficiency=1 / electricity_input,
-        efficiency2=-costs.at["electric arc furnace", "hbi-input"] / electricity_input,
+        bus0=nodes,                 # electricity
+        bus1=spatial.steel.nodes,   # steel output
+        bus2="EU steel scrap",      # scrap input
+        efficiency=1 / electricity_input_scrap,   # MWh_el per kt steel
+        efficiency2=-costs.at["electric arc furnace", "hbi-input"] / electricity_input_scrap,
         lifetime=eaf_ng["lifetime"],
     )
 

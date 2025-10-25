@@ -724,131 +724,136 @@ def add_heating_capacities_installed_before_baseyear(
                 ],
             )
 
-
 def add_steel_industry_existing(n):
-    # Steel capacities in Europe in kton of steel products per year
+    """
+    Add existing steel industry capacities (BF-BOF, DRI-EAF, Scrap-EAF)
+    to the PyPSA network, based on historical data.
+    """
+    # --- Load input data ---
     capacities = pd.read_csv(snakemake.input.endoindustry_capacities, index_col=0)
     capacities = capacities[["EAF", "DRI + EAF", "Integrated steelworks"]]
     start_dates = pd.read_csv(snakemake.input.endoindustry_start_dates, index_col=0)
     start_dates = start_dates[["EAF", "DRI + EAF", "Integrated steelworks"]]
     keys = pd.read_csv(snakemake.input.industrial_distribution_key, index_col=0)
 
+    # --- Split technology types ---
     capacities_bof = capacities["Integrated steelworks"]
-    capacities_eaf = capacities["EAF"] + capacities["DRI + EAF"]
-    capacities_bof.index = capacities.index
-    capacities_eaf.index = capacities.index
-
+    capacities_dri = capacities["DRI + EAF"]
+    capacities_eaf = capacities["EAF"]
     capacities_bof = capacities_bof * keys["Integrated steelworks"]
-
+    capacities_dri = capacities_dri * keys["EAF"]
     capacities_eaf = capacities_eaf * keys["EAF"]
-    start_dates_eaf = pd.Series(
-        np.maximum(start_dates["EAF"], start_dates["DRI + EAF"])
-    )
-    # start_dates_eaf = round((start_dates["EAF"] * capacities["EAF"] + start_dates["DRI + EAF"] * capacities["DRI + EAF"])/ capacities_eaf)
-    start_dates_bof = round(start_dates["Integrated steelworks"])
 
-    # Average age of assets in Iron and steel in Europe: 21-28 years, so I assume they are starting in 2000 in case https://www.energimyndigheten.se/4a9556/globalassets/energieffektivisering_/jag-ar-saljare-eller-tillverkare/dokument/produkter-med-krav/ugnar-industriella-och-laboratorie/annex-b_lifetime_energy.pdf
-    start_dates_eaf = start_dates_eaf.where(
-        (start_dates_eaf >= 1000) & np.isfinite(start_dates_eaf), 2000
-    )
-    start_dates_bof = start_dates_bof.where(
-        (start_dates_bof >= 1000) & np.isfinite(start_dates_bof), 2000
-    )
+    start_dates_bof = round(start_dates["Integrated steelworks"]).fillna(2000)
+    start_dates_dri = round(start_dates["DRI + EAF"]).fillna(2000)
+    start_dates_eaf = round(start_dates["EAF"]).fillna(2000)
+
+    # --- Compute hourly capacity ---
+    p_nom_bof = capacities_bof / nhours
+    p_nom_dri = capacities_dri / nhours
+    p_nom_eaf = capacities_eaf / nhours
 
     nodes = pop_layout.index
-    p_nom_bof = pd.DataFrame(index=nodes, columns=(["value"]))
-    p_nom_eaf = pd.DataFrame(index=nodes, columns=(["value"]))
-
-    p_nom_bof = capacities_bof / nhours  # get the hourly production capacity
-    p_nom_eaf = capacities_eaf / nhours  # get the hourly production capacity
-
-    # PARAMETERS
     nyears = n.snapshot_weightings.generators.sum() / 8760.0
-    bof, eaf_ng, eaf_h2, tgr, min_part_load_steel = calculate_steel_parameters(
-        options, nyears
-    )
 
-    # check if existing capacity is bigger than demand
+    # --- Retrieve parameters ---
+    bof, eaf_ng, eaf_h2, tgr, min_part_load_steel = calculate_steel_parameters(options, nyears)
+
+    # --- Check for overcapacity ---
     steel_load = n.loads[n.loads.carrier == "steel"].p_set.sum()
     installed_cap = (
-        p_nom_eaf.sum() / bof["iron input"] + p_nom_bof.sum() / eaf_ng["iron input"]
-    )  # times 1/efficiency
-    if installed_cap > steel_load:
-        cap_decrease = installed_cap / steel_load * 1.1
-        logger.info(
-            f"Scaling down BOF and EAF capacity by factor {cap_decrease} to avoid numerical issues due to low steel demand."
-        )
-    else:
-        cap_decrease = 1
+        p_nom_eaf.sum() / eaf_ng["iron input"] +
+        p_nom_dri.sum() / eaf_ng["iron input"] +
+        p_nom_bof.sum() / bof["iron input"]
+    )
+    cap_decrease = installed_cap / steel_load * 1.1 if installed_cap > steel_load else 1
 
+    # ============================================================
+    # --- EXISTING BF–BOF ----------------------------------------
+    # ============================================================
     n.add(
         "Link",
         nodes,
         suffix=" BF-BOF-2020",
+        carrier="BF-BOF",
         bus0=spatial.iron.nodes,
         bus1=spatial.steel.nodes,
         bus2=spatial.coal.nodes,
         bus3=nodes,
         bus4=spatial.co2.bof,
-        carrier="BF-BOF",
         p_nom=p_nom_bof / cap_decrease * bof["iron input"],
         p_nom_extendable=False,
-        p_min_pu=min_part_load_steel, 
-        # marginal_cost=-0.1,#opex_bof,
+        p_min_pu=min_part_load_steel,
         efficiency=1 / bof["iron input"],
-        efficiency2=-bof["coal input"] / bof["iron input"],  # MWhth coal per kt iron
-        efficiency3=-bof["elec input"]
-        / bof["iron input"],  # MWh electricity per kt iron
-        efficiency4=bof["emission factor"] / bof["iron input"],  # t CO2 per kt iron
-        lifetime=bof[
-            "lifetime"
-        ],  # https://www.energimyndigheten.se/4a9556/globalassets/energieffektivisering_/jag-ar-saljare-eller-tillverkare/dokument/produkter-med-krav/ugnar-industriella-och-laboratorie/annex-b_lifetime_energy.pdf
+        efficiency2=-bof["coal input"] / bof["iron input"],
+        efficiency3=-bof["elec input"] / bof["iron input"],
+        efficiency4=bof["emission factor"] / bof["iron input"],
+        lifetime=bof["lifetime"],
         build_year=start_dates_bof,
     )
 
-    electricity_input = (
-        costs.at["direct iron reduction furnace", "electricity-input"] * 1e3
-    )  # MWh/kt
+    # ============================================================
+    # --- EXISTING DRI–EAF ---------------------------------------
+    # ============================================================
+    electricity_input_dri = costs.at["direct iron reduction furnace", "electricity-input"] * 1e3
+    electricity_input_eaf = costs.at["electric arc furnace", "electricity-input"] * 1e3
+    total_electricity_input = electricity_input_dri + electricity_input_eaf
 
     n.add(
         "Link",
         nodes,
-        suffix=" DRI-2020",
-        carrier="DRI",
+        suffix=" DRI-EAF-2020",
+        carrier="DRI-EAF",
         p_nom_extendable=False,
-        p_nom=p_nom_eaf / cap_decrease * eaf_ng["iron input"],
+        p_nom=p_nom_dri / cap_decrease * eaf_ng["iron input"],
         p_min_pu=min_part_load_steel,
         bus0=spatial.iron.nodes,
-        bus1="EU HBI",
+        bus1=spatial.steel.nodes,
         bus2=spatial.syngas_dri.nodes,
         bus3=nodes,
         efficiency=1 / eaf_ng["iron input"],
-        efficiency2=-1,  # one unit of dri gas per kt iron
-        efficiency3=-electricity_input / eaf_ng["iron input"],
+        efficiency2=-1,
+        efficiency3=-total_electricity_input / eaf_ng["iron input"],
         lifetime=eaf_ng["lifetime"],
-        build_year=start_dates_eaf,
+        build_year=start_dates_dri,
     )
 
-    electricity_input = costs.at["electric arc furnace", "electricity-input"]
+    # ============================================================
+    # --- EXISTING SCRAP–EAF -------------------------------------
+    # ============================================================
+    # Retrieve maximum available scrap
+    max_scrap_file = "data/max_scrap.csv"
+    max_scrap_df = pd.read_csv(max_scrap_file, index_col=0)
+    scenario = options["endo_industry"]["policy_scenario"]
+    max_scrap_mt = max_scrap_df.loc["maintain", "2020"]  # baseline year
+    max_scrap_kt = max_scrap_mt * 1000
+    max_scrap_pertimestep = (max_scrap_kt / 8760) * n.snapshot_weightings.iloc[0, 0]
+
+    # Add scrap bus and generator if not present
+    if "EU steel scrap" not in n.buses.index:
+        n.add("Bus", "EU steel scrap", location="EU", carrier="steel scrap", unit="kt/yr")
+
+
+    electricity_input_scrap = costs.at["electric arc furnace", "electricity-input"] * 1e3
 
     n.add(
         "Link",
         nodes,
-        suffix=" EAF-2020",
-        carrier="EAF",
-        #capital_cost=costs.at["electric arc furnace", "capital_cost"] * 1e3 / electricity_input,
+        suffix=" Scrap-EAF-2020",
+        carrier="Scrap-EAF",
         p_nom_extendable=False,
-        # p_min_pu=min_part_load_steel,
-        p_nom=1e7,  # fake capacity, the bottleneck is DRI
+        p_nom=p_nom_eaf / cap_decrease * eaf_ng["iron input"],
+        p=max_scrap_pertimestep,
         bus0=nodes,
         bus1=spatial.steel.nodes,
-        bus2="EU HBI",
-        efficiency=1 / electricity_input,
-        efficiency2=-costs.at["electric arc furnace", "hbi-input"]
-        / electricity_input,
+        bus2="EU steel scrap",
+        efficiency=1 / electricity_input_scrap,
+        efficiency2=-costs.at["electric arc furnace", "hbi-input"] / electricity_input_scrap,
         lifetime=eaf_ng["lifetime"],
-        build_year=start_dates_eaf,
+        build_year=2025,
     )
+
+    logger.info("Added existing steel capacities: BF-BOF, DRI-EAF, and Scrap-EAF.")
 
 
 def add_aluminum_industry_existing(n):

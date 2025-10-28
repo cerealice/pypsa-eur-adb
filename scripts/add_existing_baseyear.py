@@ -844,6 +844,32 @@ def add_steel_industry_existing(n):
         build_year=start_dates_eaf,
     )
 
+    
+    # ============================================================
+    # --- EXISTING SCRAP–EAF -------------------------------------
+    # ============================================================
+    # Retrieve maximum available scrap
+    max_scrap_file = "data/max_scrap.csv"
+    max_scrap_df = pd.read_csv(max_scrap_file, index_col=0)
+    max_scrap_mt = max_scrap_df.loc["maintain", "2020"]  # baseline year
+    max_scrap_kt = max_scrap_mt * 1000
+    max_scrap_pertimestep = (max_scrap_kt / 8760) * n.snapshot_weightings.iloc[0, 0]
+
+    n.add(
+        "Link",
+        "EU steel scrap to HBI-2020",
+        bus0="EU steel scrap",
+        bus1="EU HBI",
+        carrier="steel scrap to HBI",
+        p_nom_extendable=False,
+        p_nom=1e7,  # fake capacity
+        p=max_scrap_pertimestep,
+        capital_cost=0,
+        efficiency=1,
+        build_year=2025,
+    )
+
+
 
 def add_cement_industry_existing(n):
     # Cement capacities in Europe in kton of cement products per year

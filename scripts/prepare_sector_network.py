@@ -5486,15 +5486,6 @@ def add_steel_industry(n, investment_year, steel_data, options):
         unit="kt/yr",
     )
 
-    n.add(
-        "Store",
-        "EU HBI",
-        bus="EU HBI",
-        carrier="HBI",
-        e_nom_extendable=True,
-        e_cyclic=True,
-        )
-
     if options["endo_industry"]["dri_import"]:
         mc_dri = 395 * 1e3 if investment_year >= 2040 else 1e7
         # €/ktHBI https://www.sciencedirect.com/science/article/pii/S0360544223006308
@@ -5570,7 +5561,6 @@ def add_steel_industry(n, investment_year, steel_data, options):
         # 302.5 €/t in Germany for E3, which has limited contamination, low quality than prime grades but a staple feedstock for EAF
         # https://www.mgg-recycling.com/wp-content/uploads/2013/06/EFR_EU27_steel_scrap_specification.pdf
         marginal_cost=302.5 * 1e3, # €/kt
-        e_sum_min = min_scrap_kt,
         e_sum_max = max_scrap_kt,
     )
 
@@ -7858,6 +7848,9 @@ if __name__ == "__main__":
 
     if options["cluster_heat_buses"] and not first_year_myopic:
         cluster_heat_buses(n)
+
+    if options["endo_industry"]["extra_wind"]:
+        n.generators_t.p_max_pu.loc[:,n.generators_t.p_max_pu.columns.str.contains("onwind")] *= 2
 
     maybe_adjust_costs_and_potentials(
         n, snakemake.params["adjustments"], investment_year

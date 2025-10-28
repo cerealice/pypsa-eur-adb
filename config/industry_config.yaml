@@ -9,8 +9,8 @@ run:
   name: #"all"
   #- base_reg_regain
   #- base_reg_deindustrial
-  - policy_reg_regain_h2
-  - policy_reg_deindustrial_h2
+  #- policy_reg_regain_h2
+  - policy_reg_maintain_wind
   #- import_policy_reg_regain
   #- import_policy_reg_deindustrial
   #- policy_reg_regain

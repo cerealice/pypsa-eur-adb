@@ -5985,7 +5985,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         # 302.5 €/t in Germany for E3, which has limited contamination, low quality than prime grades but a staple feedstock for EAF
         # https://www.mgg-recycling.com/wp-content/uploads/2013/06/EFR_EU27_steel_scrap_specification.pdf
         #marginal_cost=302.5 * 1e3, # €/kt
-        marginal_cost=280*1e3,
+        marginal_cost=302.5*1e3,
         #e_sum_min = min_scrap_kt,
         e_sum_max = max_scrap_kt,
     )
@@ -7780,6 +7780,7 @@ if __name__ == "__main__":
         add_ammonia(n, costs, pop_layout, spatial, cf_industry)
 
     if options["endo_industry"]["enable"]:
+        print("ENDO INDUSTRY")
         industry_production_scenarios = pd.read_csv(
             snakemake.input.industry_production_scenarios, index_col=0
         )

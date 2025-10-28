@@ -55,12 +55,6 @@ ff55_iter_1:
     fidelio:
       fidelio_shocks: false
       scenario: 'ff55'
-    endo_industry:
-      enable: false
-      policy_scenario: maintain
-      regional_steel_demand: false
-      endo_aluminum: false
-    min_part_load_steel: 0.3
       
 
 ff55_no_transport:
@@ -77,6 +71,7 @@ baseline_iter_1:
     fidelio:
       fidelio_shocks: false
       scenario: baseline
+
 
 baseline_iter_2:
   sector:

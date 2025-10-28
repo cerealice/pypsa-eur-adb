@@ -824,7 +824,6 @@ def add_steel_industry_existing(n):
     # Retrieve maximum available scrap
     max_scrap_file = "data/max_scrap.csv"
     max_scrap_df = pd.read_csv(max_scrap_file, index_col=0)
-    scenario = options["endo_industry"]["policy_scenario"]
     max_scrap_mt = max_scrap_df.loc["maintain", "2020"]  # baseline year
     max_scrap_kt = max_scrap_mt * 1000
     max_scrap_pertimestep = (max_scrap_kt / 8760) * n.snapshot_weightings.iloc[0, 0]

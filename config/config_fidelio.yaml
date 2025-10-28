@@ -7,13 +7,13 @@ run:
   prefix: ""
   name: #"all"
   #- baseline
-  #- baseline_iter_2
+  - baseline_iter_1
   #- ff55_iter_5
   #- steel_aluminum
   #- ff55_no_transport
-  #- ff55_iter_1
+  - ff55_iter_1
   #- hist
-  - steel_aluminum
+  #- steel_aluminum
   scenarios:
     enable: true
     file: config/scenarios_fidelio_coupling.yaml

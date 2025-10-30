@@ -5815,6 +5815,18 @@ def add_steel_industry(n, investment_year, steel_data, options):
         unit=unit,
     )
 
+    if options['fidelio']['fidelio_shocks']:
+        shock_file = options['fidelio']['fidelio_folder'] + 'steel_var.csv'
+        
+        p_set = apply_fidelio_shocks_to_demand(
+            p_set,
+            shock_file=shock_file,
+            investment_year=investment_year,
+            sector_name="steel",
+            nodes_in="index"
+        )
+
+
     # STEEL
     n.add(
         "Load",
@@ -7794,7 +7806,7 @@ if __name__ == "__main__":
         add_ammonia(n, costs, pop_layout, spatial, cf_industry)
 
     if options["endo_industry"]["enable"]:
-        print("ENDO INDUSTRY")
+        
         industry_production_scenarios = pd.read_csv(
             snakemake.input.industry_production_scenarios, index_col=0
         )

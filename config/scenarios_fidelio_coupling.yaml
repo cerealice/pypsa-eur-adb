@@ -55,7 +55,20 @@ ff55_iter_1:
     fidelio:
       fidelio_shocks: false
       scenario: 'ff55'
-      
+
+ff55tariffs_iter_2:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_1/"
+
+ff55tariffs_iter_1:
+  sector:
+    fidelio:
+      fidelio_shocks: false
+      scenario: 'ff55tariffs'
+
 
 ff55_no_transport:
   sector:

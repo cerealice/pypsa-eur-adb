@@ -765,7 +765,7 @@ def add_steel_industry_existing(n):
     # check if existing capacity is bigger than demand
     steel_load = n.loads[n.loads.carrier == "steel"].p_set.sum()
     installed_cap = (
-        p_nom_eaf.sum() / bof["iron input"] + p_nom_bof.sum() / eaf_ng["iron input"]
+        p_nom_eaf.sum() / eaf_ng["iron input"] + p_nom_bof.sum() / bof["iron input"]
     )  # times 1/efficiency
     if installed_cap > steel_load:
         logger.info(
@@ -804,6 +804,7 @@ def add_steel_industry_existing(n):
         costs.at["direct iron reduction furnace", "electricity-input"] * 1e3
     )  # MWh/kt
 
+    capital_cost = (costs.at["direct iron reduction furnace", "capital_cost"] + costs.at["electric arc furnace", "capital_cost"]) * 1e3 / eaf_ng["iron input"]
     n.add(
         "Link",
         nodes,
@@ -812,6 +813,7 @@ def add_steel_industry_existing(n):
         p_nom_extendable=False,
         p_nom=p_nom_eaf / cap_decrease * eaf_ng["iron input"],
         #p_min_pu=min_part_load_steel,
+        capital_cost=capital_cost,
         bus0=spatial.iron.nodes,
         bus1="EU HBI",
         bus2=spatial.syngas_dri.nodes,
@@ -862,9 +864,8 @@ def add_steel_industry_existing(n):
         bus1="EU HBI",
         carrier="steel scrap to HBI",
         p_nom_extendable=False,
-        p_nom=1e7,  # fake capacity
-        p=max_scrap_pertimestep,
-        capital_cost=0,
+        p_nom=max_scrap_pertimestep,
+        p_min_pu=1,
         efficiency=1,
         build_year=2025,
     )

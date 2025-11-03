@@ -5501,6 +5501,15 @@ def add_steel_industry(n, investment_year, steel_data, options):
         unit="kt/yr",
     )
 
+    n.add(
+        "Store",
+        ["EU HBI"],
+        bus=["EU HBI"],
+        carrier="HBI",
+        e_nom_extendable=True,
+        e_cyclic=True,
+    )
+
     if options["endo_industry"]["dri_import"]:
         mc_dri = 395 * 1e3 if investment_year >= 2040 else 1e7
         # €/ktHBI https://www.sciencedirect.com/science/article/pii/S0360544223006308
@@ -5547,14 +5556,8 @@ def add_steel_industry(n, investment_year, steel_data, options):
     # Value in Mt (convert to kt if needed for units)
     max_scrap_mt = max_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
     max_scrap_kt = max_scrap_mt * 1000  # [kt]
+    max_scrap_pertimestep = (max_scrap_kt / 8760) * n.snapshot_weightings.iloc[0, 0]
 
-    # Retrieve minimum value for steel scrap for 2030
-    min_scrap_file = "data/min_scrap.csv"
-    min_scrap_df = pd.read_csv(min_scrap_file, index_col=0)
-
-    # Value in Mt (convert to kt if needed for units)
-    min_scrap_mt = min_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
-    min_scrap_kt = min_scrap_mt * 1000  # [kt] 
 
     n.add(
         "Bus",
@@ -5562,6 +5565,15 @@ def add_steel_industry(n, investment_year, steel_data, options):
         location="EU",
         carrier="steel scrap",
         unit="kt/yr",
+    )
+
+    n.add(
+        "Store",
+        "EU steel scrap",
+        bus="EU steel scrap",
+        carrier="steel scrap",
+        e_nom_extendable=True,
+        e_cyclic=True,
     )
 
     n.add(
@@ -5586,6 +5598,8 @@ def add_steel_industry(n, investment_year, steel_data, options):
         bus1="EU HBI",
         carrier="steel scrap to HBI",
         p_nom_extendable=True,
+        #p_nom=max_scrap_pertimestep,
+        #p_max_pu=1,
         capital_cost=0,
         efficiency=1,
     )
@@ -7863,9 +7877,6 @@ if __name__ == "__main__":
 
     if options["cluster_heat_buses"] and not first_year_myopic:
         cluster_heat_buses(n)
-
-    if options["endo_industry"]["extra_wind"]:
-        n.generators_t.p_max_pu.loc[:,n.generators_t.p_max_pu.columns.str.contains("onwind")] *= 2
 
     maybe_adjust_costs_and_potentials(
         n, snakemake.params["adjustments"], investment_year

@@ -2418,93 +2418,96 @@ def check_land_transport_shares(shares):
         )
 
 def calculate_land_transport_shares_ff55(number_cars, limit):
+    """
+    Calculate shares of ICE, EV, and FCEV cars under baseline and FF55 policy scenarios.
+    """
 
-    # Number of cars is from 2019 -> let's assume 2020
-    ef_allcars_2021 = 173.95 # gCO2/km from IDEES in 2019 (NO EVs)
-    #ef_allvans_2021 = 245.73 # gCO2/km from IDEES in 2019
-    new_car_per_year = 11.37 # million vehicles
-    #number_cars = 290 * 1e6 # Total number of cars
-    share_new_cars_per_year = new_car_per_year / (number_cars.sum() / 1e6)
-    ef_newcars_2021 = 95 # gCO2/km
+    # === 1. Base parameters ===
+    ef_allcars_2021 = 173.95  # gCO2/km (EU fleet average, JRC IDEES)
+    ef_newcars_2021 = 95.0    # gCO2/km (new cars in 2021)
+    new_car_per_year = 11.37e6  # 11.37 million new cars per year
 
-    # Initialize ef_newcars dictionary
-    ef_newcars = {}
-    ef_newcars[2021] = ef_newcars_2021
-    all_years = list(range(2022, 2051))
+    # Handle input (works with scalar, list, or pandas Series)
+    if hasattr(number_cars, "sum"):
+        total_cars = number_cars.sum()
+    else:
+        total_cars = number_cars
+    share_new_cars_per_year = new_car_per_year / total_cars  # ≈ 4%/year replacement rate
 
-    # Function to calculate ef_newcars for each year
-    def calculate_ef_newcars(annual_ef_red):
-        for year in all_years:
-            ef_newcars[year] = ef_newcars[2021] * (1 - annual_ef_red) ** (year - 2021)
+    years = list(range(2022, 2051))
+    ef_newcars = {2021: ef_newcars_2021}
 
-    # Function to calculate ef_allcars for a given range of years
+    # === 2. Helper functions ===
+    def calculate_ef_newcars(annual_frac_reduction):
+        """Compute emission factor of new cars each year."""
+        for year in years:
+            ef_newcars[year] = ef_newcars_2021 * (1 - annual_frac_reduction) ** (year - 2021)
+
     def calculate_ef_allcars(start_year, end_year, base_ef):
-        return sum(share_new_cars_per_year * ef_newcars[year] for year in range(start_year, end_year)) + \
-            ((1 - share_new_cars_per_year) ** len(range(start_year, end_year))) * base_ef
+        """Compute fleet-average emission factor between start and end years."""
+        n_years = end_year - start_year
+        sum_term = sum(share_new_cars_per_year * ef_newcars[y] for y in range(start_year, end_year))
+        survivor_term = (1 - share_new_cars_per_year) ** n_years
+        return sum_term + survivor_term * base_ef
 
-    if limit == 'ff55':
+    # === 3. Scenario logic ===
+    if limit == "ff55":
+        # 55% reduction in new car EF by 2030 relative to 2021
+        #ef_newcars_2030_target = ef_newcars_2021 * (1 - 0.55)
+        share_vans = (291.860 - 259.278 ) / 291.860
+        ef_newcars_2030_target = 49.5 * (1 - share_vans) + 90.6 * share_vans
+        # Annual fractional reduction rate to reach 2030 target
+        annual_frac_reduction = 1 - (ef_newcars_2030_target / ef_newcars_2021) ** (1 / (2030 - 2021))
+        calculate_ef_newcars(annual_frac_reduction)
 
-        ef_newcars_2030_ff55 = ef_newcars_2021 * (1 - 0.55)
-        annual_ef_cars_ff55 = (ef_newcars_2021 - ef_newcars_2030_ff55) / (2030 - 2021) / 100
-        calculate_ef_newcars(annual_ef_cars_ff55)
-
-        # Ban ICE vehicles after 2035
-        for year in all_years:
+        # Ban ICE after 2035
+        for year in years:
             if year > 2035:
-                ef_newcars[year] = 0
+                ef_newcars[year] = 0.0
 
         ef_allcars_2030 = calculate_ef_allcars(2022, 2031, ef_allcars_2021)
         ef_allcars_2040 = calculate_ef_allcars(2031, 2041, ef_allcars_2030)
         ef_allcars_2050 = calculate_ef_allcars(2041, 2051, ef_allcars_2040)
 
     else:
-        annual_ef_red = 0.016 # 1.6% per year for new cars
-        calculate_ef_newcars(annual_ef_red)
+        # Baseline: 1.6% annual reduction in new car EF
+        annual_frac_reduction = 0.016
+        calculate_ef_newcars(annual_frac_reduction)
 
         ef_allcars_2030 = calculate_ef_allcars(2022, 2031, ef_allcars_2021)
         ef_allcars_2040 = calculate_ef_allcars(2031, 2041, ef_allcars_2030)
         ef_allcars_2050 = calculate_ef_allcars(2041, 2051, ef_allcars_2040)
 
-
-
-    # Calculate the share of EV cars for each year
+    # === 4. Compute fleet EV shares ===
     share_ev_cars_2030 = (ef_allcars_2021 - ef_allcars_2030) / ef_allcars_2021
     share_ev_cars_2040 = (ef_allcars_2021 - ef_allcars_2040) / ef_allcars_2021
     share_ev_cars_2050 = (ef_allcars_2021 - ef_allcars_2050) / ef_allcars_2021
 
+    # === 5. Output shares ===
     if investment_year == 2020:
-
-        fuel_cell_share = 0
-        electric_share = 0
-        ice_share = 1
-
+        fuel_cell_share, electric_share, ice_share = 0, 0, 1
     elif investment_year == 2030:
-
+        electric_share = round(share_ev_cars_2030, 4)
+        ice_share = round(1 - electric_share, 4)
         fuel_cell_share = 0
-        electric_share = round(share_ev_cars_2030,2)
-        ice_share = round(1 - share_ev_cars_2030,2)
-    
-        # Values for no policy in 2030: FCEV share: 0% EV share: 23.8%, ICEV share: 76.2%
-
     elif investment_year == 2040:
-            # ASSUMING LINEAR GROWTH OF EV UPTAKE
-            fuel_cell_share = 0
-            electric_share = round(share_ev_cars_2040,2)
-            ice_share = round(1 - electric_share,2)
-
-        # Values for no policy in 2040: FCEV share: 0% EV share: 41.4%, ICEV share: 58.6%
-
+        electric_share = round(share_ev_cars_2040, 4)
+        ice_share = round(1 - electric_share, 4)
+        fuel_cell_share = 0
     elif investment_year == 2050:
+        electric_share = round(share_ev_cars_2050, 4)
+        ice_share = round(1 - electric_share, 4)
+        fuel_cell_share = 0
+    else:
+        fuel_cell_share, electric_share, ice_share = 0, 0, 1
 
-            fuel_cell_share = 0
-            electric_share = round(share_ev_cars_2050,2)
-            ice_share = round(1 - electric_share,2)
-
-        # Values for no policy in 2050: FCEV share: 0% EV share: 53.0%, ICEV share: 47%
-    
-    output = pd.Series([fuel_cell_share, electric_share, ice_share], index=["fuel_cell", "electric", "ice"]) # Keep the order to match add_land_transport
+    # === 6. Return as pandas Series ===
+    output = pd.Series(
+        [fuel_cell_share, electric_share, ice_share],
+        index=["fuel_cell", "electric", "ice"]
+    )
+    print(f"Fuel cell {fuel_cell_share}, Electric {electric_share}, ICE {ice_share} for year {investment_year}")
     return output
-
 
 def calculate_shipping_shares_ff55():
 
@@ -5815,7 +5818,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         unit=unit,
     )
 
-    if options['fidelio']['fidelio_shocks']:
+    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'] == 'ff55':
         shock_file = options['fidelio']['fidelio_folder'] + 'steel_var.csv'
         
         p_set = apply_fidelio_shocks_to_demand(
@@ -7738,7 +7741,7 @@ if __name__ == "__main__":
         limit = co2_cap.loc[investment_year]
 
     elif fidelio:
-        limit = options['fidelio']['scenario']
+        limit = options['fidelio']['scenario'][:4]
     else:
         limit = get(co2_budget, investment_year)
     add_co2limit(
@@ -7996,8 +7999,7 @@ if __name__ == "__main__":
         # Update values for time variable loads
         for col_name in n.loads_t.p_set.columns:
             if col_name.endswith(' 0'):
-                print(f"Right {col_name}")
-                print(f"Multi {shock_multipliers.loc[col_name]}")
+
                 n.loads_t.p_set.loc[:, col_name] *= shock_multipliers.loc[col_name]
 
     n.export_to_netcdf(snakemake.output[0])

@@ -7,11 +7,12 @@ run:
   prefix: ""
   name: #"all"
   #- baseline
-  - baseline_iter_1
+  #- baseline_iter_1
   #- ff55_iter_5
   #- steel_aluminum
   #- ff55_no_transport
-  - ff55_iter_1
+  #- ff55_iter_3
+  - baseline_iter_3
   #- hist
   #- steel_aluminum
   scenarios:
@@ -146,7 +147,7 @@ sector:
     policy_scenario: maintain
     regional_steel_demand: true
     endo_aluminum: false
-  min_part_load_steel: 0.3
+  min_part_load_steel: 0
   bev_dsm: false
   v2g: false
   cluster_heat_buses: false
@@ -347,3 +348,20 @@ plotting:
     NH3 for shipping: "green"
     synfuels for aviation: 'white'
     biofuels for aviation: 'green'
+
+solving:
+  solver:
+    name: gurobi
+    options: gurobi-filippo
+
+  solver_options:
+    gurobi-filippo:
+      threads: 32
+      method: 2 # barrier
+      crossover: 0
+      BarConvTol: 1.e-3
+      Seed: 123
+      AggFill: 0
+      PreDual: 0
+      GURO_PAR_BARDENSETHRESH: 200
+

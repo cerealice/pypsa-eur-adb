@@ -68,6 +68,35 @@ ff55_iter_1:
       fidelio_shocks: false
       scenario: 'ff55'
 
+ff55tariffs_iter_7:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_6/"
+
+ff55tariffs_iter_6:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_5/"
+
+ff55tariffs_iter_5:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_4/"
+
+ff55tariffs_iter_4:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_3/"
+
+
 ff55tariffs_iter_3:
   sector:
     fidelio:
@@ -119,6 +148,34 @@ baseline_iter_3:
       fidelio_shocks: true
       scenario: baseline
       fidelio_folder: "../coupling/from_fidelio/baseline/iter_2/"
+
+baseline_iter_4:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_3/"
+
+baseline_iter_5:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_4/"
+
+baseline_iter_6:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_5/"
+
+baseline_iter_7:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_6/"
 
 steel_aluminum:
   sector:

@@ -783,6 +783,7 @@ def add_steel_industry_existing(n):
         bus4=spatial.co2.bof,
         p_nom=p_nom_bof / cap_decrease * bof["iron input"],
         p_nom_extendable=False,
+        capital_cost=bof["capital cost"] / bof["iron input"],
         p_min_pu=min_part_load_steel,
         efficiency=1 / bof["iron input"],
         efficiency2=-bof["coal input"] / bof["iron input"],
@@ -791,33 +792,7 @@ def add_steel_industry_existing(n):
         lifetime=bof["lifetime"],
         build_year=start_dates_bof,
     )
-
-    # ============================================================
-    # --- EXISTING DRI–EAF ---------------------------------------
-    # ============================================================
-    electricity_input_dri = costs.at["direct iron reduction furnace", "electricity-input"] * 1e3
-    electricity_input_eaf = costs.at["electric arc furnace", "electricity-input"] * 1e3
-    total_electricity_input = electricity_input_dri + electricity_input_eaf
-
-    n.add(
-        "Link",
-        nodes,
-        suffix=" DRI-EAF-2020",
-        carrier="DRI-EAF",
-        p_nom_extendable=False,
-        p_nom=p_nom_dri / cap_decrease * eaf_ng["iron input"],
-        p_min_pu=min_part_load_steel,
-        bus0=spatial.iron.nodes,
-        bus1=spatial.steel.nodes,
-        bus2=spatial.syngas_dri.nodes,
-        bus3=nodes,
-        efficiency=1 / eaf_ng["iron input"],
-        efficiency2=-1,
-        efficiency3=-total_electricity_input / eaf_ng["iron input"],
-        lifetime=eaf_ng["lifetime"],
-        build_year=start_dates_dri,
-    )
-
+    
     # ============================================================
     # --- EXISTING SCRAP–EAF -------------------------------------
     # ============================================================
@@ -834,6 +809,7 @@ def add_steel_industry_existing(n):
 
 
     electricity_input_scrap = costs.at["electric arc furnace", "electricity-input"] * 1e3
+    capital_cost_eaf = costs.at["electric arc furnace", "capital_cost"] * 1e3 / electricity_input_scrap
 
     n.add(
         "Link",
@@ -842,7 +818,9 @@ def add_steel_industry_existing(n):
         carrier="Scrap-EAF",
         p_nom_extendable=False,
         p_nom=p_nom_eaf / cap_decrease * eaf_ng["iron input"],
-        p=max_scrap_pertimestep,
+        capital_cost=capital_cost_eaf,
+        #p=max_scrap_pertimestep,
+        p_min_pu=min_part_load_steel,
         bus0=nodes,
         bus1=spatial.steel.nodes,
         bus2="EU steel scrap",

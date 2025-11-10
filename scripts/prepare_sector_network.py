@@ -2375,6 +2375,10 @@ def add_storage_and_grids(
             lifetime=costs.at["coal", "lifetime"],
         )
 
+    min_part_load_smr = 0 #ADB
+    if options["fidelio"]["enable"]:
+        min_part_load_smr = 0.5
+        
     if options["SMR_cc"]:
         n.add(
             "Link",
@@ -2385,6 +2389,7 @@ def add_storage_and_grids(
             bus2=co2_labels,
             bus3=spatial.co2.nodes,
             p_nom_extendable=True,
+                
             carrier="SMR CC",
             efficiency=costs.at["SMR CC", "efficiency"],
             efficiency2=costs.at["gas", "CO2 intensity"] * (1 - options["cc_fraction"]),
@@ -2401,6 +2406,7 @@ def add_storage_and_grids(
             bus1=nodes + " H2",
             bus2=co2_labels,
             p_nom_extendable=True,
+            p_min_pu=min_part_load_smr,
             carrier="SMR",
             efficiency=costs.at["SMR", "efficiency"],
             efficiency2=costs.at["gas", "CO2 intensity"],
@@ -5778,10 +5784,37 @@ def add_steel_industry(n, investment_year, steel_data, options):
     cap_share = capacities / capacities.sum()
     p_set = cap_share * hourly_steel_production
 
+    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'] == 'ff55':
+        shock_file = options['fidelio']['fidelio_folder'] + 'steel_var.csv'
+        
+        p_set_shocked = apply_fidelio_shocks_to_demand(
+            p_set,
+            shock_file=shock_file,
+            investment_year=investment_year,
+            sector_name="steel",
+            nodes_in="index"
+        )
+
+        # Shocks of demand from FIDELIO do not account in PyPSA for social economic inertias
+        max_limit = hourly_steel_production = steel_data.loc[investment_year, "regain"] * 1e3
+        min_limit = hourly_steel_production = steel_data.loc[investment_year, "deindustrial"] * 1e3
+
+        tot_dem_shocked = p_set.sum() * nhours
+        print(f"N hours {nhours}")
+        if tot_dem_shocked > max_limit:
+            hourly_steel_production = max_limit / nhours
+            p_set = cap_share * hourly_steel_production
+        elif tot_dem_shocked < min_limit:
+            hourly_steel_production = min_limit / nhours
+            p_set = cap_share * hourly_steel_production
+        else:
+            p_set = p_set_shocked
+
     if options["endo_industry"]["regional_steel_demand"]:
         p_set.index += " steel"
     else:
         p_set = p_set.sum()
+    
 
     # Adding carriers and components
     nodes = pop_layout.index
@@ -5819,16 +5852,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         unit=unit,
     )
 
-    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'] == 'ff55':
-        shock_file = options['fidelio']['fidelio_folder'] + 'steel_var.csv'
-        
-        p_set = apply_fidelio_shocks_to_demand(
-            p_set,
-            shock_file=shock_file,
-            investment_year=investment_year,
-            sector_name="steel",
-            nodes_in="index"
-        )
+
 
 
     # STEEL
@@ -5838,6 +5862,15 @@ def add_steel_industry(n, investment_year, steel_data, options):
         bus=spatial.steel.nodes,
         carrier="steel",
         p_set=p_set,
+    )
+
+    n.add(
+        "Store",
+        spatial.steel.nodes,
+        bus=spatial.steel.nodes,
+        carrier="steel",
+        e_nom_extendable=True,
+        e_cyclic=True,
     )
     
     # add CO2 process from steel industry
@@ -5874,6 +5907,9 @@ def add_steel_industry(n, investment_year, steel_data, options):
         options, nyears
     )
 
+    if options["fidelio"]["enable"] and options["fidelio"]["scenario"] == "ff55" and investment_year == 2050:
+        min_part_load_steel = 0.1
+
     n.add(
         "Link",
         nodes,
@@ -5886,7 +5922,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         carrier="BF-BOF",
         p_nom_extendable=True,
         p_min_pu=min_part_load_steel,
-        capital_cost=bof["capital cost"],
+        capital_cost=bof["capital cost"] / bof["iron input"],
         efficiency=1 / bof["iron input"],
         efficiency2=-bof["coal input"] / bof["iron input"],  # MWhth coal per kt iron
         efficiency3=-bof["elec input"]
@@ -5898,11 +5934,11 @@ def add_steel_industry(n, investment_year, steel_data, options):
     n.add(
         "Link",
         nodes,
-        suffix=" CH4 to syn gas DRI",
+        suffix=" CH4 to syn gas DRI-EAF",
         bus0=spatial.gas.nodes,
         bus1=spatial.syngas_dri.nodes,
         bus2=spatial.co2.dri,
-        carrier="DRI",
+        carrier="EAF",
         p_nom_extendable=True,
         efficiency=1 / eaf_ng["gas input"],  # MWh natural gas per one unit of dri gas
         efficiency2=eaf_ng["emission factor"]
@@ -5950,39 +5986,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         efficiency3=-total_electricity_input / eaf_ng["iron input"],
         lifetime=eaf_ng["lifetime"],
     )
-
-        # ============================================================
-    # --- UNIFIED STEEL PRODUCTION LINKS: DRI–EAF and SCRAP–EAF ---
-    # ============================================================
-
-    # Parameters for DRI–EAF
-    electricity_input_dri = costs.at["direct iron reduction furnace", "electricity-input"] * 1e3  # MWh/kt
-    electricity_input_eaf = costs.at["electric arc furnace", "electricity-input"] * 1e3  # MWh/kt steel
-    total_electricity_input = electricity_input_dri + electricity_input_eaf
-
-    capital_cost_dri = costs.at["direct iron reduction furnace", "capital_cost"] * 1e3 / eaf_ng["iron input"]
-    capital_cost_eaf = costs.at["electric arc furnace", "capital_cost"] * 1e3 / electricity_input_eaf
-    combined_capital_cost = capital_cost_dri + capital_cost_eaf
-
-    # ---- DRI–EAF Link ----
-    n.add(
-        "Link",
-        nodes,
-        suffix=" DRI-EAF",
-        carrier="DRI-EAF",
-        capital_cost=combined_capital_cost,
-        p_nom_extendable=True,
-        p_min_pu=min_part_load_steel,
-        bus0=spatial.iron.nodes,
-        bus1=spatial.steel.nodes,
-        bus2=spatial.syngas_dri.nodes,
-        bus3=nodes,
-        efficiency=1 / eaf_ng["iron input"],                # kt steel per kt iron
-        efficiency2=-1,                                     # 1 unit of syn gas per kt iron
-        efficiency3=-total_electricity_input / eaf_ng["iron input"],  # MWh_el per kt iron
-        lifetime=eaf_ng["lifetime"],
-    )
-
+    
     # ============================================================
     # --- SCRAP–EAF PATHWAY WITH MAXIMUM LIMIT -------------------
     # ============================================================
@@ -6003,19 +6007,21 @@ def add_steel_industry(n, investment_year, steel_data, options):
         unit="kt/yr",
     )
 
+    if options["fidelio"]["enable"] and options["fidelio"]["scenario"] == "baseline":
+        mc_scrap = 280*1e3
+    else:
+        #https://gmk.center/en/posts/the-global-scrap-market-showed-overwhelming-stability-in-july/
+        # 302.5 €/t in Germany for E3, which has limited contamination, low quality than prime grades but a staple feedstock for EAF
+        # https://www.mgg-recycling.com/wp-content/uploads/2013/06/EFR_EU27_steel_scrap_specification.pdf
+        mc_scrap = 302*1e3
+
     n.add(
         "Generator",
         "EU steel scrap",
         bus="EU steel scrap",
         carrier="steel scrap",
         p_nom=1e7,
-        # https://www.scrapmonster.com/metal/steel-price/europe/300?utm_source=chatgpt.com
-        # Grade 1 Old Steel to be conservative: 160 $/t -> *0.86 * 1000 = 137107 €/kt
-        # https://gmk.center/en/posts/the-global-scrap-market-showed-overwhelming-stability-in-july/
-        # 302.5 €/t in Germany for E3, which has limited contamination, low quality than prime grades but a staple feedstock for EAF
-        # https://www.mgg-recycling.com/wp-content/uploads/2013/06/EFR_EU27_steel_scrap_specification.pdf
-        #marginal_cost=302.5 * 1e3, # €/kt
-        marginal_cost=302.5*1e3,
+        marginal_cost=mc_scrap,
         #e_sum_min = min_scrap_kt,
         e_sum_max = max_scrap_kt,
     )
@@ -6034,6 +6040,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         capital_cost=capital_cost_scrap_eaf,
         p_nom_extendable=True,
         p_min_pu=min_part_load_steel,
+        p_nom_max=max_scrap_kt * electricity_input_scrap,
         bus0=nodes,                 # electricity
         bus1=spatial.steel.nodes,   # steel output
         bus2="EU steel scrap",      # scrap input

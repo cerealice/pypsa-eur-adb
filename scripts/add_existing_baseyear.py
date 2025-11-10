@@ -766,7 +766,7 @@ def add_steel_industry_existing(n):
     # check if existing capacity is bigger than demand
     steel_load = n.loads[n.loads.carrier == "steel"].p_set.sum()
     installed_cap = (
-        p_nom_eaf.sum() / bof["iron input"] + p_nom_bof.sum() / eaf_ng["iron input"]
+        p_nom_eaf.sum() / eaf_ng["iron input"] + p_nom_bof.sum() / bof["iron input"]
     )  # times 1/efficiency
     if installed_cap > steel_load:
         logger.info(
@@ -801,18 +801,21 @@ def add_steel_industry_existing(n):
         build_year=start_dates_bof,
     )
 
+    
     electricity_input = (
         costs.at["direct iron reduction furnace", "electricity-input"] * 1e3
     )  # MWh/kt
 
+    capital_cost = (costs.at["direct iron reduction furnace", "capital_cost"] + costs.at["electric arc furnace", "capital_cost"]) * 1e3 / eaf_ng["iron input"]
     n.add(
         "Link",
         nodes,
         suffix=" DRI-2020",
         carrier="DRI",
         p_nom_extendable=False,
-        p_nom=p_nom_eaf / cap_decrease * eaf_ng["iron input"],
+        p_nom=1e7,
         #p_min_pu=min_part_load_steel,
+        #capital_cost=capital_cost,
         bus0=spatial.iron.nodes,
         bus1="EU HBI",
         bus2=spatial.syngas_dri.nodes,
@@ -823,18 +826,18 @@ def add_steel_industry_existing(n):
         lifetime=eaf_ng["lifetime"],
         build_year=start_dates_eaf,
     )
-
+    
     electricity_input = costs.at["electric arc furnace", "electricity-input"]
-
+    
     n.add(
         "Link",
         nodes,
         suffix=" EAF-2020",
         carrier="EAF",
-        #capital_cost=costs.at["electric arc furnace", "capital_cost"] * 1e3 / electricity_input,
+        capital_cost=costs.at["electric arc furnace", "capital_cost"] * 1e3 / electricity_input,
         p_nom_extendable=False,
         # p_min_pu=min_part_load_steel,
-        p_nom=1e7,  # fake capacity, the bottleneck is DRI
+        p_nom=p_nom_eaf / cap_decrease * eaf_ng["iron input"],  # fake capacity, the bottleneck is DRI
         bus0=nodes,
         bus1=spatial.steel.nodes,
         bus2="EU HBI",
@@ -844,6 +847,8 @@ def add_steel_industry_existing(n):
         lifetime=eaf_ng["lifetime"],
         build_year=start_dates_eaf,
     )
+
+    
 
 
 def add_cement_industry_existing(n):

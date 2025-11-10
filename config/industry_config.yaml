@@ -9,8 +9,7 @@ run:
   name: #"all"
   #- base_reg_regain
   #- base_reg_deindustrial
-  - policy_reg_regain_h2
-  - policy_reg_deindustrial_h2
+  #- policy_reg_regain_h2
   #- import_policy_reg_regain
   #- import_policy_reg_deindustrial
   #- policy_reg_regain
@@ -26,7 +25,9 @@ run:
   #- policy_eu_regain_flex
   #- policy_reg_regain_flex
   #- policy_eu_deindustrial_flex
-  #- policy_eu_regain
+  - policy_reg_maintain
+  - policy_reg_maintain_85
+  - policy_reg_maintain_80
   #- policy_eu_deindustrial
   #- policy_reg_deindustrial
   #- policy_reg_deindustrial_highccs
@@ -227,15 +228,16 @@ plotting:
 solving:
   solver:
     name: gurobi
-    options: gurobi-default
+    options: gurobi-filippo
 
   solver_options:
-    gurobi-crossover:
-      threads: 8
+    gurobi-filippo:
+      threads: 32
       method: 2 # barrier
-      crossover: 1
-      BarConvTol: 1.e-6
+      crossover: 0
+      BarConvTol: 1.e-3
       Seed: 123
       AggFill: 0
       PreDual: 0
       GURO_PAR_BARDENSETHRESH: 200
+      #BarHomogeneous: 1

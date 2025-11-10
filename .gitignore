@@ -21,9 +21,8 @@ gurobi.log
 /networks
 /benchmarks
 /logs
-/notebooks*
-/plots*
-/data
+/notebooks
+/data/*
 /cutouts
 /tmp
 doc/_build
@@ -51,6 +50,7 @@ dconf
 /data/bundle/nuts*
 data/gas_network/scigrid-gas/
 data/costs_*.csv
+!/data/custom_costs.csv
 
 dask-worker-space/
 publications.jrc.ec.europa.eu/
@@ -79,6 +79,7 @@ log.txt
 merger-todos.md
 
 *.html
+
 # private dev folder
 dev/*
 
@@ -86,3 +87,4 @@ dev/*
 CLAUDE.md
 .claude/
 .github/copilot-instructions.md
+CLAUDE.local.md

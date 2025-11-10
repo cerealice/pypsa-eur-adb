@@ -5587,7 +5587,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         # https://gmk.center/en/posts/the-global-scrap-market-showed-overwhelming-stability-in-july/
         # 302.5 €/t in Germany for E3, which has limited contamination, low quality than prime grades but a staple feedstock for EAF
         # https://www.mgg-recycling.com/wp-content/uploads/2013/06/EFR_EU27_steel_scrap_specification.pdf
-        marginal_cost=302.5 * 1e3, # €/kt
+        marginal_cost=280 * 1e3, # €/kt
         e_sum_max = max_scrap_kt,
     )
 

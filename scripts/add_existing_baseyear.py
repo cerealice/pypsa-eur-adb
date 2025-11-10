@@ -800,6 +800,7 @@ def add_steel_industry_existing(n):
         build_year=start_dates_bof,
     )
 
+    
     electricity_input = (
         costs.at["direct iron reduction furnace", "electricity-input"] * 1e3
     )  # MWh/kt
@@ -811,9 +812,9 @@ def add_steel_industry_existing(n):
         suffix=" DRI-2020",
         carrier="DRI",
         p_nom_extendable=False,
-        p_nom=p_nom_eaf / cap_decrease * eaf_ng["iron input"],
+        p_nom=1e7,
         #p_min_pu=min_part_load_steel,
-        capital_cost=capital_cost,
+        #capital_cost=capital_cost,
         bus0=spatial.iron.nodes,
         bus1="EU HBI",
         bus2=spatial.syngas_dri.nodes,
@@ -824,18 +825,18 @@ def add_steel_industry_existing(n):
         lifetime=eaf_ng["lifetime"],
         build_year=start_dates_eaf,
     )
-
+    
     electricity_input = costs.at["electric arc furnace", "electricity-input"]
-
+    
     n.add(
         "Link",
         nodes,
         suffix=" EAF-2020",
         carrier="EAF",
-        #capital_cost=costs.at["electric arc furnace", "capital_cost"] * 1e3 / electricity_input,
+        capital_cost=costs.at["electric arc furnace", "capital_cost"] * 1e3 / electricity_input,
         p_nom_extendable=False,
         # p_min_pu=min_part_load_steel,
-        p_nom=1e7,  # fake capacity, the bottleneck is DRI
+        p_nom=p_nom_eaf / cap_decrease * eaf_ng["iron input"],  # fake capacity, the bottleneck is DRI
         bus0=nodes,
         bus1=spatial.steel.nodes,
         bus2="EU HBI",
@@ -847,29 +848,6 @@ def add_steel_industry_existing(n):
     )
 
     
-    # ============================================================
-    # --- EXISTING SCRAP–EAF -------------------------------------
-    # ============================================================
-    # Retrieve maximum available scrap
-    max_scrap_file = "data/max_scrap.csv"
-    max_scrap_df = pd.read_csv(max_scrap_file, index_col=0)
-    max_scrap_mt = max_scrap_df.loc["maintain", "2020"]  # baseline year
-    max_scrap_kt = max_scrap_mt * 1000
-    max_scrap_pertimestep = (max_scrap_kt / 8760) * n.snapshot_weightings.iloc[0, 0]
-
-    n.add(
-        "Link",
-        "EU steel scrap to HBI-2020",
-        bus0="EU steel scrap",
-        bus1="EU HBI",
-        carrier="steel scrap to HBI",
-        p_nom_extendable=False,
-        p_nom=max_scrap_pertimestep,
-        p_min_pu=1,
-        efficiency=1,
-        build_year=2025,
-    )
-
 
 
 def add_cement_industry_existing(n):

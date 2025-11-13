@@ -10,9 +10,9 @@ run:
   #- baseline_iter_1
   #- ff55_iter_5
   #- steel_aluminum
-  - baseline_iter_1
+  #- baseline_iter_1
   #- ff55tariffs_iter_1
-  #- ff55_iter_2
+  - ff55_iter_2
   #- baseline_iter_3
   #- hist
   #- steel_aluminum

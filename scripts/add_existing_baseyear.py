@@ -732,26 +732,26 @@ def add_steel_industry_existing(n):
     """
     # --- Load input data ---
     capacities = pd.read_csv(snakemake.input.endoindustry_capacities, index_col=0)
-    capacities = capacities[["EAF", "DRI + EAF", "Integrated steelworks"]]
+    capacities = capacities[["EAF", "Integrated steelworks"]] #"DRI + EAF",
     start_dates = pd.read_csv(snakemake.input.endoindustry_start_dates, index_col=0)
-    start_dates = start_dates[["EAF", "DRI + EAF", "Integrated steelworks"]]
+    start_dates = start_dates[["EAF",  "Integrated steelworks"]] # "DRI + EAF",
     keys = pd.read_csv(snakemake.input.industrial_distribution_key, index_col=0)
 
     # --- Split technology types ---
     capacities_bof = capacities["Integrated steelworks"]
-    capacities_dri = capacities["DRI + EAF"]
+    #capacities_dri = capacities["DRI + EAF"]
     capacities_eaf = capacities["EAF"]
     capacities_bof = capacities_bof * keys["Integrated steelworks"]
-    capacities_dri = capacities_dri * keys["EAF"]
+    #capacities_dri = capacities_dri * keys["EAF"]
     capacities_eaf = capacities_eaf * keys["EAF"]
 
     start_dates_bof = round(start_dates["Integrated steelworks"]).fillna(2000)
-    start_dates_dri = round(start_dates["DRI + EAF"]).fillna(2000)
+    #start_dates_dri = round(start_dates["DRI + EAF"]).fillna(2000)
     start_dates_eaf = round(start_dates["EAF"]).fillna(2000)
 
     # --- Compute hourly capacity ---
     p_nom_bof = capacities_bof / nhours
-    p_nom_dri = capacities_dri / nhours
+    #p_nom_dri = capacities_dri / nhours
     p_nom_eaf = capacities_eaf / nhours
 
     nodes = pop_layout.index
@@ -764,7 +764,7 @@ def add_steel_industry_existing(n):
     steel_load = n.loads[n.loads.carrier == "steel"].p_set.sum()
     installed_cap = (
         p_nom_eaf.sum() / eaf_ng["iron input"] +
-        p_nom_dri.sum() / eaf_ng["iron input"] +
+        #p_nom_dri.sum() / eaf_ng["iron input"] +
         p_nom_bof.sum() / bof["iron input"]
     )
     cap_decrease = installed_cap / steel_load * 1.1 if installed_cap > steel_load else 1
@@ -818,7 +818,7 @@ def add_steel_industry_existing(n):
         suffix=" Scrap-EAF-2020",
         carrier="Scrap-EAF",
         p_nom_extendable=False,
-        p_nom=p_nom_eaf / cap_decrease * eaf_ng["iron input"],
+        p_nom=p_nom_eaf / cap_decrease * electricity_input_scrap,
         capital_cost=capital_cost_eaf,
         #p=max_scrap_pertimestep,
         p_min_pu=min_part_load_steel,

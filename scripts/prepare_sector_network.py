@@ -5790,6 +5790,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
     if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'] == 'ff55':
         shock_file = options['fidelio']['fidelio_folder'] + 'steel_var.csv'
         
+        
         p_set_shocked = apply_fidelio_shocks_to_demand(
             p_set,
             shock_file=shock_file,
@@ -5797,12 +5798,13 @@ def add_steel_industry(n, investment_year, steel_data, options):
             sector_name="steel",
             nodes_in="index"
         )
-
+        print(f"P shocked {p_set_shocked}")
+        """
         # Shocks of demand from FIDELIO do not account in PyPSA for social economic inertias
         max_limit = hourly_steel_production = steel_data.loc[investment_year, "regain"] * 1e3
         min_limit = hourly_steel_production = steel_data.loc[investment_year, "deindustrial"] * 1e3
 
-        tot_dem_shocked = p_set.sum() * nhours
+        tot_dem_shocked = p_set_shocked.sum() * nhours
         print(f"N hours {nhours}")
         if tot_dem_shocked > max_limit:
             hourly_steel_production = max_limit / nhours
@@ -5812,6 +5814,8 @@ def add_steel_industry(n, investment_year, steel_data, options):
             p_set = cap_share * hourly_steel_production
         else:
             p_set = p_set_shocked
+        """
+        p_set = p_set_shocked
 
     if options["endo_industry"]["regional_steel_demand"]:
         p_set.index += " steel"
@@ -5854,8 +5858,6 @@ def add_steel_industry(n, investment_year, steel_data, options):
         carrier="steel",
         unit=unit,
     )
-
-
 
 
     # STEEL
@@ -5965,9 +5967,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
     electricity_input_eaf = costs.at["electric arc furnace", "electricity-input"] * 1e3  # MWh/kt steel
     total_electricity_input = electricity_input_dri + electricity_input_eaf
 
-    capital_cost_dri = costs.at["direct iron reduction furnace", "capital_cost"] * 1e3 / eaf_ng["iron input"]
-    capital_cost_eaf = costs.at["electric arc furnace", "capital_cost"] * 1e3 / electricity_input_eaf
-    combined_capital_cost = capital_cost_dri + capital_cost_eaf
+    combined_capital_cost = (costs.at["direct iron reduction furnace", "capital_cost"] + costs.at["electric arc furnace", "capital_cost"]) * 1e3 / eaf_ng["iron input"]
 
     n.add(
         "Link",
@@ -5998,8 +5998,10 @@ def add_steel_industry(n, investment_year, steel_data, options):
     max_scrap_file = "data/max_scrap.csv"
     max_scrap_df = pd.read_csv(max_scrap_file, index_col=0)
     max_scrap_mt = max_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
-    max_scrap_kt = max_scrap_mt * 1000  # [kt]
-    # max_scrap_pertimestep = (max_scrap_kt / 8760) * n.snapshot_weightings.iloc[0, 0]
+    max_scrap_kt = max_scrap_mt * 1e3  # [kt]
+    # Making sure it is below 75% of total demand
+    scrap_75 = 0.75 * p_set.sum() * nhours
+    max_scrap_kt = min(max_scrap_kt, scrap_75)
 
     # --- Scrap bus and generator ---
     n.add(

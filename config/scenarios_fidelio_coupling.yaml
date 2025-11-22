@@ -128,12 +128,11 @@ ff55_no_transport:
     
 
 
-baseline_iter_1:
-  sector:
-    fidelio:
-      fidelio_shocks: false
-      scenario: baseline
-
+#baseline_iter_1:
+#  sector:
+#    fidelio:
+#      fidelio_shocks: false
+#      scenario: baseline
 
 baseline_iter_2:
   sector:
@@ -190,4 +189,14 @@ steel_aluminum:
       endo_aluminum: false
     min_part_load_steel: 0.3
 
+# Testing reduction of transmission lines
 
+baseline_iter_1:
+  sector:
+    fidelio:
+      fidelio_shocks: false
+      scenario: baseline
+  links:
+    max_extension: 15000 #MW
+  lines:
+    max_extension: 10000 #MW

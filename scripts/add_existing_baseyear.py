@@ -836,13 +836,9 @@ def add_steel_industry_existing(n):
 
 def add_aluminum_industry_existing(n):
     # Aluminum capacities in Europe in kton of aluminum products per year
-    capacities = pd.read_csv(snakemake.input.endoindustry_capacities, index_col=0)
-    capacities = capacities["Aluminum"]
+    cap_recycled_2023 = 5074 # kton aluminum / yr recycled capacity in Europe
+    cap_primary_2023 = 932 # kton aluminum / yr primary capacity in Europe
     start_dates = pd.read_csv(snakemake.input.endoindustry_start_dates, index_col=0)
-    start_dates = round(start_dates["Aluminum"])
-    keys = pd.read_csv(snakemake.input.industrial_distribution_key, index_col=0)
-
-    capacities = capacities * keys["Aluminum"]
 
     start_dates = start_dates.where(
         (start_dates >= 1000) & np.isfinite(start_dates), 2000
@@ -878,11 +874,49 @@ def add_aluminum_industry_existing(n):
 
     n.add(
         "Link",
-        nodes,
-        suffix=" Aluminum Plant-2020",
+        suffix=" electricity for aluminium",
+        bus0=nodes,
+        bus1="EU electricity aluminum",
+        carrier="aluminum plant",
+        p_nom=p_nom / cap_decrease,
+        p_nom_extendable=False,
+        p_min_pu=min_part_load_aluminum,
+        efficiency=1
+        / 1.28,  # kt limestone/ kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
+        efficiency2=-3420.1
+        / 3.6
+        * (1 / 1.28)
+        / 0.5,  # MWh/kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
+        lifetime=lifetime_aluminum,
+        build_year=start_dates,
+    )
+
+    n.add(
+        "Link",
+        suffix=" EU Primary Aluminium Plant-2020",
         bus0=spatial.limestone.nodes,
         bus1=spatial.aluminum.nodes,
         bus2=spatial.gas.nodes,
+        carrier="aluminum plant",
+        p_nom=p_nom / cap_decrease,
+        p_nom_extendable=False,
+        p_min_pu=min_part_load_aluminum,
+        efficiency=1
+        / 1.28,  # kt limestone/ kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
+        efficiency2=-3420.1
+        / 3.6
+        * (1 / 1.28)
+        / 0.5,  # MWh/kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
+        lifetime=lifetime_aluminum,
+        build_year=start_dates,
+    )
+
+    n.add(
+        "Link",
+        suffix=" EU Recycling Aluminium Plant-2020",
+        bus0=spatial.alumina.nodes,
+        bus1=spatial.aluminum.nodes,
+        bus2=nodes,
         carrier="aluminum plant",
         p_nom=p_nom / cap_decrease,
         p_nom_extendable=False,

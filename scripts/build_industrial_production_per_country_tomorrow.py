@@ -50,6 +50,7 @@ if __name__ == "__main__":
     set_scenario_config(snakemake)
 
     params = snakemake.params.industry
+    sector = snakemake.params.sector
 
     investment_year = int(snakemake.wildcards.planning_horizons)
 
@@ -59,8 +60,20 @@ if __name__ == "__main__":
     keys = ["Integrated steelworks", "Electric arc"]
     total_steel = production[keys].sum(axis=1)
 
-    st_primary_fraction = get(params["St_primary_fraction"], investment_year)
-    dri_fraction = get(params["DRI_fraction"], investment_year)
+    if sector["fidelio"]["enable"]:
+        scenario_ind = sector["fidelio"]["scenario"][:4]
+        st_primary_fraction = get(params[scenario_ind]["St_primary_fraction"], investment_year)
+        dri_fraction = get(params[scenario_ind]["DRI_fraction"], investment_year)
+        al_primary_fraction = get(params[scenario_ind]["Al_primary_fraction"], investment_year)
+        print(f"Fidelio enabled for scenario '{scenario_ind}' and year {investment_year}")
+        print(f"St primary: {st_primary_fraction}")
+        print(f"dri fract: {dri_fraction}")
+        print(f"al primary fraction: {al_primary_fraction}")
+    else:
+        st_primary_fraction = get(params["St_primary_fraction"], investment_year)
+        dri_fraction = get(params["DRI_fraction"], investment_year)
+        al_primary_fraction = get(params["Al_primary_fraction"], investment_year)
+    
     int_steel = production["Integrated steelworks"].sum()
     fraction_persistent_primary = st_primary_fraction * total_steel.sum() / int_steel
 
@@ -85,7 +98,7 @@ if __name__ == "__main__":
     key_pri = "Aluminium - primary production"
     key_sec = "Aluminium - secondary production"
 
-    al_primary_fraction = get(params["Al_primary_fraction"], investment_year)
+    
     fraction_persistent_primary = (
         al_primary_fraction * total_aluminium.sum() / (production[key_pri].sum() or 1)
     )
@@ -93,16 +106,29 @@ if __name__ == "__main__":
     production[key_pri] = fraction_persistent_primary * production[key_pri]
     production[key_sec] = total_aluminium - production[key_pri]
 
-    production["HVC (mechanical recycling)"] = (
-        get(params["HVC_mechanical_recycling_fraction"], investment_year)
-        * production["HVC"]
-    )
-    production["HVC (chemical recycling)"] = (
-        get(params["HVC_chemical_recycling_fraction"], investment_year)
-        * production["HVC"]
-    )
+    if sector["fidelio"]["enable"]:
+        scenario_ind = sector["fidelio"]["scenario"][:4]
+        production["HVC (mechanical recycling)"] = (
+            get(params[scenario_ind]["HVC_mechanical_recycling_fraction"], investment_year)
+            * production["HVC"]
+        )
+        production["HVC (chemical recycling)"] = (
+            get(params[scenario_ind]["HVC_chemical_recycling_fraction"], investment_year)
+            * production["HVC"]
+        )
 
-    production["HVC"] *= get(params["HVC_primary_fraction"], investment_year)
+        production["HVC"] *= get(params[scenario_ind]["HVC_primary_fraction"], investment_year)
+    else:
+        production["HVC (mechanical recycling)"] = (
+            get(params["HVC_mechanical_recycling_fraction"], investment_year)
+            * production["HVC"]
+        )
+        production["HVC (chemical recycling)"] = (
+            get(params["HVC_chemical_recycling_fraction"], investment_year)
+            * production["HVC"]
+        )
+
+        production["HVC"] *= get(params["HVC_primary_fraction"], investment_year)
 
     fn = snakemake.output.industrial_production_per_country_tomorrow
     production.to_csv(fn, float_format="%.2f")

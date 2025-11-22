@@ -264,18 +264,25 @@ def define_spatial(nodes, options):
         spatial.co2.bof = nodes + " bof process emissions"
         spatial.co2.bof_locations = nodes
 
-    # Aluminum primary
+        # Aluminum primary
 
-    if options["endo_industry"]["endo_aluminum"]:
-        spatial.aluminum = SimpleNamespace()
-        if options["endo_industry"]["regional_aluminum"]:
-            spatial.aluminum.nodes = nodes + " aluminum"
-            spatial.aluminum.locations = nodes
-        else:
-            spatial.aluminum.nodes = ["EU aluminum"]
-            spatial.aluminum.locations = ["EU"]
+        if options["endo_industry"]["endo_aluminium"]:
+            spatial.aluminium = SimpleNamespace()
+            spatial.aluminium.nodes = ["EU aluminum"]
+            spatial.aluminium.locations = ["EU"]
+            spatial.aluminium.df = pd.DataFrame(vars(spatial.aluminium), index=nodes)
 
-        spatial.aluminum.df = pd.DataFrame(vars(spatial.aluminum), index=nodes)
+            spatial.alumina = SimpleNamespace()
+            spatial.alumina.nodes = ["EU alumina"]
+            spatial.alumina.locations = ["EU"]
+            spatial.alumina.df = pd.DataFrame(vars(spatial.alumina), index=nodes)
+
+            spatial.al_elec = SimpleNamespace()
+            spatial.al_elec.nodes = ["EU electricity aluminium"]
+            spatial.al_elec.locations = ["EU"]
+            spatial.al_elec.df = pd.DataFrame(vars(spatial.al_elec), index=nodes)
+
+            
 
     return spatial
 
@@ -2389,7 +2396,7 @@ def add_storage_and_grids(
             bus2=co2_labels,
             bus3=spatial.co2.nodes,
             p_nom_extendable=True,
-                
+            p_min_pu=min_part_load_smr,
             carrier="SMR CC",
             efficiency=costs.at["SMR CC", "efficiency"],
             efficiency2=costs.at["gas", "CO2 intensity"] * (1 - options["cc_fraction"]),
@@ -5912,7 +5919,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         options, nyears
     )
 
-    if options["fidelio"]["enable"] and options["fidelio"]["scenario"] == "ff55" and investment_year == 2050:
+    if options["fidelio"]["enable"] and limit == "ff55" and investment_year == 2050:
         min_part_load_steel = 0.1
 
     n.add(
@@ -6127,80 +6134,106 @@ def add_steel_industry(n, investment_year, steel_data, options):
 
 
 
-def add_aluminum_industry(n, investment_year, aluminum_data, options):
-    # Aluminum production demanded in each country in Europe in kton of aluminum products per year
-    capacities = pd.read_csv(snakemake.input.endoindustry_capacities, index_col=0)
-    capacities = capacities["Aluminum"]
-    keys = pd.read_csv(snakemake.input.industrial_distribution_key, index_col=0)
+def add_aluminium_industry(n, investment_year, aluminum_data, options):
+    # Aluminum production in Europe in kton of aluminum products per year (2023)
+    #  https://european-aluminium.eu/about-aluminium/aluminium-industry/
+    # So far aluminum existing production if only at the European level
+    cap_recycled_2023 = 5074 # kton aluminum / yr recycled capacity in Europe
+    cap_primary_2023 = 932 # kton aluminum / yr primary capacity in Europe
 
-    scenario = options["endo_industry"]["policy_scenario"]
-    hourly_aluminum_production = (
-        aluminum_data.loc[investment_year, scenario] * 1e3 / nhours
-    )  # get the aluminum that needs to be produced hourly kt aluminum/h
-    # hourly_aluminum_production.index = hourly_aluminum_production.index + ' aluminum'
+    cap_recycled_1980 = 1226 # kton aluminum / yr recycled capacity in Europe
+    cap_primary_1980 = 2775 # kton aluminum / yr primary capacity in Europe
 
-    # Share of aluminum production capacities -> assumption: keep producing the same share in the country, changing technology
-    cap_share = capacities / capacities.sum()
-    p_set = cap_share * hourly_aluminum_production
+    total_al_1980 = cap_recycled_1980 + cap_primary_1980   # 4001
+    total_al_2023 = cap_recycled_2023 + cap_primary_2023   # 6006
 
-    if options["endo_industry"]["regional_aluminum_demand"]:
-        p_set.index += " aluminum"
-    else:
-        p_set = p_set.sum()
+    # --- Interpolated annual slope between 1980 and 2023 ---
+    slope = (total_al_2023 - total_al_1980) / (2023 - 1980)      # 46.63 kton/yr
+    # --- Target years ---
+    years = [2030, 2040, 2050]
+
+    # --- Scenarios ---
+    # Deindustrial: slope factor = -0.5
+    # Maintain: slope factor = 0
+    # Regain: slope factor = 1.0
+
+    deindustrial = [
+        total_2023 + (year - 2023) * slope * -0.5 for year in years
+    ]
+
+    maintain = [
+        total_2023 + (year - 2023) * slope * 0.0 for year in years
+    ]
+
+    regain = [
+        total_2023 + (year - 2023) * slope * 1.0 for year in years
+    ]
+
+    # --- Create DataFrame ---
+    aluminum_data = pd.DataFrame({
+        "Year": years,
+        "Deindustrial": deindustrial,
+        "Maintain": maintain,
+        "Regain": regain
+    }).round(1)
+
+    aluminum_data = aluminum_data.set_index("Year")
+
+    scenario = options["endo_industry"]["policy_scenario"]  # e.g. "Maintain"
+
+    hourly_aluminum_production = aluminum_data.loc[investment_year, scenario] / nhours
+
+    p_set = hourly_aluminum_production
 
     # Adding carriers and components
     nodes = pop_layout.index
 
-    n.add("Carrier", "limestone")
+    n.add("Carrier", "alumina")
 
     n.add(
         "Bus",
-        spatial.limestone.nodes,
-        location=spatial.limestone.locations,
-        carrier="limestone",
+        spatial.alumina.nodes,
+        location=spatial.alumina.locations,
+        carrier="alumina",
         unit="kt/yr",
     )
 
-    costs.at["limestone", "discount rate"] = 0.04
-
+    costs.at["alumina", "discount rate"] = 0.04
     n.add(
         "Generator",
-        spatial.limestone.nodes,
-        bus=spatial.limestone.nodes,
+        spatial.alumina.nodes,
+        bus=spatial.alumina .nodes,
         p_nom_extendable=True,
-        carrier="limestone",
-        marginal_cost=40
-        * 1e3
-        * 0.877,  # €/kt of limestone https://thundersaidenergy.com/downloads/cement-costs-and-energy-economics/
+        carrier="alumina",
+        marginal_cost=320* 1e3* 0.877,  # €/kt of alumina https://www.lme.com/Metals/Non-ferrous/LME-Alumina_#Trading+day+summary
     )
 
-    n.add("Carrier", "aluminum")
+    n.add("Carrier", "aluminium")
 
     n.add(
         "Bus",
-        spatial.aluminum.nodes,
-        location=spatial.aluminum.locations,
-        carrier="aluminum",
+        spatial.aluminium.nodes,
+        location=spatial.aluminium.locations,
+        carrier="aluminium",
         unit="kt/yr",
     )
 
-    # CEMENT
     n.add(
         "Load",
-        spatial.aluminum.nodes,
-        bus=spatial.aluminum.nodes,
-        carrier="aluminum",
+        spatial.aluminium.nodes,
+        bus=spatial.aluminium.nodes,
+        carrier="aluminium",
         p_set=p_set,
     )
 
     # add CO2 process from aluminum industry
-    n.add("Carrier", "aluminum process emissions")
+    n.add("Carrier", "aluminium process emissions")
 
     n.add(
         "Bus",
-        spatial.co2.aluminum,
-        location=spatial.co2.aluminum_locations,
-        carrier="aluminum process emissions",
+        spatial.co2.aluminium,
+        location=spatial.co2.aluminium_locations,
+        carrier="aluminium anode consumption emissions",
         unit="t_co2",
     )
 
@@ -6220,25 +6253,38 @@ def add_aluminum_industry(n, investment_year, aluminum_data, options):
     min_part_load_aluminum = options["min_part_load_aluminum"]
 
     n.add(
+        "Bus",
+        "EU electricity aluminium",
+        location=spatial.aluminium.locations,
+        carrier="aluminium",
+        unit="kt/yr",
+    )
+
+    n.add(
         "Link",
-        nodes,
-        suffix=" Aluminum Plant",
-        bus0=spatial.limestone.nodes,
-        bus1=spatial.aluminum.nodes,
-        bus2=spatial.gas.nodes,
-        bus3=spatial.co2.aluminum,
+        " electricity for aluminium",
+        bus0=nodes,
+        bus1="EU electricity aluminium",
         carrier="aluminum plant",
+        p_nom_extendable=True,
+        efficiency=1
+    )
+
+    n.add(
+        "Link",
+        " EU Primary Aluminium Plant",
+        bus0=spatial.alumina.nodes,
+        bus1=spatial.aluminium.nodes,
+        bus2="electricity for aluminium",
+        bus3=spatial.co2.aluminium,
+        carrier="aluminium plant",
         p_nom_extendable=True,
         p_min_pu=min_part_load_aluminum,
         capital_cost=capex_aluminum,
-        efficiency=1
-        / 1.28,  # kt limestone/ kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
-        efficiency2=-3420.1
-        / 3.6
-        * (1 / 1.28)
-        / 0.5,  # MWh/kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974 divided by 0.5 because I don't have heat
-        efficiency3=500 * (1 / 1.28),  # tCO2/kt aluminum
-        lifetime=lifetime_aluminum,
+        efficiency=1 / 1.9, # 1.9 t alumina / t aluminium https://alvancebritishaluminium.com/wp-content/uploads/2025/08/ALVANCE-BA-Sustainability-Report-FINAL.pdf
+        efficiency2=-5.99 * 1e3 / 1.9, # MWh/kt aluminium https://www.nrdc.org/bio/ian-wells/role-inert-anodes-aluminum-decarbonization
+        efficiency3=(0.9 + 1.5) * 1e3 / 1.9,  # tCO2/kt aluminum PFC + CO2 anode reduction https://international-aluminium.org/statistics/greenhouse-gas-emissions-primary-aluminium/?publication=greenhouse-gas-emissions-intensity-primary-aluminium&filter=%7B%22row%22%3Anull%2C%22group%22%3Anull%2C%22multiGroup%22%3A%5B%5D%2C%22dateRange%22%3A%22annually%22%2C%22monthFrom%22%3Anull%2C%22monthTo%22%3Anull%2C%22quarterFrom%22%3A1%2C%22quarterTo%22%3A4%2C%22yearFrom%22%3A2024%2C%22yearTo%22%3A2024%2C%22multiRow%22%3A%5B70%5D%2C%22columns%22%3A%5B77%2C78%5D%2C%22activeChartIndex%22%3A1%2C%22activeChartType%22%3A%22table%22%7D
+        lifetime=lifetime_aluminium,
     )
 
     n.add(
@@ -7826,8 +7872,8 @@ if __name__ == "__main__":
         aluminum_data = clean_industry_df(industry_production_scenarios, "aluminum")
 
         add_steel_industry(n, investment_year, steel_data, options)
-        if options["endo_industry"]["endo_aluminum"]:
-            add_aluminum_industry(n, investment_year, aluminum_data, options)
+        if options["endo_industry"]["endo_aluminium"]:
+            add_aluminium_industry(n, investment_year, aluminum_data, options)
 
     if options["methanol"]:
         add_methanol(n, costs, options=options, spatial=spatial, pop_layout=pop_layout)

@@ -1064,6 +1064,7 @@ rule build_industrial_production_per_country:
 rule build_industrial_production_per_country_tomorrow:
     params:
         industry=config_provider("industry"),
+        sector=config_provider("sector"),
     input:
         industrial_production_per_country=resources(
             "industrial_production_per_country.csv"

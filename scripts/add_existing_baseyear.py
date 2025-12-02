@@ -525,7 +525,7 @@ def add_heating_capacities_installed_before_baseyear(
         Year for energy totals
     capacity_threshold : float
         Minimum capacity threshold
-    use_electricity_distribution_grid : bool
+    use_electricity_ : bool
         Whether to use electricity distribution grid
     """
     logger.debug(f"Adding heating capacities installed before {baseyear}")

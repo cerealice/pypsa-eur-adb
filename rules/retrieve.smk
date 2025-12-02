@@ -18,9 +18,9 @@ storage:
 
 
 storage cached_http:
-    provider="cached-http",
+    provider="cached-http"
 
-
+print(f"Retrieve enabled: {config['enable']['retrieve']}")
 if config["enable"].get("retrieve", "auto") == "auto":
     config["enable"]["retrieve"] = has_internet_access()
 

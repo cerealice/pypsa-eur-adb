@@ -1,0 +1,1225 @@
+model,scenario,region,variable,unit,year,value
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0004873184156754786
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0005570206777734322
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.000673010596213288
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.00047226557659922635
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0004924157010003369
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0005110341165925263
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0005455955181262224
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.00432413749882164
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0011584656620300844
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0014674321477444836
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0018392702777362737
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0006220290975733173
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0009715981959849845
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0005296180681609765
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.004875082661865733
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0020747266968500545
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0004742869260444002
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0011287985443518957
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0008414836847836077
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.000695618279980346
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0005036704210068489
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.000716329489739213
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0004911925484725835
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.004327581205444508
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0006493645970382079
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0018579090782868935
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.000488622033173016
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.00047497677538340055
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0005331891286033499
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0005675961069498492
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.002450857409721303
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,32.89895156466346
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.002736655142275076
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0333653660299647
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.4573991238208285e-05
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.6603005613309858e-05
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,3.1947780913918434e-05
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.321522826172524e-05
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.418500648364279e-05
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.4956808490064698e-05
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.6652230978836492e-05
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,0.0001038545034408888
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,3.7430990562160006e-05
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,7.760112126039844e-05
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,6.836927683641028e-05
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,3.010206030554718e-05
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.5739817338525784e-05
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.538695865377107e-05
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,0.0006882549846246058
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,4.585951771308e-05
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.35920401160998e-05
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,4.160885749565799e-05
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,3.9746652722210166e-05
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.8950943101564545e-05
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.351839110146257e-05
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,3.449393398661157e-05
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.5043413033588374e-05
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,0.00024516477023196103
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,3.063336475406145e-05
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.5636123224936565e-05
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.4369220155165382e-05
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.39705976589331e-05
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.6007901002243358e-05
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.512113607338054e-05
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,0.00010458558126817682
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,8.698772967270461
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.8923563689172614e-05
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,8.698169989333174
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018283264396306824
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00015989983413720608
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.052057292595080844
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.05688600174677631
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018242747204136344
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0001691118349960369
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,14.161365179616409
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.22341313270776303
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018235235122050634
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0001688941151296776
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,21.563106201324807
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.2624200175399951
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.0001825291811926614
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00016259144224847505
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.37032237949649016
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.31050709395609105
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018240256470591893
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00016615685502225893
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,15.913172256736022
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.3379422092882884
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.0001823964717611011
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00016490366296816703
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,23.369728812155042
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,4.631447477572115
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018249700536093706
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0001674213624646771
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,1.4899560537837224
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.4535823966700744
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00037435838416783934
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00035170331879611427
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.005230877398157076
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.006824408559756166
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018866311164175904
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00017358263301948886
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0020054404485807223
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.0025592896740720115
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018430722496514033
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0001800161584629839
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.13012274915433641
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.09823530306446435
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00037219703844582373
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00033348493343756855
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,58.962105672258446
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.6966625087404171
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018239256441881404
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0001659096621339422
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,154.4300751207567
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.9822911320626985
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00019510372464590558
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0001643669014404407
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0008934946338704083
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.0011275070455232102
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.0001824395252621588
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00016565003379592546
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,30.8393798394815
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.20631991034972683
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018630000247975365
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0001846386182863738
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.004994759150186242
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.0060616073910301094
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00038357952186283994
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0003168113218871922
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,43.218955598673475
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.5612043298179321
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018270746500439593
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00015814208695902608
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.11853538695358982
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.10895358148246832
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018678207618852449
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00017516540566868657
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.002653090535882314
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.0035689299752805184
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018328033777387297
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00017604080393808028
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,21.54549496439758
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,24.764190476252917
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018483940564366485
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00016346932107264665
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.002932668440815542
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.004478361391730947
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018449188241077903
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00015765469193312095
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.004363535417244237
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.005806248822182802
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018235980372924022
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0001727255363876857
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,49.28582479161786
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.22421889460759364
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018261898793423692
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00016002778598602272
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.18002617470960824
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.17510449635886272
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018383104378053263
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0001825013079446151
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,63.667149444826514
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.33738095011458175
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018258117302122782
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00016572298851504107
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.7526490309524814
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,114.54253654203039
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00019875429859508013
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00016462299787312808
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0007368289164972215
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.0009151615868778913
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018238802858849197
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00015819906786834398
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,52.01060317737294
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.5472732204734507
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018251148843710627
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00016559295078008034
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.8551508908198833
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.21611004235694037
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018247341557956883
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00016605556765256267
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,27.943423747515162
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.3556148084755659
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018482236547001342
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00015960102664344948
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0034205702174545803
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.004614407794531262
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.0003649071942220016
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0003418348369662919
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,24.4865050039115
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.2717509548138677
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018535363398903537
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00018948786930948254
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,99.54493294180517
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.6298541989319341
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00019761124584894362
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00016627826019820503
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0007073969155066612
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.0009543231898157565
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00037620273339746923
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0003678409601467487
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0058168244130236265
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.0069865272356925395
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0008185393144191003
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0006610852554196876
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.000824531869095865
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.000708639170633601
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0008089809617233077
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0008553955587446282
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.00103585493545854
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,6.4180326990773064
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0013619713689985288
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0017897146666301504
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.004315793787453739
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0007073992044471874
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.014895520624283853
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.00210121303888059
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.006190099491304771
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,6.6229423999635735
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0007757060731906424
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0015491512154907504
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0012940598970231406
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0008122180266785267
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0007569856262682915
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0012461254918336368
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0008204624529314905
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0029756185055436197
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,36.98292701250452
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0029398860361898337
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0007114234075953704
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0007667513858349834
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0010459189365258092
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0008548574458085278
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.00562920972452731
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0030274565466325
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0009282531088843333
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.035311394160484115
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.8204886445574675e-05
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,1.942936342580535e-05
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.246127026256766e-05
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.1789908348865242e-05
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.729594960901178e-05
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.0991870194021444e-05
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,1.8942815668139875e-05
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,6.0027879583757615
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.5616902205548436e-05
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,5.077213124101997e-05
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,9.096800730003235e-05
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.0472226841717722e-05
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,4.1027833891752e-05
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.070924287128181e-05
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.0021602449456922194
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,7.3502356436434e-05
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.584806891674301e-05
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.7608730793598068e-05
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.3726675646439346e-05
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.091781815459964e-05
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.4637874814583402e-05
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,3.06405881139115e-05
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.882793355607373e-05
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.00010909367675611104
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,1.8993812330799052e-05
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.00017113098535358822
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.2541553610422326e-05
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.253158144660503e-05
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,1.951692074190459e-05
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.0145568565677494e-05
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.7699456762435677
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,9.099612713253893e-05
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.731775730050844e-05
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,2.767964573122413
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0001680910731888493
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00015223646387548578
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.28612771145543997
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.15058306568462898
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00016814124711183397
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00014721745558308072
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,23.813337891839677
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.2649567277902088
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00016841044944686018
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00015014027168358177
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,22.683105332796814
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.3379529300841465
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00016812309714807046
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00015223428222129674
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,3.6651957949613516
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.28580600232391723
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0001680987684465409
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00015155969734638968
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.2512711527107276
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.14771402626512342
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0001724446916487595
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00015084816881777067
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.002179883568733243
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00237417661201463
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00017698385916327156
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00014335495210111713
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.0012037301391005805
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.0012679430961245956
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0003410162916280031
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0003348375547474775
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,3.9776659109314676
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,5.984919182916512
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00017475038458598878
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00015374110850798647
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.0017992596167398908
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.0020024255660498836
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00016988325957101538
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00016204009965194738
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,9.853080674557857
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.24013636374503794
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0003421178904469462
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00031620045536359133
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,43.63433077798829
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.41263941580165897
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00016824288044013316
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00014811733641546397
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,76.4164484977988
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.3893727889386882
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00018111127560400516
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00015540691140046602
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.0008286603058512457
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.000884473047532094
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0001832664707630257
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00014514699566279548
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.0007795092758103423
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.0008170133199430572
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0001721030707128269
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00017177546695042246
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.665130728228299
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.23568427089050276
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0003507745149946781
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0003108914739192264
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.05786287025140354
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.05255553311482923
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0001681632827635114
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00014981600334518734
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.8681889369485195
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.20056779808511366
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0001756599358690541
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00015227128525062636
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.0015797903490061787
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.0017060321539781557
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00017651788969920816
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00014809677743750675
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.001431204600536738
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.0015192254654478002
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0001706235864316508
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0001464935759264486
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.0034682077466144643
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.004305677856018329
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00016817248462586316
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00015016980944035358
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.05937132122126044
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.05439930371131851
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00016853269059993216
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00015627975179423038
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,9.9843311354698
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.2967636269028141
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00016808881695687332
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0001522565547614271
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,2.9651545645417765
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.4497503589655922
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00016998790733941443
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00016416194484585576
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.09220030465903482
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.10977711437944783
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0001928759271391982
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00014284092437408306
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.0005572669746413617
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.0005912252120929158
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00017623874137003906
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00015802179441166866
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.0027764766175857386
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.003300951860343684
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0001680877801658796
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00014843735569268948
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,9.715412326425922
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.3007217112388268
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00016949402006847782
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0001499428551525841
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.006333883380547263
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.007017122023808531
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.000177220154884359
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0001463195638559005
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.001184980260402454
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.0012386201506669867
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.00017285652921551783
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00014589303245268547
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.0020107214332319985
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.0021807427788394095
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0003501392568147826
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00032196760762819645
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,18.307636871208494
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.7006886458991065
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0001716317962957889
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00016585619271433899
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,13.030882901144233
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.41248411044304156
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0001680637663989868
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00015251012495641586
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,1.8299693615720536
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.4059018782956582
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0003442137487388511
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00035674462132604426
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,365.6610604528397
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.5904594638561187
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00022038488582863626
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00025081038187792974
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00025291411733740485
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00042338204537679263
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0014858373997659166
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0015001872812803504
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0001522762057364034
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,53.073200283502125
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0006963453022226393
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0004330727945314416
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0019317966012040886
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0001863792025733368
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0015256399667873026
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00037380013505499717
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.004934505618910902
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0005285460553355772
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00021132756421495793
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0012887350722050582
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.005861690291579584
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00024453031134577194
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0002881368921971269
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0013349139365371294
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00031512555761420245
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00165215967985796
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00015747381130879823
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0025783709266505007
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.001490832377254034
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00024875975981419586
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0003011753139196899
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0004137460901984098
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.032624204433310405
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.001645817776589288
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00027310044197120304
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.007392888082007559
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,5.550674752057656e-05
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.387840633302761e-05
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,4.3025834911861465e-05
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.995760949086089e-05
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,4.803079605953134e-05
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.6587703485403286e-05
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,2.928066766626333e-05
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,5.186250718205876
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,5.298530727032119e-05
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,6.731691306898859e-05
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.00011884839929858908
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.3236138642349464e-05
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.00010011050020984746
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.4552044657393184e-05
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.0002879493268004704
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.0001502481944302068
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,4.734467387080181e-05
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,4.804203835742519e-05
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.953197456386905e-05
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.550006473277133e-05
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,4.4935176114930144e-05
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,7.588501833135413e-05
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,5.333396698810646e-05
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,8.758944978175084e-05
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.021752318345564e-05
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.00019759305728669216
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.99265021304433e-05
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.8954686781880884e-05
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.254960026164948e-05
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.425418882672808e-05
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,7.189423834169847
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,8.508600094688847e-05
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,5.373281848348267e-05
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.6893435936416203
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00014522704405936133
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.00010036449113651166
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.005453925727107564
+PyPSA-Eur,base_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.018046753005189795
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00015542853255215495
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.840820093253851e-05
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0007314739115663076
+PyPSA-Eur,base_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0029752340497852434
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00014737394809736184
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.94611360489324e-05
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,12.66151779080577
+PyPSA-Eur,base_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.44859975984819095
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00016097905511446554
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,9.002073261575897e-05
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00048803820087968105
+PyPSA-Eur,base_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0016049314725048488
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00016460602045779632
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.342867008166976e-05
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00040652772990465257
+PyPSA-Eur,base_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0011676597604850416
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00017044704945248435
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.861399661791183e-05
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00033812962042636296
+PyPSA-Eur,base_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0009651620936250153
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00014614069974196962
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.05773674214068e-05
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,30.922657082018493
+PyPSA-Eur,base_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.4618037753916357
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.000310733458607794
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.0001978450619093207
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,514.0517148590551
+PyPSA-Eur,base_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,2.7881528492920973
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00015616202038173886
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.384605812277219e-05
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0007559654687167298
+PyPSA-Eur,base_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.002757418682994706
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00014734692131758372
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.767021445814077e-05
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,9.596757306915098
+PyPSA-Eur,base_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.40765721480519884
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.0003055607248006953
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.00017996923576430943
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,13.231753345985107
+PyPSA-Eur,base_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,5.140993460130891
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00014715747359284655
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.594134972162142e-05
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,3.656114576661715
+PyPSA-Eur,base_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.39649271454300383
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00016173301875915187
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,9.183109134404742e-05
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00046409274442811305
+PyPSA-Eur,base_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0015818946517210148
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00016025156218289454
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.121831765908963e-05
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0005057853094661139
+PyPSA-Eur,base_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0016121080602282572
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00015578645654744545
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,9.781243826575183e-05
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0023708046883516164
+PyPSA-Eur,base_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.010545522583153036
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.0002929568822361918
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.00018416640306696515
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.32342348336337834
+PyPSA-Eur,base_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.264363937156749
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00014600269941112467
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,9.900448942989259e-05
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00384346536827729
+PyPSA-Eur,base_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.013169554809494121
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00016106739326033205
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.422947325964997e-05
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0005248796055609481
+PyPSA-Eur,base_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0016555816686808873
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00016686967988995257
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.303178733461712e-05
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0004096130422484198
+PyPSA-Eur,base_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.001154140224710895
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00015119084089941674
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.733117978376328e-05
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0017142932333251038
+PyPSA-Eur,base_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0075834431749888164
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00015321566474161592
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,9.334861288957061e-05
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0008778660876982924
+PyPSA-Eur,base_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0031406432925454755
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00015573380394290516
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,9.276600793905264e-05
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0009637639459380916
+PyPSA-Eur,base_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.003809575208325377
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00015221688046982186
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.00010095867578302145
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.000970118020366442
+PyPSA-Eur,base_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0034450600778660697
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00015345125327117902
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.858367787670212e-05
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0016452174139507346
+PyPSA-Eur,base_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.006461142577309901
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00014515759318880353
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.178057426695951e-05
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,2.3843804314627715
+PyPSA-Eur,base_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.3896194676323706
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00015966149294313885
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,9.494984327805985e-05
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0013661157044387612
+PyPSA-Eur,base_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.006009430010581687
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00016786861438116487
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.365081877729588e-05
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0003746975427256638
+PyPSA-Eur,base_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.000986854473931097
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00015208768009463807
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,9.651486855900134e-05
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0009962307281061835
+PyPSA-Eur,base_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0035157254712916432
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00015901269222657995
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.368569213974558e-05
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0005421971409132252
+PyPSA-Eur,base_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0018172843952975204
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00016274734666308195
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.909796582816913e-05
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00044930304720110757
+PyPSA-Eur,base_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.001463891021051548
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.000324615459016224
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.00019702603835557045
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,3.0242722733800345
+PyPSA-Eur,base_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.39641058690478564
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00015364231061459348
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.852908588406617e-05
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0016093370086964903
+PyPSA-Eur,base_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.006190044418210377
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00014613018064769544
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,8.961563016370406e-05
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,2.576733967924165
+PyPSA-Eur,base_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.38700610625343385
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.00030511161291891484
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.00019727186331373273
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,12.34130239291942
+PyPSA-Eur,base_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.7375717768887635
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0004238009284027394
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.00040328836418525033
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0005589522284131194
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0003927505959940529
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0004111511761807002
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0003932721784496204
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.000396468674503029
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.002609374487098845
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0009572951960157031
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0007731826633373357
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0011077463947719588
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0004830080856640204
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0007053962252185634
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0003931299918910384
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,403.1707008677894
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0017488728676033417
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.00041352442150946987
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0009317780782251646
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0007118365586083131
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0005272653717720546
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0004072316740080341
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0008646985912210967
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0004262469781354564
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0009365687905794778
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0005083409061932404
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0005694019069757232
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.00039661029181008254
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.00039710728007978635
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0003939898434974877
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0004043137492114318
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0009589939645988513
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,357.62442116769904
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,0.0007325926105005818
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2030,98.57000034947973
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.8886269763051244e-05
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.696027523815846e-05
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.3242217770382035e-05
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.645072461375915e-05
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.771885492189714e-05
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.6665632114846527e-05
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.6578114711021016e-05
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,6.758704989890725e-05
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,5.678067073085631e-05
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,5.1349086492911926e-05
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,4.377507553906707e-05
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.0814143662366967e-05
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.4996016030787082e-05
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.6511855015330982e-05
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,8.6984428939255
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,5.1124712500782705e-05
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.827968730324217e-05
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,6.25150311416293e-05
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,4.325287649227559e-05
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.1122910345907715e-05
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.6753787457468288e-05
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,5.323353395092596e-05
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.9488641386256345e-05
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,0.00016831061579213435
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,2.2147814036362677e-05
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.663479642707856e-05
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.6782703825087814e-05
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.6782184532308633e-05
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.654603693147326e-05
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.6493316256174026e-05
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,6.57897436741499e-05
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,8.69899074629364
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,1.983456192104988e-05
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2030,0.0007798247092483054
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.033348208683567e-05
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0003214037490723459
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0007496898497816204
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.12375107227970922
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.011642069357487e-05
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00029349240561863846
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0007713799899163685
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,18.318429712508493
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,8.98908764340267e-05
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00044834441332450135
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0009472741264199343
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,27.813599032090856
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.048136956832785e-05
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0002845218061126868
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0007652489432705731
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.7840362526947935
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,8.929731046434706e-05
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00024939186707307855
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0007680499570920526
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,20.668832354794283
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,8.942223300258099e-05
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00027416962920035935
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0007697545496824788
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,34.490511508983985
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.046181617530405e-05
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00022564427281655905
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0007487910054444769
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,2.3556099927328344
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018695322457592818
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.001121343222736943
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0008912491011080462
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.001376999069716854
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.147885586525019e-05
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.002764272913892641
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0006020611644160926
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.001660714956661528
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.059329558857982e-05
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.001814614603316945
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0009703481754098298
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.26075345435371194
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.0001823460795541254
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0006993845645914059
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0012778325858665068
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,76.01586338390568
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.027157715069632e-05
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0003306844829255419
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0008632000196915498
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,181.92142033586498
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.304082798387636e-05
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0003186432678663047
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0003289877603617966
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.0005144367806344806
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.060509814437768e-05
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0002621046218417485
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0007353986062987336
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,39.60763087787861
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.099634347212689e-05
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,1142.327888225849
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.001350571509825489
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,169.2110075851795
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018528398877679575
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0007228995052846142
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0010498956327712856
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,55.78023288921869
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.18972915763213e-05
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0002975170849200927
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0009186909593804428
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.2604743289001194
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.162446600953116e-05
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0027957241810880303
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0006341127933678635
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.0023837659787186594
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.038790197950224e-05
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0011680707528427287
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0008658119514351414
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,52.29237119676212
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.209880513396488e-05
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00035779525013356864
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0006419636810048771
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.0033202943470952316
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.110872404350679e-05
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0002898756205984607
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.000656278866496806
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.004068775661546219
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.044468623767101e-05
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.001328896716655132
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0009695184591519454
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,54.06760489975196
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.088554153478371e-05
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0003319086641303383
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.00073732832706352
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.4020153830519662
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.076132886650373e-05
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0015481002669648775
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0011643424027312597
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,81.67073453509097
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.024088628678148e-05
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0004514598419370913
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0007616678713208903
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,115.50147499593504
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.415700960521005e-05
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00026272982311429267
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.00032160069056647776
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.00044622301553923037
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,8.962301647027792e-05
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00021896989275642706
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0007354463992847954
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,66.99857655213603
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.122912513609581e-05
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0002907635370842317
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0007284548176631172
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,1.3083184444839622
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.155999444590976e-05
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.00027089562640091665
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0007240113766592052
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,36.05692156849398
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.163911694365401e-05
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0002787066551839926
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0006170931181046349
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.0032920700780633065
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.0001782193871666733
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0009102639295139268
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.001807924728697999
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,31.54747757389207
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.30048391461333e-05
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,1627.0736870526084
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0006509661051536165
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.001296753395002583
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,9.506541120579622e-05
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,0.0003155724998992427
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0003027691419103552
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.00046620691799908776
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2030,0.00018264138437764277
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2030,451.23695082807546
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2030,0.0018130780742884466
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2030,0.004973116019813034
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0019211066560273716
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.000811658910907295
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0016930606848428913
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0008943993413667491
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.001404175172546235
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0007689951594582275
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0007923144401111165
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.01238376374153952
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.007653246702996658
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.010853072168007509
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.01378390853003725
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0010837290751157574
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,162.7103219565483
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0008773670722596522
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,588.8068544878498
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.007670952486971426
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0014660202207710982
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.009086936501070696
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.002267720422034763
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0013772941937756616
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0012510650414299578
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.00375200790771872
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0019700576070837143
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.002534970121530461
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.002765841916592629
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.005779761389280306
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0007794530024735009
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0009464136801523409
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0008921510616915321
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.0010071430271077911
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.006756150541799936
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.01582502948800238
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,0.004361796313740161
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2040,1482.5345793303966
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.00015764313015902113
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,6.335633156439495e-05
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,9.346589933231245e-05
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,8.323226823238275e-05
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.0001724904301477725
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,7.684338280586903e-05
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,4.459562735133802e-05
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.0003840999892369991
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,1.8925955317300205
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.0014451970715323764
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,1.8849110484736367
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,5.987583829120121e-05
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,6.010910591600099
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,6.030836328923364e-05
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.002826074076683322
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.0010059035088937577
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.00011715989482471879
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.0011363019595456623
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.00021580564665165812
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,6.678031054852631e-05
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.00010259529626259944
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.00014284380834087896
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.0001499502988625292
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.0009049597344837158
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.00014083804498941685
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,1.8856963942758915
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,7.848313389235476e-05
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,9.08552974397288e-05
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,5.6008984495494896e-05
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,8.465364558430985e-05
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.0032597984713470434
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.00029974547960460627
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,0.00018342273429928715
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2040,1.893196555017779
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0016430916269442669
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0017459916603793874
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010947294754901736
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011830028600395135
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0008373871444878244
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0006485473579738712
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00011078057408825444
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00012191649106971143
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.001889315121887204
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0031381995280118555
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010918300452451961
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011759542236184704
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.000778813739450744
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0006705050594795565
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010956550790433206
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011975313901022464
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0010442119223498384
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0015519332446869874
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010890466864354103
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.0001182220309106267
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0006153223488185417
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0005731580336245579
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00011072597289270629
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00012281325669572657
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0014418108100649428
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00037105878745006507
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010894119854222693
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011801831666805591
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,1242.5307394707645
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,6545.437679639128
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.0002180108416045691
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00023427548801292338
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,189.21034067843857
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,1905.4426341036328
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00011844579276967369
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00012665820323154252
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,731.6108626393981
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,5976.389250663418
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00011947089974577031
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00012660091879057532
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,1142.8553268638552
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,4610.301715937863
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00022156321654780988
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00024176212905602088
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0013056493120512521
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0012428649550922967
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010908431458480649
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011775305244513502
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,1341.8435051151325
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,6183.124653152662
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010852534370812026
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011685263480228533
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0010124668372957025
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0005364525439801228
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010922694805637253
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011898723782838932
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,2098.890238975214
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,13382.018620690385
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010934080443452257
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011773598294524771
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,355.01091575926193
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,8245.798389741607
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.000224226841779491
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.0002491075986019279
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0013410126949892067
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0010837894593196883
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00011190326988426815
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011809839921416064
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,249.19265707481694
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,1021.3675399321734
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00011327692419826318
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00012235649290165098
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.002301391787497539
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,38.747435249000745
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00011312850506996951
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00012265686496047297
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.002019722361968462
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0014884800747582997
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010908232330606533
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011729881796293301
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0011637279625977498
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0008333204954176869
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00011011866402509987
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011875650295759484
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,593.6756612750122
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,3607.8965125631885
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010917395987522571
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011719840514449537
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0019268413327537235
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0016589013160872381
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010902299788548259
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011763810186323408
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,291.8086098679641
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,1592.2008618232871
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010892217068729351
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011695613077115285
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,28.194318077266576
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,588.5893801637696
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010878564527615867
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011719077523876441
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,443.4489798367705
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,2958.994781245625
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010894453110123575
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.0001169368520569134
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0005965539465193501
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0009598589747010547
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010916433606390221
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011914664072556069
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0007988003962541028
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0007416561431445258
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010929248542664887
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011891762123776922
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0013885028125555157
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.00043627518864200807
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00010944880173902361
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011806405105799023
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,0.0009627356435775592
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,0.0007590583841733043
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00011145830529340541
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00012264331286144112
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,6534.154833348759
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,27208.0380296911
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.0002182135789119707
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00023477087463923412
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,3053.09419794102
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,12374.6503584065
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.0001089377513032913
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011703196280535471
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,249.06111381953505
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,1242.1351151350034
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00011048120695038057
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00011998557982946447
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2040,7624.668422644312
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2040,43629.6927684141
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2040,0.00021800002568026606
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2040,0.00023428423279454197
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,11.976441845029019
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0008612414308694934
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0011838769741928945
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0014649262188374753
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00637143035785197
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.001403964859720475
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00071648796471261
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.00380409328355376
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.01372895450090273
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.006356814001364677
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,77.3885187567878
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0008718112693630792
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,273.8146966973572
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0010124387351507483
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,1289.7491747057768
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.009417972616679836
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0027793389776746267
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.006920959895761937
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.003958344565132736
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0010904663408586835
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.002278362110628935
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0022549350066539357
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.015355207206426852
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.002940049289849741
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0016971142870872934
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0063992530925235346
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.001859037281027619
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0013742813341727478
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0009267641321019371
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.0013048892045013742
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.007621434800753544
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.008867075454452956
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.011601660718687967
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Methanol|Methanolisation,Meuro/y,2050,0.019323002401666976
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.5472031814622684
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.926788476005471e-05
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,4.646266148652701e-05
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,6.19440294241457e-05
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.00021993047839460636
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,5.34590230093839e-05
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,2.6642466561296443e-05
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.00014597187917065918
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,4.594443143458312
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.00022085223578523344
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.0010618890165774054
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.2699648726285974e-05
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,1.0143143577728346
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.836606607510365e-05
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,4.594277492918706
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.0019368722515662015
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.00017202460642449927
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.00019460983970019536
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,7.48065347978829e-05
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.687043867883667e-05
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.00010440313880734371
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,7.091002728892962e-05
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.031244408055153116
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.00017939266865427662
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,5.413833990378126e-05
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.002769244482560875
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,5.5484565124788436e-05
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,6.430521447891678e-05
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,3.290579459755788e-05
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,5.4048775902284854e-05
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,2.2077522589652956
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.00011038492109071251
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.00012335903789123846
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Plastics|Naphtha Steam Cracker,Meuro/y,2050,0.0009758681891348524
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,128.18039510487395
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,648.6944130939928
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022682446211809982
+PyPSA-Eur,policy_eu_regain,Albania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0002501389641773832
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.0011897935673089047
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.000998899682938405
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00023348419528084936
+PyPSA-Eur,policy_eu_regain,Austria,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.00026234775340560354
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.001468656035892755
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.0026529273987031506
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022617850141700362
+PyPSA-Eur,policy_eu_regain,Belgium,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.00024956568138774347
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.002313486254695023
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.0012447794293371527
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022761220096958985
+PyPSA-Eur,policy_eu_regain,Bosnia and Herzegovina,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0002521787749908342
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.006681447926685983
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,51.68906452691737
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022537692557671472
+PyPSA-Eur,policy_eu_regain,Bulgaria,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.00024659900092995887
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.002553349812898391
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.0012438673657273257
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0002276975260655689
+PyPSA-Eur,policy_eu_regain,Croatia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.00025272690365508196
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.0012951181228453336
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.0008423668213432442
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022929209001426405
+PyPSA-Eur,policy_eu_regain,Czechia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.00025678878271873513
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.0048968623170743426
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,374.3500192793588
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.000450700676159858
+PyPSA-Eur,policy_eu_regain,Denmark,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0004946439011676025
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,171.06992779602663
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,1145.9866106248974
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0002391138351939939
+PyPSA-Eur,policy_eu_regain,Estonia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0002615776865084151
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,102.19087682390456
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,309.0506108023448
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00023726256104761816
+PyPSA-Eur,policy_eu_regain,Finland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0002588680979198904
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,410.17446623456703
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,1671.9825282162765
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0004676646400388853
+PyPSA-Eur,policy_eu_regain,France,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0005193173328757559
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.0012078800435266362
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.0017068685225537143
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022669241863233162
+PyPSA-Eur,policy_eu_regain,Germany,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0002509563095684945
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.014270985533961987
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,1078.6032593584139
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022530432473874128
+PyPSA-Eur,policy_eu_regain,Greece,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.00024647238829128207
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.0017505147946755399
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.0013414541471200732
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022659827846197332
+PyPSA-Eur,policy_eu_regain,Hungary,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.00024972600395397834
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,2982.1454271994717
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,17385.981693342237
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022526744684120753
+PyPSA-Eur,policy_eu_regain,Ireland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0002471916900410192
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,164.45343077217046
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,2138.5084254169265
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0004848696281747253
+PyPSA-Eur,policy_eu_regain,Italy,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0005422138506127861
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.0031774077860480653
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.0030435180500589616
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022679116976989994
+PyPSA-Eur,policy_eu_regain,Kosovo,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.000250060415787257
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.011695940486653879
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,33.82206549339325
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00023177367337875117
+PyPSA-Eur,policy_eu_regain,Latvia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0002556930749848442
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,6.217059690470799
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.003423739516183327
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022590811767139103
+PyPSA-Eur,policy_eu_regain,Lithuania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.00024908413196103265
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.0016682459956909596
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.0010484888250817486
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022624388556027108
+PyPSA-Eur,policy_eu_regain,Luxembourg,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0002493401237863825
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.0035978741455194386
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.0018332845054621152
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0002273817931356181
+PyPSA-Eur,policy_eu_regain,Montenegro,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.00025155203400870936
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.004009502883093144
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,497.3945740681072
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022568192440847277
+PyPSA-Eur,policy_eu_regain,Netherlands,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0002483839448931819
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.028690313569406194
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,61.6485329085905
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022611061859670943
+PyPSA-Eur,policy_eu_regain,North Macedonia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0002482909145724129
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.06565531086546886
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,15.525860333685847
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022511543013066282
+PyPSA-Eur,policy_eu_regain,Norway,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0002467732131751767
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.0031055112043139287
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,35.97487305482119
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022601190582452433
+PyPSA-Eur,policy_eu_regain,Poland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.00024919711106183756
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,169.30147069746303
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.012696669296006316
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0002252266949026491
+PyPSA-Eur,policy_eu_regain,Portugal,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.00024680826061437573
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.003359228257018772
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.0022584008818309705
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022554020474384995
+PyPSA-Eur,policy_eu_regain,Romania,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0002469687895126964
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.0015917611463092756
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.0018840102786818176
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022696057869434414
+PyPSA-Eur,policy_eu_regain,Serbia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0002502697221426941
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.0017967300844655425
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.0010325901602292991
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0002263689754104308
+PyPSA-Eur,policy_eu_regain,Slovakia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0002492863519147097
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.002096755587590324
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,0.001075232280254891
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0002315438495711672
+PyPSA-Eur,policy_eu_regain,Slovenia,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.00025905159195798463
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,0.061815503600377984
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,1612.7754722158836
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00045161113837695116
+PyPSA-Eur,policy_eu_regain,Spain,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0004965729328637278
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,198.38559598908523
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,655.5955192023256
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022523325441572729
+PyPSA-Eur,policy_eu_regain,Sweden,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.00024715606854608645
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,64.00760441866062
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,454.46626454718825
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.00022827050138630943
+PyPSA-Eur,policy_eu_regain,Switzerland,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.000253530557958416
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Fischer-Tropsch,Meuro/y,2050,238.92169761002043
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|H2 Electrolysis,Meuro/y,2050,6092.819433864257
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Smr,Meuro/y,2050,0.0004503582483489668
+PyPSA-Eur,policy_eu_regain,United Kingdom,Investments|Energy Supply|Industry|Feedstocks|Smr Cc,Meuro/y,2050,0.0004939535870399502

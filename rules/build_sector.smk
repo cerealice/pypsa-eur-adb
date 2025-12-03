@@ -1047,15 +1047,12 @@ rule build_industrial_distribution_key:
     input:
         regions_onshore=resources("regions_onshore_base_s_{clusters}.geojson"),
         clustered_pop_layout=resources("pop_layout_base_s_{clusters}.csv"),
-<<<<<<< HEAD
         hotmaps="data/Industrial_Database.csv",
         steel_gem="data/gem/Global-Steel-Plant-Tracker-April-2024-Standard-Copy-V1.xlsx",
         cement_sfi="data/sfi/SFI-Global-Cement-Database-July-2021.xlsx",
         chemicals_ecm="data/1-s2.0-S0196890424010586-mmc2.xlsx", # Reference Neuwirth et al., https://doi.org/10.1016/j.enconman.2024.119117 
-=======
         hotmaps=rules.retrieve_hotmaps_industrial_sites.output["csv"],
         gem_gspt=rules.retrieve_gem_steel_plant_tracker.output["xlsx"],
->>>>>>> 151f60383500c69e90f89b9190b20b4c5c368a35
         ammonia="data/ammonia_plants.csv",
         cement_supplement="data/cement-plants-noneu.csv",
         refineries_supplement="data/refineries-noneu.csv",

@@ -1134,8 +1134,30 @@ if (DH_AREAS_DATASET := dataset_version("dh_areas"))["source"] in [
         log:
             "logs/retrieve_dh_areas.log",
         run:
-<<<<<<< HEAD
-            move(input[0], output[0])
+            copy2(input["dh_areas"], output["dh_areas"])
+
+
+if (MOBILITY_PROFILES_DATASET := dataset_version("mobility_profiles"))["source"] in [
+    "archive"
+]:
+
+    rule retrieve_mobility_profiles:
+        input:
+            kfz=storage(MOBILITY_PROFILES_DATASET["url"] + "/kfz.csv"),
+            pkw=storage(MOBILITY_PROFILES_DATASET["url"] + "/pkw.csv"),
+        output:
+            kfz=f"{MOBILITY_PROFILES_DATASET["folder"]}/kfz.csv",
+            pkw=f"{MOBILITY_PROFILES_DATASET["folder"]}/pkw.csv",
+        threads: 1
+        resources:
+            mem_mb=1000,
+        log:
+            "logs/retrieve_mobility_profiles.log",
+        benchmark:
+            "benchmarks/retrieve_mobility_profiles"
+        run:
+            copy2(input["kfz"], output["kfz"])
+            copy2(input["pkw"], output["pkw"])
 
 
 if config["enable"]["retrieve"] and config["weather_years"]["enable"]:

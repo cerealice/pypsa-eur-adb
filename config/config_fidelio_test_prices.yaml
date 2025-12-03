@@ -8,7 +8,7 @@ run:
   name: #"all"
   #- baseline
   #- basetariffs_iter_2
-  - ff55tariffs_iter_5
+  - ff55_iter_1_test_prices
   #- baseline_iter_4
   #- ff55tariffs_iter_6
   #- ff55_iter_5
@@ -29,7 +29,7 @@ run:
   shared_cutouts: true
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#foresight
-foresight: myopic
+foresight: overnight
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#scenario
 # Wildcard docs in https://pypsa-eur.readthedocs.io/en/latest/wildcards.html
@@ -45,8 +45,8 @@ scenario:
   - ''
   planning_horizons:
   #- 2020
-  - 2030
-  - 2040
+  #- 2030
+  #- 2040
   - 2050
 
 validation: true # Should be turned on when 2020 as planning_horizon
@@ -105,9 +105,6 @@ electricity:
     Generator: [solar, onwind, offwind-ac, offwind-dc, offwind-float, OCGT, CCGT]
   renewable_carriers: [solar, onwind, offwind-ac, offwind-dc, offwind-float, hydro]
   transmission_limit: v1.1
-  estimate_renewable_capacities:
-    technology_mapping:
-      PV: [solar]
 
 
 # docs

@@ -19,7 +19,7 @@ storage:
 
 
 storage cached_http:
-    provider="cached-http",
+    provider="cached-http"
 
 
 if (EUROSTAT_BALANCES_DATASET := dataset_version("eurostat_balances"))["source"] in [

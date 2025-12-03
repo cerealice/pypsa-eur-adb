@@ -3174,7 +3174,7 @@ def add_land_transport(
     avail_profile = pd.read_csv(avail_profile_file, index_col=0, parse_dates=True)
     dsm_profile = pd.read_csv(dsm_profile_file, index_col=0, parse_dates=True)
 
-    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'] == 'ff55':
+    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'][:4] == 'ff55':
         shock_file = options['fidelio']['fidelio_folder'] + 'hh_trans_var.csv'
         # We take the household value because PyPSA-Eur only includes passenger land transport
         transport = apply_fidelio_shocks_to_demand(
@@ -3509,7 +3509,7 @@ def add_heat(
                     sector_name="services heat",
                     nodes_in="columns",
                 )
-            elif options['fidelio']['scenario'] == 'ff55' and ("residential" in name or "urban central" in name):
+            elif options['fidelio']['scenario'][:4] == 'ff55' and ("residential" in name or "urban central" in name):
                 shock_file = options['fidelio']['fidelio_folder'] + 'hh_cons_var.csv'
                 heat_load = apply_fidelio_shocks_to_demand(
                     heat_load,
@@ -5868,7 +5868,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
     cap_share = capacities / capacities.sum()
     p_set = cap_share * hourly_steel_production
 
-    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'] == 'ff55':
+    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'][:4] == 'ff55':
         shock_file = options['fidelio']['fidelio_folder'] + 'steel_var.csv'
         
         
@@ -5928,16 +5928,12 @@ def add_steel_industry(n, investment_year, steel_data, options):
         marginal_cost=costs.at["iron ore DRI-ready", "commodity"] * 1e3,  # €/kt of iron
     )
 
-    n.add("Carrier", "steel")
-    location_value = getattr(spatial, "steel").nodes
-    unit = "kt/yr"
-
     n.add(
         "Bus",
-        location_value,
-        location=location_value,
+        spatial.steel.nodes,
+        location=spatial.steel.nodes,
         carrier="steel",
-        unit=unit,
+        unit="kt/yr",
     )
 
 
@@ -5995,6 +5991,14 @@ def add_steel_industry(n, investment_year, steel_data, options):
 
     if options["fidelio"]["enable"] and limit == "ff55" and investment_year == 2050:
         min_part_load_steel = 0.1
+
+    n.add(
+        "Bus",
+        spatial.coal.nodes,
+        location=spatial.coal.nodes,
+        carrier="coal",
+        unit="kt/yr",
+    )
 
     n.add(
         "Link",
@@ -8128,7 +8132,7 @@ if __name__ == "__main__":
     sanitize_locations(n)
 
     # Change the load with FIDELIO shocks if we want to iterate the two models
-    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'] == 'ff55':
+    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'][:4] == 'ff55':
 
         shock_file = options['fidelio']['fidelio_folder'] + 'hh_cons_var.csv'
         shock_multipliers = get_fidelio_shocks(spatial.nodes, shock_file, investment_year, options)

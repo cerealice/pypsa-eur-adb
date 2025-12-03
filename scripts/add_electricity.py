@@ -798,6 +798,7 @@ def attach_GEM_renewables(
     - None
     """
     tech_string = ", ".join(tech_map.values())
+
     logger.info(f"Using GEM renewable capacities for carriers {tech_string}.")
 
     df = pm.data.GEM().powerplant.convert_country_to_alpha2()

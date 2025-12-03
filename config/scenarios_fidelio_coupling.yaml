@@ -68,6 +68,12 @@ ff55_iter_1:
       fidelio_shocks: false
       scenario: 'ff55'
 
+ff55_iter_1_test_prices:
+  sector:
+    fidelio:
+      fidelio_shocks: false
+      scenario: 'ff55'
+
 ff55tariffs_iter_7:
   sector:
     fidelio:
@@ -126,13 +132,11 @@ ff55_no_transport:
       scenario: 'ff55'
       no_ice_ban: true
     
-
-
-#baseline_iter_1:
-#  sector:
-#    fidelio:
-#      fidelio_shocks: false
-#      scenario: baseline
+baseline_iter_1:
+  sector:
+    fidelio:
+      fidelio_shocks: false
+      scenario: baseline
 
 baseline_iter_2:
   sector:
@@ -189,14 +193,31 @@ steel_aluminum:
       endo_aluminum: false
     min_part_load_steel: 0.3
 
-# Testing reduction of transmission lines
 
-baseline_iter_1:
+basetariffs_iter_1:
   sector:
     fidelio:
       fidelio_shocks: false
-      scenario: baseline
-  links:
-    max_extension: 15000 #MW
-  lines:
-    max_extension: 10000 #MW
+      scenario: basetariffs
+      
+basetariffs_iter_2:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: basetariffs
+      fidelio_folder: "../coupling/from_fidelio/basetariffs/iter_1/"
+
+basetariffs_iter_3:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: basetariffs
+      fidelio_folder: "../coupling/from_fidelio/basetariffs/iter_2/"
+
+basetariffs_iter_4:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: basetariffs
+      fidelio_folder: "../coupling/from_fidelio/basetariffs/iter_3/"
+

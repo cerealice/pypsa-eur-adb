@@ -555,6 +555,7 @@ rule process_cost_data:
     params:
         costs=config_provider("costs"),
         max_hours=config_provider("electricity", "max_hours"),
+        sector=config_provider("sector"),
     input:
         network=resources("networks/base_s.nc"),
         costs=rules.retrieve_cost_data.output["costs"],

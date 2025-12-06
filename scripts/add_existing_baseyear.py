@@ -870,6 +870,7 @@ def add_aluminum_industry_existing(n):
     capex_aluminum = (
         263000 / nhours * calculate_annuity(lifetime_aluminum, discount_rate)
     )  # https://iea-etsap.org/E-TechDS/HIGHLIGHTS%20PDF/I03_cement_June%202010_GS-gct%201.pdf with CCS 558000
+
     min_part_load_aluminum = options["min_part_load_aluminum"]
 
     n.add(

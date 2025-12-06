@@ -230,6 +230,8 @@ if __name__ == "__main__":
 
     cost_params = snakemake.params["costs"]
 
+    options = snakemake.params.sector
+
     n = pypsa.Network(snakemake.input.network)
     nyears = n.snapshot_weightings.generators.sum() / 8760.0
     planning_horizon = str(snakemake.wildcards.planning_horizons)

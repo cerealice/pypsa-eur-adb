@@ -8,7 +8,9 @@ run:
   name: #"all"
   #- baseline
   #- basetariffs_iter_2
-  - ff55tariffs_iter_5
+  - baseline_iter_1
+  - ff55tariffs_iter_1
+  - ff55_iter_1
   #- baseline_iter_4
   #- ff55tariffs_iter_6
   #- ff55_iter_5
@@ -104,7 +106,7 @@ electricity:
   extendable_carriers:
     Generator: [solar, onwind, offwind-ac, offwind-dc, offwind-float, OCGT, CCGT]
   renewable_carriers: [solar, onwind, offwind-ac, offwind-dc, offwind-float, hydro]
-  transmission_limit: v1.1
+  transmission_limit: v1.2
   estimate_renewable_capacities:
     technology_mapping:
       PV: [solar]

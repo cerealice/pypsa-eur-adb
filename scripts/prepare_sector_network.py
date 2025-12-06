@@ -6030,6 +6030,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         bus2=spatial.co2.dri,
         carrier="EAF",
         p_nom_extendable=True,
+        p_min_pu= min_part_load_steel,
         efficiency=1 / eaf_ng["gas input"],  # MWh natural gas per one unit of dri gas
         efficiency2=eaf_ng["emission factor"]
         / eaf_ng["iron input"]
@@ -6042,18 +6043,18 @@ def add_steel_industry(n, investment_year, steel_data, options):
         suffix=" H2 to syn gas DRI",
         bus0=nodes + " H2",
         bus1=spatial.syngas_dri.nodes,
-        carrier="DRI",
+        carrier="EAF",
+        p_min_pu= min_part_load_steel,
         p_nom_extendable=True,
         efficiency=1 / eaf_h2["h2 input"],  # MWh hydrogen per one unit of dri gas
     )
 
     # Parameters
-    electricity_input_dri = costs.at["direct iron reduction furnace", "electricity-input"] * 1e3  # MWh/kt
+    electricity_input_dri = costs.at["natural gas direct iron reduction furnace", "electricity-input"] * 1e3  # MWh/kt
     electricity_input_eaf = costs.at["electric arc furnace", "electricity-input"] * 1e3  # MWh/kt steel
     total_electricity_input = electricity_input_dri + electricity_input_eaf
 
-    combined_capital_cost = (costs.at["direct iron reduction furnace", "capital_cost"] + costs.at["electric arc furnace", "capital_cost"]) * 1e3 / eaf_ng["iron input"]
-
+    combined_capital_cost = (costs.at["natural gas direct iron reduction furnace", "capital_cost"] + costs.at["electric arc furnace", "capital_cost"]) * 1e3 / eaf_ng["iron input"]
     n.add(
         "Link",
         nodes,
@@ -6324,6 +6325,7 @@ def add_aluminium_industry(n, investment_year, aluminum_data, options):
 
     # Capital costs
     discount_rate = 0.04
+
     capex_aluminum = (
         263000 * calculate_annuity(lifetime_aluminum, discount_rate)
     )  # https://iea-etsap.org/E-TechDS/HIGHLIGHTS%20PDF/I03_cement_June%202010_GS-gct%201.pdf with CCS 558000

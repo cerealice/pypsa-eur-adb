@@ -367,6 +367,8 @@ plotting:
     biofuels for aviation: 'green'
 
 solving:
+  options:
+    load_shedding: true
   solver:
     name: gurobi
     options: gurobi-filippo

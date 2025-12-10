@@ -464,6 +464,8 @@ def prepare_network(
         # http://journal.frontiersin.org/article/10.3389/fenrg.2015.00055/full
         n.add("Carrier", "load")
         buses_i = n.buses.index
+        # ADB only electricity
+        buses_i = n.buses.index[n.buses.index.str.endswith(" 0")]
         if isinstance(load_shedding, bool):
             load_shedding = 1e5  # Eur/MWh
 

@@ -134,7 +134,7 @@ electricity:
 
   estimate_renewable_capacities:
     enable: true
-    from_gem: false
+    from_gem: true
     year: 2020
     expansion_limit: false
     technology_mapping:

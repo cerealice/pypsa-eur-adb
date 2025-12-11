@@ -1089,7 +1089,7 @@ elif (JRC_ARDECO_DATASET := dataset_version("jrc_ardeco"))["source"] in ["archiv
             for key in input.keys():
                 copy2(input[key], output[key])
 
-if config["enable"]["retrieve"] and config["weather_years"]["enable"]:
+if config["weather_years"]["enable"]:
 
     rule retrieve_zenodo_timeseries:
         params:

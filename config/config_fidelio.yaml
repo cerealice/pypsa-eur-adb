@@ -9,13 +9,12 @@ run:
   #- baseline
   #- basetariffs_iter_2
   - baseline_iter_1
-  - ff55tariffs_iter_1
-  - ff55_iter_1
+  #- ff55tariffs_iter_1
+  #- ff55_iter_1
   #- baseline_iter_4
   #- ff55tariffs_iter_6
   #- ff55_iter_5
   #- steel_aluminum
-  - baseline_iter_1
   #- ff55tariffs_iter_1
   #- ff55_iter_2
   #- baseline_iter_3
@@ -219,7 +218,7 @@ sector:
     urban decentral: false
     rural: false
   hydrogen_turbine: false
-  co2_spatial: false
+  co2_spatial: true
   co2_network: false
   H2_network: false
   methanol:

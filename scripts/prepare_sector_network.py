@@ -934,6 +934,16 @@ def add_co2_tracking(
     else:
         e_nom_max = np.inf
 
+    # ensure e_nom_max index matches sequestration_buses
+    if not isinstance(e_nom_max, (int, float)) and not e_nom_max.index.equals(sequestration_buses):
+        # reindex to sequestration_buses; missing values become 0 or inf depending on logic
+        if np.isinf(e_nom_max).all():
+            # unlimited sequestration everywhere
+            e_nom_max = pd.Series(np.inf, index=sequestration_buses)
+        else:
+            # for finite potentials: align to buses, fill missing with 0
+            e_nom_max = e_nom_max.reindex(sequestration_buses).fillna(0)
+
     n.add(
         "Store",
         sequestration_buses,

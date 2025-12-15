@@ -1,0 +1,198 @@
+# -*- coding: utf-8 -*-
+# SPDX-FileCopyrightText: : 2017-2023 The PyPSA-Eur Authors
+#
+# SPDX-License-Identifier: MIT
+
+# This file is used to define the scenarios that are run by snakemake. Each entry on the first level is a scenario. Each scenario can contain configuration overrides with respect to the config/config.yaml settings.
+#
+# Example
+#
+# custom-scenario: # name of the scenario
+#   electricity:
+#       renewable_carriers: [wind, solar] # override the list of renewable carriers
+
+hist:
+  scenario:
+    planning_horizons:
+    - 2020
+    # This not always work, better to run hist only and set the planning horizon to 2020 in config_fidelio.yaml
+  energy:
+    base_emissions_year: 2018
+
+# All scenarios should have steel now
+ff55_iter_7:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_6/"
+
+ff55_iter_6:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_5/"
+
+ff55_iter_5:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_4/"
+
+ff55_iter_4:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_3/"
+
+ff55_iter_3:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_2/"
+
+ff55_iter_2:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_1/"
+
+ff55_iter_1:
+  sector:
+    fidelio:
+      fidelio_shocks: false
+      scenario: 'ff55'
+
+ff55tariffs_iter_7:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_6/"
+
+ff55tariffs_iter_6:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_5/"
+
+ff55tariffs_iter_5:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_4/"
+
+ff55tariffs_iter_4:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_3/"
+
+
+ff55tariffs_iter_3:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_2/"
+
+
+ff55tariffs_iter_2:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_1/"
+
+ff55tariffs_iter_1:
+  sector:
+    fidelio:
+      fidelio_shocks: false
+      scenario: 'ff55tariffs'
+
+
+ff55_no_transport:
+  sector:
+    fidelio:
+      fidelio_shocks: false
+      scenario: 'ff55'
+      no_ice_ban: true
+    
+
+
+#baseline_iter_1:
+#  sector:
+#    fidelio:
+#      fidelio_shocks: false
+#      scenario: baseline
+
+baseline_iter_2:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_1/"
+
+baseline_iter_3:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_2/"
+
+baseline_iter_4:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_3/"
+
+baseline_iter_5:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_4/"
+
+baseline_iter_6:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_5/"
+
+baseline_iter_7:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_6/"
+
+steel_aluminum:
+  sector:
+    fidelio:
+      enable: true
+      fidelio_shocks: false
+      scenario: ff55
+    endo_industry:
+      enable: true
+      policy_scenario: maintain
+      regional_steel_demand: true
+      endo_aluminum: false
+    min_part_load_steel: 0.3
+
+# Testing reduction of transmission lines
+
+baseline_iter_1:
+  sector:
+    fidelio:
+      fidelio_shocks: false
+      scenario: baseline

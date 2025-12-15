@@ -5,10 +5,10 @@
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#run
 run:
   prefix: ""
-  name: #"all"
+  name: "" #"all"
   #- baseline
   #- basetariffs_iter_2
-  - baseline_iter_1
+  #- baseline_iter_1
   #- ff55tariffs_iter_1
   #- ff55_iter_1
   #- baseline_iter_4
@@ -21,13 +21,8 @@ run:
   #- hist
   #- steel_aluminum
   scenarios:
-    enable: true
+    enable: false
     file: config/scenarios_fidelio_coupling.yaml
-  disable_progressbar: false
-  shared_resources:
-    policy: false
-    exclude: []
-  shared_cutouts: true
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#foresight
 foresight: myopic
@@ -57,34 +52,7 @@ validation: false # Should be turned on when 2020 as planning_horizon
 
 # Just EU countries
 # Removed Countries (Not in the EU): Albania (AL), Bosnia and Herzegovina (BA), United Kingdom (GB), Montenegro (ME), North Macedonia (MK), Norway (NO), Serbia (RS), Kosovo (XK)
-#countries: ['AT', 'BE', 'BG', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'GB', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK']
-countries:
-- AT
-- BE
-- BG
-- CZ
-- DE
-- DK
-- EE
-- ES
-- FI
-- FR
-- GB
-- GR
-- HR
-- HU
-- IE
-- IT
-- LT
-- LU
-- LV
-- NL
-- PL
-- PT
-- RO
-- SE
-- SI
-- SK
+countries: ['AT', 'BE', 'BG', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'GB', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK']
 
 
 weather_years:
@@ -99,6 +67,7 @@ weather_years:
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#electricity
 electricity:
+  base_network: osm
   extendable_carriers:
     Generator: [solar, onwind, offwind-ac, offwind-dc, offwind-float, OCGT, CCGT]
   renewable_carriers: [solar, onwind, offwind-ac, offwind-dc, offwind-float, hydro]
@@ -142,7 +111,7 @@ energy:
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#sector
 sector:
   fidelio:
-    enable: true
+    enable: false
     fidelio_shocks: false
     scenario: baseline
     fidelio_folder: "../coupling/from_fidelio/iter_1/"
@@ -236,6 +205,12 @@ sector:
     2030: 50
     2040: 250
     2050: 400
+  chp:
+    enable: true
+    fuel:
+    - solid biomass # For solid biomass, CHP with and without CC are added
+    - gas # For all other fuels the same techno economic data from gas CHP is taken
+    micro_chp: false # Only gas is used for micro_chp
 
 
 links:

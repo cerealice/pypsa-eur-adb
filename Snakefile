@@ -26,8 +26,16 @@ if Path("config/config.yaml").exists():
 
     configfile: "config/config.yaml"
 
-
 run = config["run"]
+
+override_run_name = config.get("override_run_name", False)
+
+if override_run_name:
+    print(f"Overriding run['name'] with: {override_run_name}")
+    run["name"] = override_run_name
+else:
+    print(f"No override, keeping run['name']: {run['name']}")
+
 scenarios = get_scenarios(run)
 RDIR = get_rdir(run)
 shadow_config = get_shadow(run)
@@ -77,7 +85,7 @@ if config["foresight"] == "perfect":
     include: "rules/solve_perfect.smk"
 
 
-rule all:
+rule all_plots:
     input:
         expand(RESULTS + "graphs/costs.svg", run=config["run"]["name"]),
         expand(resources("maps/power-network.pdf"), run=config["run"]["name"]),
@@ -217,6 +225,15 @@ rule all:
         ),
     default_target: True
 
+rule all:
+  input:
+    expand(
+            RESULTS
+            + "networks/base_s_{clusters}_{opts}_{sector_opts}_{planning_horizons}.nc",
+            run=config["run"]["name"],
+            **config["scenario"],
+        ),
+  default_target: True
 
 rule create_scenarios:
     output:

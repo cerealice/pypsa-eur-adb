@@ -3479,8 +3479,8 @@ def add_heat(
                     heat_system.central_or_decentral + " solar thermal", "lifetime"
                 ],
             )
-
-        if options["chp"]["enable"] and heat_system == HeatSystem.URBAN_CENTRAL:
+        
+        if options["chp"] and heat_system == HeatSystem.URBAN_CENTRAL: #ADB bug?
             # add non-biomass CHP; biomass CHP is added in biomass section
             for fuel in options["chp"]["fuel"]:
                 if fuel == "solid biomass":

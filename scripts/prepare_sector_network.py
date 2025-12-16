@@ -193,6 +193,13 @@ def define_spatial(nodes, options):
         spatial.oil.agriculture_machinery = ["EU agriculture machinery oil"]
         spatial.oil.land_transport = ["EU land transport oil"]
 
+    if options['fidelio']['enable']:
+        spatial.biomass.aviation = ["EU biofuels for aviation"]
+        spatial.oil.synkerosene = ["EU synfuels for aviation"]
+        spatial.ammonia = SimpleNamespace()
+        spatial.ammonia.nodes = ["EU NH3"]
+        spatial.ammonia.locations = ["EU"]
+
     # uranium
     spatial.uranium = SimpleNamespace()
     spatial.uranium.nodes = ["EU uranium"]
@@ -220,11 +227,94 @@ def define_spatial(nodes, options):
     spatial.geothermal_heat.nodes = ["EU enhanced geothermal systems"]
     spatial.geothermal_heat.locations = ["EU"]
 
+    # Steel
+
+    if options["endo_industry"]["enable"]:
+        # Iron and Steel
+        # iron
+        spatial.iron = SimpleNamespace()
+        spatial.iron.nodes = ["EU iron"]
+        spatial.iron.locations = ["EU"]
+
+        if options["endo_industry"]["regional_steel_demand"]:
+            # steel
+            spatial.steel = SimpleNamespace()
+            spatial.steel.nodes = nodes + " steel"
+            spatial.steel.locations = nodes
+
+            # Dri gas
+            spatial.syngas_dri = SimpleNamespace()
+            spatial.syngas_dri.nodes = nodes + " syn gas for DRI"
+            spatial.syngas_dri.locations = nodes
+
+        else:
+            # steel
+            spatial.steel = SimpleNamespace()
+            spatial.steel.nodes = ["EU steel"]
+            spatial.steel.locations = ["EU"]
+
+            # Dri gas
+            spatial.syngas_dri = SimpleNamespace()
+            spatial.syngas_dri.nodes = ["EU syn gas for DRI"]
+            spatial.syngas_dri.locations = ["EU"]
+    
+        # Adding CO2 for tracking CCS in steel industry
+        spatial.co2.dri = nodes + " dri process emissions"
+        spatial.co2.dri_locations = nodes
+        spatial.co2.bof = nodes + " bof process emissions"
+        spatial.co2.bof_locations = nodes
+
+        # Aluminum primary
+
+        if options["endo_industry"]["endo_aluminium"]:
+            spatial.aluminium = SimpleNamespace()
+            spatial.aluminium.nodes = ["EU aluminum"]
+            spatial.aluminium.locations = ["EU"]
+            spatial.aluminium.df = pd.DataFrame(vars(spatial.aluminium), index=nodes)
+
+            spatial.alumina = SimpleNamespace()
+            spatial.alumina.nodes = ["EU alumina"]
+            spatial.alumina.locations = ["EU"]
+            spatial.alumina.df = pd.DataFrame(vars(spatial.alumina), index=nodes)
+
+            spatial.al_elec = SimpleNamespace()
+            spatial.al_elec.nodes = ["EU electricity aluminium"]
+            spatial.al_elec.locations = ["EU"]
+            spatial.al_elec.df = pd.DataFrame(vars(spatial.al_elec), index=nodes)
+
+            
+
     return spatial
 
 
 spatial = SimpleNamespace()
 
+def determine_emission_sectors_ff55(options):
+    sectors_ets = ["electricity", "indirect"]
+    sectors_ets2 = []
+    sectors_nonets = []
+    if options["transport"]:
+        sectors_ets2 += ["rail non-elec", "road non-elec"]
+    if options["heating"]:
+        sectors_ets2 += ["residential non-elec", "services non-elec"]
+    if options["industry"]:
+        sectors_ets += [
+            "industrial non-elec",
+            "industrial processes",
+            "domestic aviation",
+            "international aviation",
+            "domestic navigation",
+            "international navigation",
+        ]
+    if options["agriculture"]:
+        sectors_nonets += [
+            "agriculture",
+            #"LULUCF",
+            "waste management",
+            "other"
+        ]
+
+    return sectors_ets, sectors_ets2, sectors_nonets
 
 def determine_emission_sectors(options):
     sectors = ["electricity"]
@@ -615,13 +705,13 @@ def add_carrier_buses(
                 carrier=carrier + " primary",
                 unit=unit,
             )
-
+            co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
             n.add(
                 "Link",
                 nodes + " refining",
                 bus0=nodes + " primary",
                 bus1=nodes,
-                bus2="co2 atmosphere",
+                bus2=co2_labels,
                 location=location,
                 carrier=carrier + " refining",
                 p_nom=1e6,
@@ -707,7 +797,7 @@ def add_eu_bus(n, x=-5.5, y=46):
 
 
 def add_co2_tracking(
-    n, costs, options, sequestration_potential_file=None, co2_price: float = 0.0
+    n, costs, fidelio, options, sequestration_potential_file=None, co2_price: float = 0.0
 ):
     """
     Add CO2 tracking components to the network including atmospheric CO2,
@@ -751,21 +841,28 @@ def add_co2_tracking(
     """
     # minus sign because opposite to how fossil fuels used:
     # CH4 burning puts CH4 down, atmosphere up
-    n.add("Carrier", "co2", co2_emissions=-1.0)
 
-    # this tracks CO2 in the atmosphere
-    n.add("Bus", "co2 atmosphere", location="EU", carrier="co2", unit="t_co2")
+    if fidelio:
+        co2_labels = ["co2_ets", "co2_ets2", "co2_nonets"]
+        for co2_label in co2_labels:
+            n.add("Carrier", co2_label, **{co2_label: -1.0})
+            n.add("Bus", co2_label, location="EU", carrier=co2_label, unit="t_co2")
+            n.add("Store",co2_label, e_nom=np.inf,e_min_pu=-1,carrier=co2_label,bus=co2_label,marginal_cost=-co2_price)
+        #n.carriers[co2_labels] = n.carriers[co2_labels].fillna(0)
+    else:
+        n.add("Carrier", "co2", co2_emissions=-1.0)
+        n.add("Bus", "co2 atmosphere", location="EU", carrier="co2", unit="t_co2")
 
-    # can also be negative
-    n.add(
-        "Store",
-        "co2 atmosphere",
-        e_nom=np.inf,
-        e_min_pu=-1,
-        carrier="co2",
-        bus="co2 atmosphere",
-        marginal_cost=-co2_price,
-    )
+        # can also be negative
+        n.add(
+            "Store",
+            "co2 atmosphere",
+            e_nom=np.inf,
+            e_min_pu=-1,
+            carrier="co2",
+            bus="co2 atmosphere",
+            marginal_cost=-co2_price,
+        )
 
     # add CO2 tanks
     n.add(
@@ -836,6 +933,16 @@ def add_co2_tracking(
         e_nom_max = e_nom_max.rename(index=lambda x: x + " co2 sequestered")
     else:
         e_nom_max = np.inf
+
+    # ensure e_nom_max index matches sequestration_buses
+    if not isinstance(e_nom_max, (int, float)) and not e_nom_max.index.equals(sequestration_buses):
+        # reindex to sequestration_buses; missing values become 0 or inf depending on logic
+        if np.isinf(e_nom_max).all():
+            # unlimited sequestration everywhere
+            e_nom_max = pd.Series(np.inf, index=sequestration_buses)
+        else:
+            # for finite potentials: align to buses, fill missing with 0
+            e_nom_max = e_nom_max.reindex(sequestration_buses).fillna(0)
 
     n.add(
         "Store",
@@ -972,6 +1079,8 @@ def add_allam_gas(
 
     nodes = pop_layout.index
 
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
+
     n.add(
         "Link",
         nodes,
@@ -979,7 +1088,7 @@ def add_allam_gas(
         bus0=spatial.gas.df.loc[nodes, "nodes"].values,
         bus1=nodes,
         bus2=spatial.co2.df.loc[nodes, "nodes"].values,
-        bus3="co2 atmosphere",
+        bus3=co2_labels,
         carrier="allam gas",
         p_nom_extendable=True,
         capital_cost=costs.at["allam", "capital_cost"]
@@ -993,13 +1102,16 @@ def add_allam_gas(
 
 
 def add_biomass_to_methanol(n, costs):
+
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
+
     n.add(
         "Link",
         spatial.biomass.nodes,
         suffix=" biomass-to-methanol",
         bus0=spatial.biomass.nodes,
         bus1=spatial.methanol.nodes,
-        bus2="co2 atmosphere",
+        bus2=co2_labels,
         carrier="biomass-to-methanol",
         lifetime=costs.at["biomass-to-methanol", "lifetime"],
         efficiency=costs.at["biomass-to-methanol", "efficiency"],
@@ -1014,13 +1126,16 @@ def add_biomass_to_methanol(n, costs):
 
 
 def add_biomass_to_methanol_cc(n, costs):
+    
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
+
     n.add(
         "Link",
         spatial.biomass.nodes,
         suffix=" biomass-to-methanol CC",
         bus0=spatial.biomass.nodes,
         bus1=spatial.methanol.nodes,
-        bus2="co2 atmosphere",
+        bus2=co2_labels,
         bus3=spatial.co2.nodes,
         carrier="biomass-to-methanol CC",
         lifetime=costs.at["biomass-to-methanol", "lifetime"],
@@ -1039,12 +1154,51 @@ def add_biomass_to_methanol_cc(n, costs):
         * costs.at["biomass-to-methanol", "efficiency"],
     )
 
+def add_methanol_to_kerosene_fidelio(n,costs):
+    tech = "methanol-to-kerosene"
+
+    logger.info(f"Adding {tech}.")
+
+    capital_cost = costs.at[tech, "capital_cost"] / costs.at[tech, "methanol-input"]
+
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
+    kerosene_bus = spatial.oil.synkerosene if fidelio else spatial.oil.kerosene
+
+    n.add(
+        "Bus",
+        spatial.methanol.nodes,
+        location=spatial.methanol.locations,
+        carrier="methanol",
+        unit="MWh_LHV",
+    )
+
+    n.add(
+        "Link",
+        spatial.h2.locations,
+        suffix=f" {tech}",
+        carrier=tech,
+        capital_cost=capital_cost,
+        marginal_cost=costs.at[tech, "VOM"] / costs.at[tech, "methanol-input"],
+        bus0=spatial.methanol.nodes,
+        bus1=kerosene_bus,
+        bus2=spatial.h2.nodes,
+        bus3=co2_labels,
+        efficiency=1 / costs.at[tech, "methanol-input"],
+        efficiency2=-costs.at[tech, "hydrogen-input"]
+        / costs.at[tech, "methanol-input"],
+        efficiency3=costs.at["oil","CO2 intensity"] /
+        costs.at[tech, "methanol-input"],
+        p_nom_extendable=True,
+        lifetime=costs.at[tech, "lifetime"],
+    )
 
 def add_methanol_to_power(n, costs, pop_layout, types=None):
     if types is None:
         types = {}
 
     nodes = pop_layout.index
+
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
 
     if types["allam"]:
         logger.info("Adding Allam cycle methanol power plants.")
@@ -1056,7 +1210,7 @@ def add_methanol_to_power(n, costs, pop_layout, types=None):
             bus0=spatial.methanol.nodes,
             bus1=nodes,
             bus2=spatial.co2.df.loc[nodes, "nodes"].values,
-            bus3="co2 atmosphere",
+            bus3=co2_labels,
             carrier="allam methanol",
             p_nom_extendable=True,
             capital_cost=costs.at["allam", "capital_cost"]
@@ -1080,7 +1234,7 @@ def add_methanol_to_power(n, costs, pop_layout, types=None):
             suffix=" CCGT methanol",
             bus0=spatial.methanol.nodes,
             bus1=nodes,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             carrier="CCGT methanol",
             p_nom_extendable=True,
             capital_cost=capital_cost,
@@ -1113,7 +1267,7 @@ def add_methanol_to_power(n, costs, pop_layout, types=None):
             bus0=spatial.methanol.nodes,
             bus1=nodes,
             bus2=spatial.co2.df.loc[nodes, "nodes"].values,
-            bus3="co2 atmosphere",
+            bus3=co2_labels,
             carrier="CCGT methanol CC",
             p_nom_extendable=True,
             capital_cost=capital_cost_cc,
@@ -1135,7 +1289,7 @@ def add_methanol_to_power(n, costs, pop_layout, types=None):
             suffix=" OCGT methanol",
             bus0=spatial.methanol.nodes,
             bus1=nodes,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             carrier="OCGT methanol",
             p_nom_extendable=True,
             capital_cost=costs.at["OCGT", "capital_cost"]
@@ -1153,6 +1307,7 @@ def add_methanol_reforming(n, costs):
     tech = "Methanol steam reforming"
 
     capital_cost = costs.at[tech, "capital_cost"] / costs.at[tech, "methanol-input"]
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
 
     n.add(
         "Link",
@@ -1160,7 +1315,7 @@ def add_methanol_reforming(n, costs):
         suffix=f" {tech}",
         bus0=spatial.methanol.nodes,
         bus1=spatial.h2.nodes,
-        bus2="co2 atmosphere",
+        bus2=co2_labels,
         p_nom_extendable=True,
         capital_cost=capital_cost,
         efficiency=1 / costs.at[tech, "methanol-input"],
@@ -1180,6 +1335,7 @@ def add_methanol_reforming_cc(n, costs):
     # 10.1016/j.rser.2020.110171: 0.129 kWh_e/kWh_H2, -0.09 kWh_heat/kWh_H2
 
     capital_cost = costs.at[tech, "capital_cost"] / costs.at[tech, "methanol-input"]
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
 
     capital_cost_cc = (
         capital_cost
@@ -1193,7 +1349,7 @@ def add_methanol_reforming_cc(n, costs):
         suffix=f" {tech} CC",
         bus0=spatial.methanol.nodes,
         bus1=spatial.h2.nodes,
-        bus2="co2 atmosphere",
+        bus2=co2_labels,
         bus3=spatial.co2.nodes,
         p_nom_extendable=True,
         capital_cost=capital_cost_cc,
@@ -1221,24 +1377,27 @@ def add_dac(n, costs):
         - costs.at["direct air capture", "compression-heat-output"]
     )  # MWh_th / tCO2
 
-    n.add(
-        "Link",
-        heat_buses.str.replace(" heat", " DAC"),
-        bus0=locations.values,
-        bus1=heat_buses,
-        bus2="co2 atmosphere",
-        bus3=spatial.co2.df.loc[locations, "nodes"].values,
-        carrier="DAC",
-        capital_cost=costs.at["direct air capture", "capital_cost"] / electricity_input,
-        efficiency=-heat_input / electricity_input,
-        efficiency2=-1 / electricity_input,
-        efficiency3=1 / electricity_input,
-        p_nom_extendable=True,
-        lifetime=costs.at["direct air capture", "lifetime"],
-    )
+    co2_labels = ["co2_ets","co2_ets2"] if fidelio else ["co2 atmosphere"]
+
+    for co2_label in co2_labels:
+        n.add(
+            "Link",
+            heat_buses.str.replace(" heat", f" DAC {co2_label}"),
+            bus0=locations.values,
+            bus1=heat_buses,
+            bus2=co2_label,
+            bus3=spatial.co2.df.loc[locations, "nodes"].values,
+            carrier="DAC",
+            capital_cost=costs.at["direct air capture", "capital_cost"] / electricity_input,
+            efficiency=-heat_input / electricity_input,
+            efficiency2=-1 / electricity_input,
+            efficiency3=1 / electricity_input,
+            p_nom_extendable=True,
+            lifetime=costs.at["direct air capture", "lifetime"],
+        )    
 
 
-def add_co2limit(n, options, co2_totals_file, countries, nyears, limit):
+def add_co2limit(n, options, fidelio, co2_totals_file, countries, nyears, limit=0.0):
     """
     Add a global CO2 emissions constraint to the network.
 
@@ -1271,28 +1430,109 @@ def add_co2limit(n, options, co2_totals_file, countries, nyears, limit):
     to the network. The limit is calculated as a fraction of historical emissions
     multiplied by the number of years.
     """
-    if limit is None:
+    if limit is None or limit == "base":
         return
 
     logger.info(f"Adding CO2 budget limit as per unit of 1990 levels of {limit}")
 
-    sectors = determine_emission_sectors(options)
+    countries = snakemake.params.countries
+    
+    if fidelio:
 
-    # convert Mt to tCO2
-    co2_totals = 1e6 * pd.read_csv(co2_totals_file, index_col=0)
+        sectors_ets, sectors_ets2, sectors_nonets = determine_emission_sectors_ff55(options)
 
-    co2_limit = co2_totals.loc[countries, sectors].sum().sum()
+        # convert Mt to tCO2
+        co2_totals = 1e6 * pd.read_csv(co2_totals_file, index_col=0)
 
-    co2_limit *= limit * nyears
+        if limit == 'ff55':
 
-    n.add(
-        "GlobalConstraint",
-        "CO2Limit",
-        carrier_attribute="co2_emissions",
-        sense="<=",
-        type="co2_atmosphere",
-        constant=co2_limit,
-    )
+            if investment_year == 2020:
+                limit_ets = 1
+                limit_ets2 = 1
+                limit_nonets = 1
+
+            if investment_year == 2030:
+                limit_ets = 0.37
+                limit_ets2 = 0.57
+                limit_nonets = 0.60
+
+            elif investment_year == 2040:
+                limit_ets = 0
+                limit_ets2 = 0.3
+                limit_nonets = 0.3
+                # More or less 90% reduction wrt 1990 value of 5000 MtCO2 -> CHECK
+
+            elif investment_year == 2050:
+                limit_ets = 0
+                limit_ets2 = 0
+                limit_nonets = 0.5 #ADB to fix for agriculture machinery oil
+
+        else:
+            limit_ets = 1
+            limit_ets2 = 1
+            limit_nonets = 1
+
+        logger.info(f"Adding CO2 reduction for ETS of -{1-limit_ets}% of 2005 levels in {investment_year}")
+        logger.info(f"Adding CO2 budget limit for ETS 2 of -{1-limit_ets2}% of 2005 levels in {investment_year}")
+        logger.info(f"Adding CO2 budget limit for non ETS of -{1-limit_nonets}% of 2005 levels in {investment_year}")
+
+        # ETS limit
+        co2_limit_ets = co2_totals.loc[countries, sectors_ets].sum().sum()
+        co2_limit_ets *= limit_ets * nyears #TODO change from one limit to many different ones
+
+        # ETS2 limit
+        co2_limit_ets2 = co2_totals.loc[countries, sectors_ets2].sum().sum()
+        co2_limit_ets2 *= limit_ets2 * nyears #TODO change from one limit to many different ones
+
+        # non-ETS limit
+        co2_limit_nonets = co2_totals.loc[countries, sectors_nonets].sum().sum()
+        co2_limit_nonets *= limit_nonets * nyears #TODO change from one limit to many different ones
+
+        n.add(
+            "GlobalConstraint",
+            "CO2LimitETS",
+            carrier_attribute="co2_ets",
+            sense="<=",
+            type="co2_atmosphere",
+            constant=co2_limit_ets,
+        )
+        
+        n.add(
+            "GlobalConstraint",
+            "CO2LimitETS2",
+            carrier_attribute="co2_ets2",
+            sense="<=",
+            type="co2_atmosphere",
+            constant=co2_limit_ets2,
+        )
+
+        n.add(
+            "GlobalConstraint",
+            "CO2LimitnonETS",
+            carrier_attribute="co2_nonets",
+            sense="<=",
+            type="co2_atmosphere",
+            constant=co2_limit_nonets,
+        )
+
+    else: 
+
+        sectors = determine_emission_sectors(options)
+        # convert Mt to tCO2
+        co2_totals = 1e6 * pd.read_csv(co2_totals_file, index_col=0)
+
+        co2_limit = co2_totals.loc[countries, sectors].sum().sum()
+
+        co2_limit *= limit * nyears
+
+        n.add(
+            "GlobalConstraint",
+            "CO2Limit",
+            carrier_attribute="co2_emissions",
+            sense="<=",
+            type="co2_atmosphere",
+            constant=co2_limit,
+        )
 
 
 def cycling_shift(df, steps=1):
@@ -1354,6 +1594,8 @@ def add_generation(
 
     nodes = pop_layout.index
 
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
+
     for generator, carrier in conventionals.items():
         carrier_nodes = vars(spatial)[carrier].nodes
 
@@ -1371,7 +1613,7 @@ def add_generation(
             nodes + " " + generator,
             bus0=carrier_nodes,
             bus1=nodes,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             marginal_cost=costs.at[generator, "efficiency"]
             * costs.at[generator, "VOM"],  # NB: VOM is per MWel
             capital_cost=costs.at[generator, "efficiency"]
@@ -1809,6 +2051,7 @@ def add_storage_and_grids(
     logger.info("Add hydrogen storage")
 
     nodes = pop_layout.index
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
 
     n.add("Carrier", "H2")
 
@@ -2140,7 +2383,7 @@ def add_storage_and_grids(
             suffix=" coal CC",
             bus0=spatial.coal.nodes,
             bus1=spatial.nodes,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             bus3=spatial.co2.nodes,
             marginal_cost=costs.at["coal", "efficiency"]
             * costs.at["coal", "VOM"],  # NB: VOM is per MWel
@@ -2158,6 +2401,10 @@ def add_storage_and_grids(
             lifetime=costs.at["coal", "lifetime"],
         )
 
+    min_part_load_smr = 0 #ADB
+    if options["fidelio"]["enable"]:
+        min_part_load_smr = 0.5
+        
     if options["SMR_cc"]:
         n.add(
             "Link",
@@ -2165,9 +2412,10 @@ def add_storage_and_grids(
             suffix=" SMR CC",
             bus0=spatial.gas.nodes,
             bus1=nodes + " H2",
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             bus3=spatial.co2.nodes,
             p_nom_extendable=True,
+            p_min_pu=min_part_load_smr,
             carrier="SMR CC",
             efficiency=costs.at["SMR CC", "efficiency"],
             efficiency2=costs.at["gas", "CO2 intensity"] * (1 - options["cc_fraction"]),
@@ -2182,8 +2430,9 @@ def add_storage_and_grids(
             nodes + " SMR",
             bus0=spatial.gas.nodes,
             bus1=nodes + " H2",
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             p_nom_extendable=True,
+            p_min_pu=min_part_load_smr,
             carrier="SMR",
             efficiency=costs.at["SMR", "efficiency"],
             efficiency2=costs.at["gas", "CO2 intensity"],
@@ -2201,6 +2450,291 @@ def check_land_transport_shares(shares):
             "corresponding to increased or decreased demand assumptions."
         )
 
+def calculate_land_transport_shares_ff55(number_cars, limit):
+    """
+    Calculate shares of ICE, EV, and FCEV cars under baseline and FF55 policy scenarios.
+    """
+
+    # === 1. Base parameters ===
+    ef_allcars_2021 = 173.95  # gCO2/km (EU fleet average, JRC IDEES)
+    ef_newcars_2021 = 95.0    # gCO2/km (new cars in 2021)
+    new_car_per_year = 11.37e6  # 11.37 million new cars per year
+
+    # Handle input (works with scalar, list, or pandas Series)
+    if hasattr(number_cars, "sum"):
+        total_cars = number_cars.sum()
+    else:
+        total_cars = number_cars
+    share_new_cars_per_year = new_car_per_year / total_cars  # ≈ 4%/year replacement rate
+
+    years = list(range(2022, 2051))
+    ef_newcars = {2021: ef_newcars_2021}
+
+    # === 2. Helper functions ===
+    def calculate_ef_newcars(annual_frac_reduction):
+        """Compute emission factor of new cars each year."""
+        for year in years:
+            ef_newcars[year] = ef_newcars_2021 * (1 - annual_frac_reduction) ** (year - 2021)
+
+    def calculate_ef_allcars(start_year, end_year, base_ef):
+        """Compute fleet-average emission factor between start and end years."""
+        n_years = end_year - start_year
+        sum_term = sum(share_new_cars_per_year * ef_newcars[y] for y in range(start_year, end_year))
+        survivor_term = (1 - share_new_cars_per_year) ** n_years
+        return sum_term + survivor_term * base_ef
+
+    # === 3. Scenario logic ===
+    if limit == "ff55":
+        # 55% reduction in new car EF by 2030 relative to 2021
+        #ef_newcars_2030_target = ef_newcars_2021 * (1 - 0.55)
+        share_vans = (291.860 - 259.278 ) / 291.860
+        ef_newcars_2030_target = 49.5 * (1 - share_vans) + 90.6 * share_vans
+        # Annual fractional reduction rate to reach 2030 target
+        annual_frac_reduction = 1 - (ef_newcars_2030_target / ef_newcars_2021) ** (1 / (2030 - 2021))
+        calculate_ef_newcars(annual_frac_reduction)
+
+        # Ban ICE after 2035
+        for year in years:
+            if year > 2035:
+                ef_newcars[year] = 0.0
+
+        ef_allcars_2030 = calculate_ef_allcars(2022, 2031, ef_allcars_2021)
+        ef_allcars_2040 = calculate_ef_allcars(2031, 2041, ef_allcars_2030)
+        ef_allcars_2050 = calculate_ef_allcars(2041, 2051, ef_allcars_2040)
+
+    else:
+        # Baseline: 1.6% annual reduction in new car EF
+        annual_frac_reduction = 0.016
+        calculate_ef_newcars(annual_frac_reduction)
+
+        ef_allcars_2030 = calculate_ef_allcars(2022, 2031, ef_allcars_2021)
+        ef_allcars_2040 = calculate_ef_allcars(2031, 2041, ef_allcars_2030)
+        ef_allcars_2050 = calculate_ef_allcars(2041, 2051, ef_allcars_2040)
+
+    # === 4. Compute fleet EV shares ===
+    share_ev_cars_2030 = (ef_allcars_2021 - ef_allcars_2030) / ef_allcars_2021
+    share_ev_cars_2040 = (ef_allcars_2021 - ef_allcars_2040) / ef_allcars_2021
+    share_ev_cars_2050 = (ef_allcars_2021 - ef_allcars_2050) / ef_allcars_2021
+
+    # === 5. Output shares ===
+    if investment_year == 2020:
+        fuel_cell_share, electric_share, ice_share = 0, 0, 1
+    elif investment_year == 2030:
+        electric_share = round(share_ev_cars_2030, 4)
+        ice_share = round(1 - electric_share, 4)
+        fuel_cell_share = 0
+    elif investment_year == 2040:
+        electric_share = round(share_ev_cars_2040, 4)
+        ice_share = round(1 - electric_share, 4)
+        fuel_cell_share = 0
+    elif investment_year == 2050:
+        electric_share = round(share_ev_cars_2050, 4)
+        ice_share = round(1 - electric_share, 4)
+        fuel_cell_share = 0
+    else:
+        fuel_cell_share, electric_share, ice_share = 0, 0, 1
+
+    # === 6. Return as pandas Series ===
+    output = pd.Series(
+        [fuel_cell_share, electric_share, ice_share],
+        index=["fuel_cell", "electric", "ice"]
+    )
+    print(f"Fuel cell {fuel_cell_share}, Electric {electric_share}, ICE {ice_share} for year {investment_year}")
+    return output
+
+def calculate_shipping_shares_ff55():
+
+    ef_allships_2020 = 91.16 # gCO2eq/MJ from https://www.dnv.com/maritime/insights/topics/fueleu-maritime/#:~:text=The%20baseline%20for%20the%20calculation,an%2080%25%20reduction%20by%202050.
+    ef_MeOH = 1/options["MWh_MeOH_per_tCO2"]*1e6/3600 # from tCO2/MWh *(1MWh/3600MJ) * (1e6gCO2/tCO2)
+
+    ef_allships_2030_ff55 = 85.69 #gCO2eq/MJ
+    ef_allships_2040_ff55 = 56.52 #gCO2eq/MJ
+    ef_allships_2050_ff55 = 18.23 #gCO2eq/MJ
+
+    # Calculate the share of fuels for 2030 and 2050 
+    # 2030
+    share_ammonia_2030 = 0.05 #IMO policy
+    share_MeOH_2030 = (ef_allships_2030_ff55 - ((1 - share_ammonia_2030) * ef_allships_2020)) / (ef_MeOH - ef_allships_2020 )
+
+    # 2050
+    share_ammonia_2050 = (ef_MeOH - ef_allships_2050_ff55) / ef_MeOH
+    share_MeOH_2050 = 1- share_ammonia_2050
+
+    # 2040
+    share_MeOH_2040 = share_MeOH_2030 + ((share_MeOH_2050 - share_MeOH_2030) / (2050- 2030)) * (2040 - 2030)
+    share_ammonia_2040 = (share_MeOH_2040 * ef_MeOH + (1-share_MeOH_2040) * ef_allships_2020 - ef_allships_2040_ff55 ) / ef_allships_2020
+
+    if investment_year == 2030:
+        shipping_methanol_share = round(share_MeOH_2030,2)
+        shipping_ammonia_share = share_ammonia_2030
+        shipping_oil_share = 1 - shipping_methanol_share - shipping_ammonia_share
+    
+    elif investment_year == 2040:
+        shipping_methanol_share = round(share_MeOH_2040,2)
+        shipping_ammonia_share = round(share_ammonia_2040,2)
+        shipping_oil_share = 1 - shipping_methanol_share - shipping_ammonia_share
+
+    elif investment_year == 2050:
+        shipping_methanol_share = round(share_MeOH_2050,2)
+        shipping_ammonia_share = round(share_ammonia_2040,2)
+        shipping_oil_share = 1 - shipping_methanol_share - shipping_ammonia_share
+
+    total_share = shipping_oil_share + shipping_methanol_share + shipping_ammonia_share
+    if total_share != 1:
+        logger.warning(
+            f"Total shipping shares sum up to {total_share:.2%},"
+            "corresponding to increased or decreased demand assumptions."
+        )
+
+    return shipping_oil_share, shipping_methanol_share, shipping_ammonia_share
+
+
+def calculate_aviation_shares_ff55():
+
+    # Based on share required by policy, data from 
+    # https://www.easa.europa.eu/en/light/topics/fit-55-and-refueleu-aviation
+    # https://www.europarl.europa.eu/news/en/press-room/20230911IPR04913/70-of-jet-fuels-at-eu-airports-will-have-to-be-green-by-2050
+
+    if investment_year == 2020:
+        aviation_synfuels_share = 0
+        aviation_bio_share = 0
+        aviation_kero_share = 1
+
+    elif investment_year == 2030:
+        aviation_synfuels_share = 0.012
+        aviation_bio_share = 0.06 - aviation_synfuels_share
+        aviation_kero_share = 1 - aviation_synfuels_share - aviation_bio_share
+
+    elif investment_year == 2040:
+        aviation_synfuels_share = 0.10
+        aviation_bio_share = 0.34 - aviation_synfuels_share
+        aviation_kero_share = 1 - aviation_synfuels_share - aviation_bio_share
+
+    elif investment_year == 2050:
+        aviation_synfuels_share = 0.35
+        aviation_bio_share = 0.70 - aviation_synfuels_share
+        aviation_kero_share = 1 - aviation_synfuels_share - aviation_bio_share
+
+    total_share = aviation_kero_share + aviation_bio_share + aviation_synfuels_share
+    if total_share != 1:
+        logger.warning(
+            f"Total aviation shares sum up to {total_share:.2%},"
+            "corresponding to increased or decreased demand assumptions."
+        )
+
+    return aviation_kero_share, aviation_bio_share, aviation_synfuels_share
+
+
+def get_fidelio_shocks(nodes, shock_file, investment_year, options):
+    """
+    Generate shock multipliers to adjust demand values per node using national FIDELIO shock data.
+
+    Parameters:
+        nodes (list or pd.Index): List of node names (e.g., ["DE01", "FR01", ...]).
+        shock_file (str): Path to the CSV file containing FIDELIO national shocks 
+                          with columns ['n', 't', 'share_var'].
+        investment_year (int or str): The simulation year for which to apply shocks.
+        options (dict): Dictionary with FIDELIO configuration. Expects:
+                        options['fidelio']['fidelio_shocks'] (bool)
+                        options['fidelio']['fidelio_folder'] (str)
+
+    Returns:
+        pd.Series: Shock multipliers indexed by node. All values are 1.0 if shocks are disabled.
+    """
+    # Default: no shocks (multiplier = 1.0)
+    shock_multiplier = pd.Series(1.0, index=nodes)
+
+    # Only proceed if FIDELIO shocks are enabled
+    if options['fidelio'].get('fidelio_shocks', False):
+        print("Applying FIDELIO shocks to demand")
+
+        # Load the CSV file with national-level shock data
+        shock_data = pd.read_csv(shock_file)
+
+        # Check required columns exist
+        if not all(col in shock_data.columns for col in ['n', 't', 'share_var']):
+            raise ValueError(f"Missing required columns in {shock_file}. Expected: 'n', 't', 'share_var'.")
+
+        # Pivot to get a matrix: rows = country codes, columns = years
+        shock_data = shock_data.pivot(index='n', columns='t', values='share_var')
+        shock_data.columns = shock_data.columns.astype(str)  # ensure column names are strings
+
+        # Ensure the investment year is in the data
+        investment_year = str(investment_year)
+        if investment_year not in shock_data.columns:
+            raise ValueError(f"Year {investment_year} not found in {shock_file} columns. Available: {shock_data.columns.tolist()}")
+
+        # Get the national-level shock for the specified year
+        national_shocks = shock_data[investment_year]  # Series: index = country code, value = share_var
+
+        # Extract the 2-letter country code from each node
+        node_country_codes = pd.Series(nodes).str[:2].values
+
+        # Create the shock multiplier per node using country-to-shock mapping
+        country_to_shock = national_shocks.to_dict()
+        shock_multiplier = pd.Series(
+            [1 + country_to_shock.get(cc, 0.0) for cc in node_country_codes],
+            index=nodes
+        )
+
+    return shock_multiplier
+
+
+def apply_fidelio_shocks_to_demand(demand_df, shock_file, investment_year, sector_name, nodes_in="index"):
+    """
+    Apply national-level FIDELIO shocks to a node-level demand DataFrame.
+
+    Parameters:
+        demand_df (pd.DataFrame): DataFrame with either index or columns as node identifiers.
+        shock_file (str): Path to CSV file with columns ['n', 't', 'share_var'].
+        investment_year (int or str): Year for which the shock should be applied.
+        sector_name (str): Descriptive name for logging (e.g., "industry", "agriculture").
+        nodes_in (str): "index" (default) or "columns" to indicate where node identifiers are.
+
+    Returns:
+        pd.DataFrame: Adjusted demand DataFrame with shocks applied.
+    """
+    if nodes_in not in ["index", "columns"]:
+        raise ValueError("`nodes_in` must be either 'index' or 'columns'")
+
+    # Default multiplier: all ones
+    shock_multiplier = pd.Series(1.0, index=demand_df.index if nodes_in == "index" else demand_df.columns)
+
+    # Read and validate the shock file
+    shock_df = pd.read_csv(shock_file)
+    if not all(col in shock_df.columns for col in ['n', 't', 'share_var']):
+        raise ValueError(f"Missing required columns in {shock_file}")
+
+    # Pivot: rows = country code, columns = years
+    shock_df = shock_df.pivot(index='n', columns='t', values='share_var')
+    shock_df.columns = shock_df.columns.astype(str)
+
+    # Ensure investment_year exists
+    if str(investment_year) not in shock_df.columns:
+        raise ValueError(f"Year {investment_year} not found in {shock_file} columns")
+
+    # Get national shocks for the year
+    national_shocks = shock_df[str(investment_year)]
+
+    # Extract node IDs and map country codes to shocks
+    node_ids = demand_df.index if nodes_in == "index" else demand_df.columns
+    node_country_codes = pd.Series(node_ids).str[:2].values
+    country_to_shock = national_shocks.to_dict()
+
+    # Create shock multiplier
+    shock_multiplier = pd.Series(
+        [1 + country_to_shock.get(cc, 0.0) for cc in node_country_codes],
+        index=node_ids
+    )
+
+    print(f"Mean shock multipliers in {sector_name}:\n{shock_multiplier.mean()}")
+
+    # Apply shocks
+    if nodes_in == "index":
+        return demand_df.multiply(shock_multiplier, axis=0)  # row-wise
+    else:
+        return demand_df.multiply(shock_multiplier, axis=1)  # column-wise
+    
 
 def get_temp_efficency(
     car_efficiency,
@@ -2537,6 +3071,7 @@ def add_ice_cars(
     )
 
     car_efficiency = options["transport_ice_efficiency"]
+    co2_labels = "co2_ets2" if fidelio else "co2 atmosphere"
 
     # Calculate temperature-corrected efficiency
     efficiency = get_temp_efficency(
@@ -2580,7 +3115,7 @@ def add_ice_cars(
         spatial.oil.land_transport,
         bus0=spatial.oil.nodes,
         bus1=spatial.oil.land_transport,
-        bus2="co2 atmosphere",
+        bus2=co2_labels,
         carrier="land transport oil",
         efficiency2=costs.at["oil", "CO2 intensity"],
         p_nom_extendable=True,
@@ -2599,6 +3134,7 @@ def add_land_transport(
     options,
     investment_year,
     nodes,
+    limit,
 ) -> None:
     """
     Add land transport demand and infrastructure to the network.
@@ -2641,8 +3177,6 @@ def add_land_transport(
     fuel cell vehicles, and internal combustion engines) to the network
     based on specified shares and profiles.
     """
-    if logger:
-        logger.info("Add land transport")
 
     # read in transport demand in units driven km [100 km]
     transport = pd.read_csv(transport_demand_file, index_col=0, parse_dates=True)
@@ -2650,14 +3184,29 @@ def add_land_transport(
     avail_profile = pd.read_csv(avail_profile_file, index_col=0, parse_dates=True)
     dsm_profile = pd.read_csv(dsm_profile_file, index_col=0, parse_dates=True)
 
+    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'] == 'ff55':
+        shock_file = options['fidelio']['fidelio_folder'] + 'hh_trans_var.csv'
+        # We take the household value because PyPSA-Eur only includes passenger land transport
+        transport = apply_fidelio_shocks_to_demand(
+            transport,
+            shock_file=shock_file,
+            investment_year=investment_year,
+            sector_name="hh_land_transport",
+            nodes_in="columns"
+        )
+
+
     # exogenous share of passenger car type
     engine_types = ["fuel_cell", "electric", "ice"]
     shares = pd.Series()
     for engine in engine_types:
-        share_key = f"land_transport_{engine}_share"
-        shares[engine] = get(options[share_key], investment_year)
-        if logger:
-            logger.info(f"{engine} share: {shares[engine] * 100}%")
+
+        if fidelio:
+            shares = calculate_land_transport_shares_ff55(number_cars, limit)
+            logger.info(f"{engine} share: {shares[engine]*100}%")
+        else:
+            shares[engine] = get(options[f"land_transport_{engine}_share"], investment_year)
+            logger.info(f"{engine} share: {shares[engine]*100}%")
 
     check_land_transport_shares(shares)
 
@@ -2875,6 +3424,7 @@ def add_heat(
     district_heat_info = pd.read_csv(district_heat_share_file, index_col=0)
     dist_fraction = district_heat_info["district fraction of node"]
     urban_fraction = district_heat_info["urban fraction"]
+    co2_labels = "co2_ets2" if fidelio else "co2 atmosphere"
 
     # NB: must add costs of central heating afterwards (EUR 400 / kWpeak, 50a, 1% FOM from Fraunhofer ISE)
 
@@ -2957,6 +3507,27 @@ def add_heat(
                     factor * (1 + options["district_heating"]["district_heating_loss"])
                 )
             )
+
+        if options['fidelio']['fidelio_shocks']:
+            name = str(heat_system)
+            if "services" in name:
+                shock_file = options['fidelio']['fidelio_folder'] + 'services_var.csv'
+                heat_load = apply_fidelio_shocks_to_demand(
+                    heat_load,
+                    shock_file=shock_file,
+                    investment_year=investment_year,
+                    sector_name="services heat",
+                    nodes_in="columns",
+                )
+            elif options['fidelio']['scenario'] == 'ff55' and ("residential" in name or "urban central" in name):
+                shock_file = options['fidelio']['fidelio_folder'] + 'hh_cons_var.csv'
+                heat_load = apply_fidelio_shocks_to_demand(
+                    heat_load,
+                    shock_file=shock_file,
+                    investment_year=investment_year,
+                    sector_name="heat hh consumption",
+                    nodes_in="columns",
+                )
 
         n.add(
             "Load",
@@ -3450,7 +4021,7 @@ def add_heat(
                 p_nom_extendable=True,
                 bus0=spatial.gas.df.loc[nodes, "nodes"].values,
                 bus1=nodes + f" {heat_system} heat",
-                bus2="co2 atmosphere",
+                bus2=co2_labels,
                 carrier=f"{heat_system} gas boiler",
                 efficiency=costs.at[key, "efficiency"],
                 efficiency2=costs.at["gas", "CO2 intensity"],
@@ -3479,8 +4050,8 @@ def add_heat(
                     heat_system.central_or_decentral + " solar thermal", "lifetime"
                 ],
             )
-        
-        if options["chp"] and heat_system == HeatSystem.URBAN_CENTRAL: #ADB bug?
+
+        if options["chp"]["enable"] and heat_system == HeatSystem.URBAN_CENTRAL:
             # add non-biomass CHP; biomass CHP is added in biomass section
             for fuel in options["chp"]["fuel"]:
                 if fuel == "solid biomass":
@@ -3493,8 +4064,8 @@ def add_heat(
                     bus0=fuel_nodes.loc[nodes, "nodes"].values,
                     bus1=nodes,
                     bus2=nodes + " urban central heat",
-                    bus3="co2 atmosphere",
-                    carrier=f"urban central {fuel} CHP",
+                    bus3=co2_labels,
+                    carrier="urban central {fuel} CHP",
                     p_nom_extendable=True,
                     capital_cost=costs.at["central gas CHP", "capital_cost"]
                     * costs.at["central gas CHP", "efficiency"],
@@ -3512,7 +4083,7 @@ def add_heat(
                     bus0=fuel_nodes.loc[nodes, "nodes"].values,
                     bus1=nodes,
                     bus2=nodes + " urban central heat",
-                    bus3="co2 atmosphere",
+                    bus3=co2_labels,
                     bus4=spatial.co2.df.loc[nodes, "nodes"].values,
                     carrier=f"urban central {fuel} CHP CC",
                     p_nom_extendable=True,
@@ -3556,7 +4127,7 @@ def add_heat(
                 bus0=spatial.gas.df.loc[nodes, "nodes"].values,
                 bus1=nodes,
                 bus2=nodes + f" {heat_system} heat",
-                bus3="co2 atmosphere",
+                bus3=co2_labels,
                 carrier=heat_system.value + " micro gas CHP",
                 efficiency=costs.at["micro CHP", "efficiency"],
                 efficiency2=costs.at["micro CHP", "efficiency-heat"],
@@ -3979,13 +4550,15 @@ def add_biomass(
             e_initial=biomass_import_max_amount,
         )
 
+        co2_labels = "co2_nonets" if fidelio else "co2 atmosphere"
+
         n.add(
             "Link",
             spatial.biomass.nodes,
             suffix=" solid biomass import",
             bus0=["EU solid biomass import"],
             bus1=spatial.biomass.nodes,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             carrier="solid biomass import",
             efficiency=1.0,
             efficiency2=biomass_import_upstream_emissions
@@ -4038,7 +4611,7 @@ def add_biomass(
             e_sum_min=unsustainable_liquid_biofuel_potentials_spatial,
             e_sum_max=unsustainable_liquid_biofuel_potentials_spatial,
         )
-
+        
         add_carrier_buses(
             n,
             carrier="oil",
@@ -4048,12 +4621,13 @@ def add_biomass(
             cf_industry=cf_industry,
         )
 
+        co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
         n.add(
             "Link",
             spatial.biomass.bioliquids,
             bus0=spatial.biomass.bioliquids,
             bus1=spatial.oil.nodes,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             carrier="unsustainable bioliquids",
             efficiency=1,
             efficiency2=-costs.at["oil", "CO2 intensity"],
@@ -4062,12 +4636,13 @@ def add_biomass(
         )
 
     if options["biogas_upgrading"]:
+        co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
         n.add(
             "Link",
             spatial.gas.biogas_to_gas,
             bus0=spatial.gas.biogas,
             bus1=spatial.gas.nodes,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             carrier="biogas to gas",
             capital_cost=costs.at["biogas", "capital_cost"]
             + costs.at["biogas upgrading", "capital_cost"],
@@ -4082,13 +4657,14 @@ def add_biomass(
         # Assuming for costs that the CO2 from upgrading is pure, such as in amine scrubbing. I.e., with and without CC is
         # equivalent. Adding biomass CHP capture because biogas is often small-scale and decentral so further
         # from e.g. CO2 grid or buyers. This is a proxy for the added cost for e.g. a raw biogas pipeline to a central upgrading facility
+        co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
         n.add(
             "Link",
             spatial.gas.biogas_to_gas_cc,
             bus0=spatial.gas.biogas,
             bus1=spatial.gas.nodes,
             bus2=spatial.co2.nodes,
-            bus3="co2 atmosphere",
+            bus3=co2_labels,
             carrier="biogas to gas CC",
             capital_cost=costs.at["biogas CC", "capital_cost"]
             + costs.at["biogas upgrading", "capital_cost"]
@@ -4258,13 +4834,14 @@ def add_biomass(
             lifetime=costs.at[key, "lifetime"],
         )
 
+        co2_labels = "co2_ets2" if fidelio else "co2 atmosphere"
         n.add(
             "Link",
             urban_central + " urban central solid biomass CHP CC",
             bus0=spatial.biomass.df.loc[urban_central, "nodes"].values,
             bus1=urban_central,
             bus2=urban_central + " urban central heat",
-            bus3="co2 atmosphere",
+            bus3=co2_labels,
             bus4=spatial.co2.df.loc[urban_central, "nodes"].values,
             carrier="urban central solid biomass CHP CC",
             p_nom_extendable=True,
@@ -4314,6 +4891,7 @@ def add_biomass(
             )
 
     # Solid biomass to liquid fuel
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
     if options["biomass_to_liquid"]:
         add_carrier_buses(
             n,
@@ -4329,7 +4907,7 @@ def add_biomass(
             suffix=" biomass to liquid",
             bus0=spatial.biomass.nodes,
             bus1=spatial.oil.nodes,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             carrier="biomass to liquid",
             lifetime=costs.at["BtL", "lifetime"],
             efficiency=costs.at["BtL", "efficiency"],
@@ -4351,7 +4929,7 @@ def add_biomass(
             suffix=" biomass to liquid CC",
             bus0=spatial.biomass.nodes,
             bus1=spatial.oil.nodes,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             bus3=spatial.co2.nodes,
             carrier="biomass to liquid CC",
             lifetime=costs.at["BtL", "lifetime"],
@@ -4384,6 +4962,7 @@ def add_biomass(
             + " "
             + pd.Index(spatial.h2.nodes.str.replace(" H2", ""))
         )
+        co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
         n.add(
             "Link",
             name,
@@ -4391,7 +4970,7 @@ def add_biomass(
             bus0=spatial.biomass.nodes,
             bus1=spatial.oil.nodes,
             bus2=spatial.h2.nodes,
-            bus3="co2 atmosphere",
+            bus3=co2_labels,
             carrier="electrobiofuels",
             lifetime=costs.at["electrobiofuels", "lifetime"],
             efficiency=costs.at["electrobiofuels", "efficiency-biomass"],
@@ -4412,6 +4991,7 @@ def add_biomass(
         )
 
     # BioSNG from solid biomass
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
     if options["biosng"]:
         n.add(
             "Link",
@@ -4419,7 +4999,7 @@ def add_biomass(
             suffix=" solid biomass to gas",
             bus0=spatial.biomass.nodes,
             bus1=spatial.gas.nodes,
-            bus3="co2 atmosphere",
+            bus3=co2_labels,
             carrier="BioSNG",
             lifetime=costs.at["BioSNG", "lifetime"],
             efficiency=costs.at["BioSNG", "efficiency"],
@@ -4442,7 +5022,7 @@ def add_biomass(
             bus0=spatial.biomass.nodes,
             bus1=spatial.gas.nodes,
             bus2=spatial.co2.nodes,
-            bus3="co2 atmosphere",
+            bus3=co2_labels,
             carrier="BioSNG CC",
             lifetime=costs.at["BioSNG", "lifetime"],
             efficiency=costs.at["BioSNG", "efficiency"],
@@ -4472,7 +5052,7 @@ def add_biomass(
             bus0=spatial.biomass.nodes,
             bus1=spatial.h2.nodes,
             bus2=spatial.co2.nodes,
-            bus3="co2 atmosphere",
+            bus3=co2_labels,
             carrier="solid biomass to hydrogen",
             efficiency=costs.at["solid biomass to hydrogen", "efficiency"],
             efficiency2=costs.at["solid biomass", "CO2 intensity"]
@@ -4571,9 +5151,22 @@ def add_industry(
     nodes = pop_layout.index
     nhours = n.snapshot_weightings.generators.sum()
     nyears = nhours / 8760
+    timestep = n.snapshot_weightings.iloc[0,0] #ADB
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
 
     # 1e6 to convert TWh to MWh
+    # Read and scale the industrial demand
     industrial_demand = pd.read_csv(industrial_demand_file, index_col=0) * 1e6 * nyears
+
+    if options['fidelio']['fidelio_shocks']:
+        shock_file = options['fidelio']['fidelio_folder'] + 'industry_var.csv'
+        industrial_demand = apply_fidelio_shocks_to_demand(
+            industrial_demand,
+            shock_file=shock_file,
+            investment_year=investment_year,
+            sector_name="industry",
+            nodes_in="index",
+        )
 
     n.add(
         "Bus",
@@ -4621,7 +5214,7 @@ def add_industry(
         link_names,
         bus0=spatial.biomass.nodes,
         bus1=spatial.biomass.industry,
-        bus2="co2 atmosphere",
+        bus2=co2_labels,
         bus3=spatial.co2.nodes,
         carrier="solid biomass for industry CC",
         p_nom_extendable=True,
@@ -4663,7 +5256,7 @@ def add_industry(
         spatial.gas.industry,
         bus0=spatial.gas.nodes,
         bus1=spatial.gas.industry,
-        bus2="co2 atmosphere",
+        bus2=co2_labels,
         carrier="gas for industry",
         p_nom_extendable=True,
         efficiency=1.0,
@@ -4675,7 +5268,7 @@ def add_industry(
         spatial.gas.industry_cc,
         bus0=spatial.gas.nodes,
         bus1=spatial.gas.industry,
-        bus2="co2 atmosphere",
+        bus2=co2_labels,
         bus3=spatial.co2.nodes,
         carrier="gas for industry CC",
         p_nom_extendable=True,
@@ -4729,7 +5322,7 @@ def add_industry(
         spatial.methanol.industry,
         bus0=spatial.methanol.nodes,
         bus1=spatial.methanol.industry,
-        bus2="co2 atmosphere",
+        bus2=co2_labels,
         carrier="industry methanol",
         p_nom_extendable=True,
         efficiency2=1 / options["MWh_MeOH_per_tCO2"],
@@ -4759,6 +5352,8 @@ def add_industry(
     if options["oil_boilers"]:
         nodes = pop_layout.index
 
+        co2_labels = "co2_ets2" if fidelio else "co2 atmosphere"
+        
         for heat_system in HeatSystem:
             if not heat_system == HeatSystem.URBAN_CENTRAL:
                 n.add(
@@ -4767,7 +5362,7 @@ def add_industry(
                     p_nom_extendable=True,
                     bus0=spatial.oil.nodes,
                     bus1=nodes + f" {heat_system} heat",
-                    bus2="co2 atmosphere",
+                    bus2=co2_labels,
                     carrier=f"{heat_system} oil boiler",
                     efficiency=costs.at["decentral oil boiler", "efficiency"],
                     efficiency2=costs.at["oil", "CO2 intensity"],
@@ -4882,6 +5477,7 @@ def add_industry(
     )
     e_max_pu.iloc[-1, :] = 0
 
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
     n.add(
         "Store",
         spatial.oil.non_sequestered_hvc,
@@ -4898,7 +5494,7 @@ def add_industry(
         spatial.oil.demand_locations,
         suffix=" HVC to air",
         bus0=spatial.oil.non_sequestered_hvc,
-        bus1="co2 atmosphere",
+        bus1=co2_labels,
         carrier="HVC to air",
         p_nom_extendable=True,
         efficiency=costs.at["oil", "CO2 intensity"],
@@ -4906,12 +5502,13 @@ def add_industry(
 
     if cf_industry["waste_to_energy"] or cf_industry["waste_to_energy_cc"]:
         if options["biomass"] and options["municipal_solid_waste"]:
+            
             n.add(
                 "Link",
                 spatial.msw.locations,
                 bus0=spatial.msw.nodes,
-                bus1=spatial.oil.non_sequestered_hvc,
-                bus2="co2 atmosphere",
+                bus1=non_sequestered_hvc_locations,
+                bus2=co2_labels,
                 carrier="municipal solid waste",
                 p_nom_extendable=True,
                 efficiency=1.0,
@@ -4934,7 +5531,7 @@ def add_industry(
                 bus0=spatial.oil.non_sequestered_hvc,
                 bus1=spatial.nodes,
                 bus2=urban_central_nodes,
-                bus3="co2 atmosphere",
+                bus3=co2_labels,
                 carrier="waste CHP",
                 p_nom_extendable=True,
                 capital_cost=costs.at["waste CHP", "capital_cost"]
@@ -4953,7 +5550,7 @@ def add_industry(
                 bus0=spatial.oil.non_sequestered_hvc,
                 bus1=spatial.nodes,
                 bus2=urban_central_nodes,
-                bus3="co2 atmosphere",
+                bus3=co2_labels,
                 bus4=spatial.co2.nodes,
                 carrier="waste CHP CC",
                 p_nom_extendable=True,
@@ -4999,7 +5596,8 @@ def add_industry(
         factor = (
             1
             - industrial_demand.loc[loads_i, "current electricity"].sum()
-            / n.loads_t.p_set[loads_i].sum().sum()
+            #/ n.loads_t.p_set[loads_i].sum().sum()
+            / (n.loads_t.p_set[loads_i].sum().sum()*timestep)
         )
         n.loads_t.p_set[loads_i] *= factor
 
@@ -5042,7 +5640,7 @@ def add_industry(
         "Link",
         spatial.co2.process_emissions,
         bus0=spatial.co2.process_emissions,
-        bus1="co2 atmosphere",
+        bus1=co2_labels,
         carrier="process emissions",
         p_nom_extendable=True,
         efficiency=1.0,
@@ -5054,7 +5652,7 @@ def add_industry(
         spatial.co2.locations,
         suffix=" process emissions CC",
         bus0=spatial.co2.process_emissions,
-        bus1="co2 atmosphere",
+        bus1=co2_labels,
         bus2=spatial.co2.nodes,
         carrier="process emissions CC",
         p_nom_extendable=True,
@@ -5125,12 +5723,661 @@ def add_industry(
             spatial.coal.industry,
             bus0=spatial.coal.nodes,
             bus1=spatial.coal.industry,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             carrier="coal for industry",
             p_nom_extendable=True,
             efficiency2=costs.at["coal", "CO2 intensity"],
         )
 
+def calculate_steel_parameters(options, nyears=1):
+    # BF-BOF
+    # Reference: Raillard-Cazanove et al. https://doi.org/10.1016/j.apenergy.2024.125206
+    iron_to_steel_bof = 1.8  # t iron/t steel
+    coal_to_steel_bof = 6342 / 1e3 # MWh coal/t steel
+    elec_to_steel_bof = 194 / 1e3   # MWh el/t steel
+    em_factor_bof = 1760 / 1e3  # tCO2/kt steel
+
+    capex_bof = 442 * 8760  # €/t steel/h
+    opex_bof = (53 / capex_bof) * 100  # €/t steel/yr -> € of CAPEX
+    lifetime_bof = 40
+    discount_rate = 0.04
+
+    capex_bof_mpp = 871.85 * 8760  # €/t steel/h
+    capex_bof_mpp = 1066.851 * 8760  # €/t steel/h
+    opex_bof_mpp = (123.67 / capex_bof_mpp) * 100  # €/t steel/h -> € of CAPEX
+    opex_bof_mpp = (129.75 / capex_bof_mpp) * 100  # €/t steel/h -> € of CAPEX
+
+    capital_cost_bof = (
+        (calculate_annuity(lifetime_bof, discount_rate) + opex_bof_mpp / 100.0)
+        * capex_bof_mpp
+        * nyears
+    )
+
+    bof = pd.Series(
+        {
+            "iron input": iron_to_steel_bof,
+            "coal input": coal_to_steel_bof,
+            "elec input": elec_to_steel_bof,
+            "emission factor": em_factor_bof,
+            "capital cost": capital_cost_bof,
+            "lifetime": lifetime_bof,
+        }
+    )
+
+    # DRI-EAF with NG
+    # Reference: Graupner et al. https://doi.org/10.1016/j.procir.2023.02.117
+    iron_to_steel_eaf_ng = 1.36  # t iron/t steel
+    gas_to_steel_eaf_ng = 2803 / 1e3 # MWh gas/t steel
+    elec_to_steel_eaf_ng = 554 / 1e3 # MWh el/t steel
+    em_factor_eaf_ng = 565 / 1e3 # tCO2/t steel
+
+    # Reference: Raillard-Cazanove et al. https://doi.org/10.1016/j.apenergy.2024.125206
+    capex_eaf_ng = 414 * 8760 # €/t steel
+    opex_eaf_ng = (54 / capex_eaf_ng) * 100  # €/t steel/h -> % of CAPEX
+    lifetime_eaf_ng = 40
+    discount_rate = 0.04
+
+    capex_eaf_mpp = 698.34  * 8760  # €/t steel/h
+    opex_eaf_mpp = (118.27 / capex_eaf_mpp) * 100  # €/t steel/h -> % of CAPEX
+
+    capital_cost_eaf_ng = (
+        (calculate_annuity(lifetime_eaf_ng, discount_rate) + opex_eaf_ng / 100.0)
+        * capex_eaf_mpp
+        * nyears
+    )
+
+    eaf_ng = pd.Series(
+        {
+            "iron input": iron_to_steel_eaf_ng,
+            "gas input": gas_to_steel_eaf_ng,
+            "elec input": elec_to_steel_eaf_ng,
+            "emission factor": em_factor_eaf_ng,
+            "capital cost": capital_cost_eaf_ng,
+            "lifetime": lifetime_eaf_ng,
+        }
+    )
+
+    # DRI-EAF with hydrogen
+    # Reference: Graupner et al. https://doi.org/10.1016/j.procir.2023.02.117
+    iron_to_steel_eaf_h2 = 1.39  # t iron/t steel
+    h2_to_steel_eaf_h2 = 2211 / 1e3 # MWh H2/t steel
+    elec_to_steel_eaf_h2 = 611 / 1e3  # MWh el/t steel
+    em_factor_eaf_h2 = 76 / 1e3  # tCO2/t steel
+
+    # Assumption: costs are the same as NG DRI-EAF (besides the fuel costs)
+
+    eaf_h2 = pd.Series(
+        {
+            "iron input": iron_to_steel_eaf_h2,
+            "h2 input": h2_to_steel_eaf_h2,
+            "elec input": elec_to_steel_eaf_h2,
+            "emission factor": em_factor_eaf_h2,
+            "capital cost": capital_cost_eaf_ng,
+            "lifetime": lifetime_eaf_ng,
+        }
+    )
+
+    # Top Gas Recycling in BF-BOF
+    # Reference: Jin et al. https://doi.org/10.1016/j.resconrec.2015.07.008
+    elec_tgr = 0.2705  # MWh el/tCO2 in
+
+    # Reference: Raillard-Cazanove et al. https://doi.org/10.1016/j.apenergy.2024.125206
+    capex_tgr_2030 = 90  / em_factor_bof  # €/t CO2 in
+    capex_tgr_2050 = 67 / em_factor_bof  # €/t CO2 in
+    capex_tgr_mpp = (1230.094 - 1066.851) / em_factor_bof  # €/t CO2 in
+    # We choose Raillard-Cazanove et al. values because they decrease in time
+    opex_tgr = 5  # % CAPEX
+    lifetime_tgr = 20  # years
+    discount_rate = 0.04
+
+    capital_cost_tgr_2030 = (
+        (calculate_annuity(lifetime_tgr, discount_rate) + opex_tgr / 100.0)
+        * capex_tgr_2030
+        * nyears
+    )
+    capital_cost_tgr_2050 = (
+        (calculate_annuity(lifetime_tgr, discount_rate) + opex_tgr / 100.0)
+        * capex_tgr_2050
+        * nyears
+    )
+
+    tgr = pd.Series(
+        {
+            "elec input": elec_tgr,
+            "capital cost 2030": capital_cost_tgr_2030,
+            "capital cost 2050": capital_cost_tgr_2050,
+            "lifetime": lifetime_tgr,
+        }
+    )
+
+    min_part_load_steel = options["min_part_load_steel"]
+
+    return bof, eaf_ng, eaf_h2, tgr, min_part_load_steel
+
+
+def clean_industry_df(df, sector):
+    df = df[df["sector"] == sector].drop(columns=["sector"]).set_index("year")
+
+    return df
+
+def add_steel_industry(n, investment_year, steel_data, options):
+    # Steel production demanded in Europe in Mton of steel products per year
+    capacities = pd.read_csv(snakemake.input.endoindustry_capacities, index_col=0)
+    capacities = capacities[["EAF", "DRI + EAF", "Integrated steelworks"]]
+    keys = pd.read_csv(snakemake.input.industrial_distribution_key, index_col=0)
+
+    scenario = options["endo_industry"]["policy_scenario"]
+    if investment_year == 2020:
+        hourly_steel_production = steel_data.loc[2030, "maintain"] * 1e6 / nhours # Same for all years in maintain case
+    else:
+        hourly_steel_production = steel_data.loc[investment_year, scenario] * 1e6 / nhours # t steel
+  # get the steel that needs to be produced hourly tsteel/h
+    capacities = capacities.sum(axis=1) * 1e3
+
+    # Share of steel production capacities -> assumption: keep producing the same share in the country, changing technology
+    cap_share = capacities / capacities.sum()
+    p_set = cap_share * hourly_steel_production
+
+    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'][:4] == 'ff55':
+        shock_file = options['fidelio']['fidelio_folder'] + 'steel_var.csv'
+        
+        p_set_shocked = apply_fidelio_shocks_to_demand(
+            p_set,
+            shock_file=shock_file,
+            investment_year=investment_year,
+            sector_name="steel",
+            nodes_in="index"
+        )
+
+        # Shocks of demand from FIDELIO do not account in PyPSA for social economic inertias
+        max_limit = hourly_steel_production = steel_data.loc[investment_year, "regain"] * 1e6
+        min_limit = hourly_steel_production = steel_data.loc[investment_year, "deindustrial"] * 1e6
+
+        tot_dem_shocked = p_set.sum() * nhours
+        print(f"N hours {nhours}")
+        if tot_dem_shocked > max_limit:
+            hourly_steel_production = max_limit / nhours
+            p_set = cap_share * hourly_steel_production
+        elif tot_dem_shocked < min_limit:
+            hourly_steel_production = min_limit / nhours
+            p_set = cap_share * hourly_steel_production
+        else:
+            p_set = p_set_shocked
+
+    if options["endo_industry"]["regional_steel_demand"]:
+        p_set.index += " steel"
+    else:
+        p_set = p_set.sum()
+    
+
+    # Adding carriers and components
+    nodes = pop_layout.index
+
+    n.add("Carrier", "iron")
+
+    n.add(
+        "Bus",
+        spatial.iron.nodes,
+        location=spatial.iron.locations,
+        carrier="iron",
+        unit="t/yr",
+    )
+
+    costs.at["iron", "discount rate"] = 0.04
+
+    n.add(
+        "Generator",
+        spatial.iron.nodes,
+        bus=spatial.iron.nodes,
+        p_nom_extendable=True,
+        carrier="iron",
+        marginal_cost=costs.at["iron ore DRI-ready", "commodity"] ,  # €/t of iron
+    )
+
+    n.add("Carrier", "steel")
+    location_value = getattr(spatial, "steel").nodes
+    unit = "t/yr"
+
+    n.add(
+        "Bus",
+        location_value,
+        location=location_value,
+        carrier="steel",
+        unit=unit,
+    )
+
+    # STEEL
+    n.add(
+        "Load",
+        spatial.steel.nodes,
+        bus=spatial.steel.nodes,
+        carrier="steel",
+        p_set=p_set,
+    )
+
+    n.add(
+        "Store",
+        spatial.steel.nodes,
+        bus=spatial.steel.nodes,
+        carrier="steel",
+        e_nom_extendable=True,
+        e_cyclic=True,
+    )
+    
+    # add CO2 process from steel industry
+    n.add("Carrier", "steel process emissions")
+    n.add("Carrier", "steel process emissions CC")
+    n.add("Carrier", "syn gas for DRI")
+
+    n.add(
+        "Bus",
+        spatial.co2.dri,
+        location=spatial.co2.dri_locations,
+        carrier="steel process emissions",
+        unit="t_co2",
+    )
+
+    n.add(
+        "Bus",
+        spatial.co2.bof,
+        location=spatial.co2.bof_locations,
+        carrier="steel process emissions",
+        unit="t_co2",
+    )
+
+    n.add(
+        "Bus",
+        spatial.syngas_dri.nodes,
+        location=spatial.syngas_dri.locations,
+        carrier="syn gas for DRI",
+        unit="unit",
+    )
+
+    # PARAMETERS
+    bof, eaf_ng, eaf_h2, tgr, min_part_load_steel = calculate_steel_parameters(
+        options, nyears
+    )
+
+    if options["fidelio"]["enable"] and limit == "ff55" and investment_year == 2050:
+        min_part_load_steel = 0.1
+
+    n.add(
+        "Link",
+        nodes,
+        suffix=" BF-BOF",
+        bus0=spatial.iron.nodes,
+        bus1=spatial.steel.nodes,
+        bus2=spatial.coal.nodes,
+        bus3=nodes,
+        bus4=spatial.co2.bof,
+        carrier="BF-BOF",
+        p_nom_extendable=True,
+        p_min_pu=min_part_load_steel,
+        capital_cost=bof["capital cost"] / bof["iron input"],
+        efficiency=1 / bof["iron input"],
+        efficiency2=-bof["coal input"] / bof["iron input"],  # MWhth coal per kt iron
+        efficiency3=-bof["elec input"]
+        / bof["iron input"],  # MWh electricity per t iron
+        efficiency4=bof["emission factor"] / bof["iron input"],  # t CO2 per t iron
+        lifetime=bof["lifetime"],
+    )
+
+    n.add(
+        "Link",
+        nodes,
+        suffix=" CH4 to syn gas DRI-EAF",
+        bus0=spatial.gas.nodes,
+        bus1=spatial.syngas_dri.nodes,
+        bus2=spatial.co2.dri,
+        carrier="EAF",
+        p_nom_extendable=True,
+        p_min_pu= min_part_load_steel,
+        efficiency=1 / eaf_ng["gas input"],  # MWh natural gas per one unit of dri gas
+        efficiency2=eaf_ng["emission factor"]
+        / eaf_ng["iron input"]
+        / eaf_ng["gas input"],  # t CO2 per unit of dri gas
+    )
+
+    n.add(
+        "Link",
+        nodes,
+        suffix=" H2 to syn gas DRI",
+        bus0=nodes + " H2",
+        bus1=spatial.syngas_dri.nodes,
+        carrier="EAF",
+        p_min_pu= min_part_load_steel,
+        p_nom_extendable=True,
+        efficiency=1 / eaf_h2["h2 input"],  # MWh hydrogen per one unit of dri gas
+    )
+
+    # Parameters
+    electricity_input_dri = costs.at["natural gas direct iron reduction furnace", "electricity-input"]   # MWh/t
+    electricity_input_eaf = costs.at["electric arc furnace", "electricity-input"]  # MWh/t steel
+    total_electricity_input = electricity_input_dri + electricity_input_eaf
+
+    combined_capital_cost = (costs.at["natural gas direct iron reduction furnace", "capital_cost"] + costs.at["electric arc furnace", "capital_cost"]) / eaf_ng["iron input"]
+    n.add(
+        "Link",
+        nodes,
+        suffix=" DRI-EAF",
+        carrier="DRI-EAF",
+        capital_cost=combined_capital_cost,
+        p_nom_extendable=True,
+        p_min_pu=min_part_load_steel,
+        bus0=spatial.iron.nodes,
+        bus1=spatial.steel.nodes,
+        bus2=spatial.syngas_dri.nodes,
+        bus3=nodes,
+        # Outputs: 1 unit of steel per iron input
+        efficiency=1 / eaf_ng["iron input"],
+
+        # Negative efficiencies for inputs
+        efficiency2=-1,  # one unit of syn gas per kt iron
+        efficiency3=-total_electricity_input / eaf_ng["iron input"],
+        lifetime=eaf_ng["lifetime"],
+    )
+    
+    # ============================================================
+    # --- SCRAP–EAF PATHWAY WITH MAXIMUM LIMIT -------------------
+    # ============================================================
+
+    # Retrieve maximum available scrap (kt) and per timestep limit
+    max_scrap_file = "data/max_scrap.csv"
+    max_scrap_df = pd.read_csv(max_scrap_file, index_col=0)
+    max_scrap_mt = max_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
+    max_scrap_t = max_scrap_mt * 1e6  # [t]
+    # max_scrap_pertimestep = (max_scrap_kt / 8760) * n.snapshot_weightings.iloc[0, 0]
+
+    # --- Scrap bus and generator ---
+    n.add(
+        "Bus",
+        "EU steel scrap",
+        location="EU",
+        carrier="steel scrap",
+        unit="t/yr",
+    )
+
+    if options["fidelio"]["enable"] and options["fidelio"]["scenario"] == "baseline":
+        mc_scrap = 280
+    else:
+        #https://gmk.center/en/posts/the-global-scrap-market-showed-overwhelming-stability-in-july/
+        # 302.5 €/t in Germany for E3, which has limited contamination, low quality than prime grades but a staple feedstock for EAF
+        # https://www.mgg-recycling.com/wp-content/uploads/2013/06/EFR_EU27_steel_scrap_specification.pdf
+        mc_scrap = 302
+
+    n.add(
+        "Generator",
+        "EU steel scrap",
+        bus="EU steel scrap",
+        carrier="steel scrap",
+        p_nom=1e7,
+        marginal_cost=mc_scrap,
+        #e_sum_min = min_scrap_kt,
+        e_sum_max = max_scrap_t,
+    )
+
+    # --- Scrap–EAF Link ---
+    electricity_input_scrap = costs.at["electric arc furnace", "electricity-input"]  # MWh/t steel
+    capital_cost_scrap_eaf = (
+        costs.at["electric arc furnace", "capital_cost"] / electricity_input_scrap
+    )
+
+    n.add(
+        "Link",
+        nodes,
+        suffix=" Scrap-EAF",
+        carrier="Scrap-EAF",
+        capital_cost=capital_cost_scrap_eaf,
+        p_nom_extendable=True,
+        p_min_pu=min_part_load_steel,
+        p_nom_max=max_scrap_t * electricity_input_scrap,
+        bus0=nodes,                 # electricity
+        bus1=spatial.steel.nodes,   # steel output
+        bus2="EU steel scrap",      # scrap input
+        efficiency=1 / electricity_input_scrap,   # MWh_el per t steel
+        efficiency2=-costs.at["electric arc furnace", "hbi-input"] / electricity_input_scrap,
+        lifetime=eaf_ng["lifetime"],
+    )
+
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
+
+    n.add(
+        "Link",
+        nodes,
+        suffix=" steel DRI process emis to atmosphere",
+        bus0=spatial.co2.dri,
+        bus1=co2_labels,
+        carrier="steel process emissions",
+        p_nom_extendable=True,
+        capital_cost=0,
+        efficiency=1,
+    )
+
+    n.add(
+        "Link",
+        nodes,
+        suffix=" steel BOF process emis to atmosphere",
+        bus0=spatial.co2.bof,
+        bus1=co2_labels,
+        carrier="steel process emissions",
+        p_nom_extendable=True,
+        capital_cost=0,
+        efficiency=1,
+    )
+
+    # Top Gas Recycling in BF-BOF
+    # Costs for 2030 and 2050
+    if investment_year <= 2030:
+        capital_cost_tgr = tgr["capital cost 2030"]
+    elif investment_year == 2040:
+        capital_cost_tgr = (
+            tgr["capital cost 2030"]
+            + (tgr["capital cost 2050"] - tgr["capital cost 2030"]) / 10
+        )
+    elif investment_year == 2050:
+        capital_cost_tgr = tgr["capital cost 2050"]
+    else:
+        raise ValueError(
+            f"Invalid investment year: {investment_year}. Supported years are 2030, 2040, and 2050."
+        )
+
+    electricity_input = (
+        costs.at["cement capture", "electricity-input"]
+        + costs.at["cement capture", "compression-electricity-input"]
+    )  # MWh_el / tCO2
+    heat_input = (
+        costs.at["cement capture", "heat-input"]
+        - costs.at["cement capture", "compression-heat-output"]
+    )  # MWh_th / tCO2
+
+    n.add(
+        "Link",
+        nodes,
+        suffix=" steel BOF CC",
+        bus0=spatial.co2.bof,
+        bus1=co2_labels,
+        bus2=spatial.co2.nodes,
+        bus3=nodes,
+        carrier="steel process emissions CC",
+        p_nom_extendable=True,
+        capital_cost=costs.at[
+            "cement capture", "investment"
+        ],  # 80, #/ costs.at["cement capture", "capture_rate"], #€/tCO2 stored I hope, otherwise 8280 / 500 /nhours, # CAPEX €/kt clinker / 500 tCO2/kt clinker ,
+        efficiency=1 - costs.at["cement capture", "capture_rate"],
+        efficiency2=costs.at["cement capture", "capture_rate"],
+        efficiency3=-electricity_input
+        * costs.at["cement capture", "capture_rate"],  # MWh el/tCO2 in
+        lifetime=costs.at["cement capture", "lifetime"],
+    )
+
+
+
+def add_aluminium_industry(n, investment_year, aluminum_data, options):
+    # Aluminum production in Europe in kton of aluminum products per year (2023)
+    #  https://european-aluminium.eu/about-aluminium/aluminium-industry/
+    # So far aluminum existing production if only at the European level
+    cap_recycled_2023 = 5074 # kton aluminum / yr recycled capacity in Europe
+    cap_primary_2023 = 932 # kton aluminum / yr primary capacity in Europe
+
+    cap_recycled_1980 = 1226 # kton aluminum / yr recycled capacity in Europe
+    cap_primary_1980 = 2775 # kton aluminum / yr primary capacity in Europe
+
+    total_al_1980 = cap_recycled_1980 + cap_primary_1980   # 4001
+    total_al_2023 = cap_recycled_2023 + cap_primary_2023   # 6006
+
+    # --- Interpolated annual slope between 1980 and 2023 ---
+    slope = (total_al_2023 - total_al_1980) / (2023 - 1980)      # 46.63 kton/yr
+    # --- Target years ---
+    years = [2030, 2040, 2050]
+
+    # --- Scenarios ---
+    # Deindustrial: slope factor = -0.5
+    # Maintain: slope factor = 0
+    # Regain: slope factor = 1.0
+
+    deindustrial = [
+        total_2023 + (year - 2023) * slope * -0.5 for year in years
+    ]
+
+    maintain = [
+        total_2023 + (year - 2023) * slope * 0.0 for year in years
+    ]
+
+    regain = [
+        total_2023 + (year - 2023) * slope * 1.0 for year in years
+    ]
+
+    # --- Create DataFrame ---
+    aluminum_data = pd.DataFrame({
+        "Year": years,
+        "Deindustrial": deindustrial,
+        "Maintain": maintain,
+        "Regain": regain
+    }).round(1)
+
+    aluminum_data = aluminum_data.set_index("Year")
+
+    scenario = options["endo_industry"]["policy_scenario"]  # e.g. "Maintain"
+
+    hourly_aluminum_production = aluminum_data.loc[investment_year, scenario] / nhours
+
+    p_set = hourly_aluminum_production
+
+    # Adding carriers and components
+    nodes = pop_layout.index
+
+    n.add("Carrier", "alumina")
+
+    n.add(
+        "Bus",
+        spatial.alumina.nodes,
+        location=spatial.alumina.locations,
+        carrier="alumina",
+        unit="kt/yr",
+    )
+
+    costs.at["alumina", "discount rate"] = 0.04
+    n.add(
+        "Generator",
+        spatial.alumina.nodes,
+        bus=spatial.alumina .nodes,
+        p_nom_extendable=True,
+        carrier="alumina",
+        marginal_cost=320* 1e3* 0.877,  # €/kt of alumina https://www.lme.com/Metals/Non-ferrous/LME-Alumina_#Trading+day+summary
+    )
+
+    n.add("Carrier", "aluminium")
+
+    n.add(
+        "Bus",
+        spatial.aluminium.nodes,
+        location=spatial.aluminium.locations,
+        carrier="aluminium",
+        unit="kt/yr",
+    )
+
+    n.add(
+        "Load",
+        spatial.aluminium.nodes,
+        bus=spatial.aluminium.nodes,
+        carrier="aluminium",
+        p_set=p_set,
+    )
+
+    # add CO2 process from aluminum industry
+    n.add("Carrier", "aluminium process emissions")
+
+    n.add(
+        "Bus",
+        spatial.co2.aluminium,
+        location=spatial.co2.aluminium_locations,
+        carrier="aluminium anode consumption emissions",
+        unit="t_co2",
+    )
+
+    ########### Add carriers for new capacity for aluminum production ############
+
+    # Traditional dry process
+
+    # Lifetimes
+    lifetime_aluminum = 25  # Raillard Cazanove
+
+    # Capital costs
+    discount_rate = 0.04
+
+    capex_aluminum = (
+        263000 * calculate_annuity(lifetime_aluminum, discount_rate)
+    )  # https://iea-etsap.org/E-TechDS/HIGHLIGHTS%20PDF/I03_cement_June%202010_GS-gct%201.pdf with CCS 558000
+    # * 8760 h/a (?)
+    min_part_load_aluminum = options["min_part_load_aluminum"]
+
+    n.add(
+        "Bus",
+        "EU electricity aluminium",
+        location=spatial.aluminium.locations,
+        carrier="aluminium",
+        unit="kt/yr",
+    )
+
+    n.add(
+        "Link",
+        " electricity for aluminium",
+        bus0=nodes,
+        bus1="EU electricity aluminium",
+        carrier="aluminum plant",
+        p_nom_extendable=True,
+        efficiency=1
+    )
+
+    n.add(
+        "Link",
+        " EU Primary Aluminium Plant",
+        bus0=spatial.alumina.nodes,
+        bus1=spatial.aluminium.nodes,
+        bus2="electricity for aluminium",
+        bus3=spatial.co2.aluminium,
+        carrier="aluminium plant",
+        p_nom_extendable=True,
+        p_min_pu=min_part_load_aluminum,
+        capital_cost=capex_aluminum,
+        efficiency=1 / 1.9, # 1.9 t alumina / t aluminium https://alvancebritishaluminium.com/wp-content/uploads/2025/08/ALVANCE-BA-Sustainability-Report-FINAL.pdf
+        efficiency2=-5.99 * 1e3 / 1.9, # MWh/kt aluminium https://www.nrdc.org/bio/ian-wells/role-inert-anodes-aluminum-decarbonization
+        efficiency3=(0.9 + 1.5) * 1e3 / 1.9,  # tCO2/kt aluminum PFC + CO2 anode reduction https://international-aluminium.org/statistics/greenhouse-gas-emissions-primary-aluminium/?publication=greenhouse-gas-emissions-intensity-primary-aluminium&filter=%7B%22row%22%3Anull%2C%22group%22%3Anull%2C%22multiGroup%22%3A%5B%5D%2C%22dateRange%22%3A%22annually%22%2C%22monthFrom%22%3Anull%2C%22monthTo%22%3Anull%2C%22quarterFrom%22%3A1%2C%22quarterTo%22%3A4%2C%22yearFrom%22%3A2024%2C%22yearTo%22%3A2024%2C%22multiRow%22%3A%5B70%5D%2C%22columns%22%3A%5B77%2C78%5D%2C%22activeChartIndex%22%3A1%2C%22activeChartType%22%3A%22table%22%7D
+        lifetime=lifetime_aluminium,
+    )
+
+    n.add(
+        "Link",
+        nodes,
+        suffix=" aluminum process emis to atmosphere",
+        bus0=spatial.co2.aluminum,
+        bus1="co2 atmosphere",
+        carrier="aluminum process emissions",
+        p_nom_extendable=True,
+        capital_cost=0,
+        efficiency=1,
+    )
+    
 
 def add_aviation(
     n: pypsa.Network,
@@ -5139,6 +6386,7 @@ def add_aviation(
     pop_weighted_energy_totals: pd.DataFrame,
     options: dict,
     spatial: SimpleNamespace,
+    limit: str | float,
 ) -> None:
     logger.info("Add aviation")
 
@@ -5160,8 +6408,16 @@ def add_aviation(
         / nhours
     ).rename(lambda x: x + " kerosene for aviation")
 
+    shock_file = options["fidelio"]["fidelio_folder"] + "air_transport_var.csv"
+    shock_multiplier = get_fidelio_shocks(nodes, shock_file, investment_year, options)
+
+    # The shock might not work when regional_oil_demand is on
     if not options["regional_oil_demand"]:
+
         p_set = p_set.sum()
+        shock_multiplier = shock_multiplier.mean()
+    else:
+        p_set.index = p_set.index.str.split(" kerosene for aviation").str[0]
 
     n.add(
         "Bus",
@@ -5171,20 +6427,113 @@ def add_aviation(
         unit="MWh_LHV",
     )
 
-    n.add(
-        "Load",
-        spatial.oil.kerosene,
-        bus=spatial.oil.kerosene,
-        carrier="kerosene for aviation",
-        p_set=p_set,
-    )
+    if fidelio and limit == 'ff55':
+        aviation_kero_share, aviation_bio_share, aviation_synfuels_share = calculate_aviation_shares_ff55()
+
+        p_set = p_set * aviation_kero_share * shock_multiplier
+
+        # To check if it is an array (regional oil demand true) or a float
+        if hasattr(p_set, "rename"):
+            p_set = p_set.rename(lambda x: x + " kerosene for aviation")
+
+        n.add(
+            "Load",
+            spatial.oil.kerosene,
+            bus=spatial.oil.kerosene,
+            carrier="kerosene for aviation",
+            p_set = p_set
+        )
+
+        # Adding biofuels SAF
+        n.add(
+            "Bus",
+            spatial.biomass.aviation,
+            location=["EU"],
+            carrier="biofuels for aviation",
+            unit="MWh_LHV",
+        )
+
+        aviation_kero_efficiency = 0.50084 # Figure 4, Cruise in Ogur et al. https://www.sciencedirect.com/science/article/pii/S0016236124024736 
+        aviation_bio_efficiency = aviation_kero_efficiency * (1 + 0.1818) # Akdeniz et al. https://doi.org/10.1007/s10973-023-11982-z 
+        # If biofuel is selected over jet-kerosene fuel, it is observed that the engine has better energy efficiency performance by 18.18%.
+
+        efficiency = aviation_kero_efficiency / aviation_bio_efficiency
+
+        # Biomass for aviation is at EU level
+
+        n.add(
+            "Load",
+            spatial.biomass.aviation,
+            bus=spatial.biomass.aviation,
+            carrier="biofuels for aviation",
+            p_set=(p_set * aviation_bio_share * efficiency * shock_multiplier).sum(),
+        )
+
+        add_carrier_buses(
+            n,
+            carrier="oil",
+            costs=costs,
+            spatial=spatial,
+            options=options,
+            cf_industry=cf_industry,
+        )
+
+        n.add(
+            "Link",
+            spatial.biomass.nodes,
+            suffix=" to aviation biofuels",
+            bus0=spatial.biomass.nodes,
+            bus1=spatial.biomass.aviation,
+            bus2="co2_ets",
+            carrier="biofuels for aviation",
+            lifetime=costs.at["BtL", "lifetime"],
+            efficiency=costs.at["BtL", "efficiency"],
+            efficiency2=-costs.at["solid biomass", "CO2 intensity"]
+            + costs.at["BtL", "CO2 stored"],
+            p_nom_extendable=True,
+            capital_cost=costs.at["BtL", "capital_cost"] * costs.at["BtL", "efficiency"],
+            marginal_cost=costs.at["BtL", "VOM"] * costs.at["BtL", "efficiency"],
+        )
+
+        # Adding synthetic fuels
+        n.add(
+            "Bus",
+            spatial.oil.synkerosene,
+            location=["EU"],
+            carrier="synfuels for aviation",
+            unit="MWh_LHV",
+        )
+
+        efficiency = 1 # Same compound burnt in aircrafts
+
+        n.add(
+            "Load",
+            spatial.oil.synkerosene,
+            bus = spatial.oil.synkerosene,
+            carrier="synfuels for aviation",
+            p_set=(p_set * aviation_synfuels_share * efficiency * shock_multiplier).sum(),
+        )
+
+        add_methanol_to_kerosene_fidelio(n,costs)
+        # Modified for kerosen bus, could be the same as below but I keep it separate for mergin reasons
+
+    else:
+        n.add(
+            "Load",
+            spatial.oil.kerosene,
+            bus=spatial.oil.kerosene,
+            carrier="kerosene for aviation",
+            p_set=p_set * shock_multiplier,
+        )
+    
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
 
     n.add(
         "Link",
         spatial.oil.kerosene,
         bus0=spatial.oil.nodes,
         bus1=spatial.oil.kerosene,
-        bus2="co2 atmosphere",
+        bus2=co2_labels,
         carrier="kerosene for aviation",
         p_nom_extendable=True,
         efficiency2=costs.at["oil", "CO2 intensity"],
@@ -5207,7 +6556,7 @@ def add_aviation(
             bus0=spatial.methanol.nodes,
             bus1=spatial.oil.kerosene,
             bus2=spatial.h2.nodes,
-            bus3="co2 atmosphere",
+            bus3=co2_labels,
             efficiency=1 / costs.at[tech, "methanol-input"],
             efficiency2=-costs.at[tech, "hydrogen-input"]
             / costs.at[tech, "methanol-input"],
@@ -5227,6 +6576,7 @@ def add_shipping(
     options: dict,
     spatial: SimpleNamespace,
     investment_year: int,
+    limit: str | float,
 ) -> None:
     logger.info("Add shipping")
 
@@ -5234,9 +6584,28 @@ def add_shipping(
     nhours = n.snapshot_weightings.generators.sum()
     nyears = nhours / 8760
 
-    shipping_hydrogen_share = get(options["shipping_hydrogen_share"], investment_year)
-    shipping_methanol_share = get(options["shipping_methanol_share"], investment_year)
-    shipping_oil_share = get(options["shipping_oil_share"], investment_year)
+    if fidelio:
+        if limit == 'ff55':
+            shipping_oil_share, shipping_methanol_share, shipping_ammonia_share = calculate_shipping_shares_ff55()
+            shipping_hydrogen_share = 0
+        else:
+            shipping_oil_share = 1
+            shipping_methanol_share = 0
+            shipping_ammonia_share = 0
+            shipping_hydrogen_share = 0
+    else:
+        shipping_hydrogen_share = get(options["shipping_hydrogen_share"], investment_year)
+        shipping_methanol_share = get(options["shipping_methanol_share"], investment_year)
+        shipping_oil_share = get(options["shipping_oil_share"], investment_year)
+        shipping_ammonia_share = 0
+
+        total_share = shipping_hydrogen_share + shipping_methanol_share + shipping_oil_share
+        if total_share != 1:
+            logger.warning(
+                f"Total shipping shares sum up to {total_share:.2%}, corresponding to increased or decreased demand assumptions."
+            )
+
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
 
     total_share = shipping_hydrogen_share + shipping_methanol_share + shipping_oil_share
     if total_share != 1:
@@ -5251,6 +6620,17 @@ def add_shipping(
         pd.read_csv(shipping_demand_file, index_col=0).squeeze(axis=1) * nyears
     )
     all_navigation = domestic_navigation + international_navigation
+
+    if options['fidelio']['fidelio_shocks']:
+        shock_file = options['fidelio']['fidelio_folder'] + 'water_transport_var.csv'
+        all_navigation = apply_fidelio_shocks_to_demand(
+            all_navigation,
+            shock_file=shock_file,
+            investment_year=investment_year,
+            sector_name="water_transport",
+            nodes_in="index"
+        )
+
     p_set = all_navigation * 1e6 / nhours
 
     if shipping_hydrogen_share:
@@ -5301,6 +6681,52 @@ def add_shipping(
             carrier="H2 for shipping",
             p_set=p_set_hydrogen,
         )
+    
+    if shipping_ammonia_share:
+        oil_efficiency = options.get(
+            "shipping_oil_efficiency", options.get("shipping_average_efficiency", 0.4)
+        )
+        ammonia_efficiency = options.get("shipping_ammonia_efficiency", 0.36)
+
+        efficiency = oil_efficiency / ammonia_efficiency
+        p_set_ammonia = shipping_ammonia_share * efficiency * p_set.rename(lambda x: x + " NH3 for shipping")
+        
+        if options['ammonia'] != "regional":
+            p_set_ammonia = p_set_ammonia.sum()
+        
+        n.add("Carrier", "NH3")
+
+        n.add(
+            "Bus", spatial.ammonia.nodes, location=spatial.ammonia.locations, carrier="NH3"
+        )
+
+        n.add(
+            "Load",
+            spatial.ammonia.nodes,
+            suffix=" for shipping",
+            bus=spatial.ammonia.nodes,
+            carrier="NH3 for shipping",
+            p_set=p_set_ammonia,
+        )
+
+        n.add(
+            "Link",
+            nodes,
+            suffix=" Haber-Bosch",
+            bus0=nodes,
+            bus1=spatial.ammonia.nodes,
+            bus2=nodes + " H2",
+            p_nom_extendable=True,
+            carrier="Haber-Bosch",
+            efficiency=1 / costs.at["Haber-Bosch", "electricity-input"],
+            efficiency2=-costs.at["Haber-Bosch", "hydrogen-input"]
+            / costs.at["Haber-Bosch", "electricity-input"],
+            capital_cost=costs.at["Haber-Bosch", "capital_cost"]
+            / costs.at["Haber-Bosch", "electricity-input"],
+            marginal_cost=costs.at["Haber-Bosch", "VOM"]
+            / costs.at["Haber-Bosch", "electricity-input"],
+            lifetime=costs.at["Haber-Bosch", "lifetime"],
+        )
 
     if shipping_methanol_share:
         efficiency = (
@@ -5337,7 +6763,7 @@ def add_shipping(
             spatial.methanol.shipping,
             bus0=spatial.methanol.nodes,
             bus1=spatial.methanol.shipping,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             carrier="shipping methanol",
             p_nom_extendable=True,
             efficiency2=1
@@ -5373,7 +6799,7 @@ def add_shipping(
             spatial.oil.shipping,
             bus0=spatial.oil.nodes,
             bus1=spatial.oil.shipping,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             carrier="shipping oil",
             p_nom_extendable=True,
             efficiency2=costs.at["oil", "CO2 intensity"],
@@ -5567,8 +6993,12 @@ def add_agriculture(
 
     nodes = pop_layout.index
     nhours = n.snapshot_weightings.generators.sum()
+    co2_labels = "co2_nonets" if fidelio else "co2 atmosphere"
 
-    # electricity
+    shock_file = options["fidelio"]["fidelio_folder"] + "agriculture_var.csv"
+    shock_multiplier = get_fidelio_shocks(nodes, shock_file, investment_year, options)
+
+    # Add electricity load with shock multiplier applied
     n.add(
         "Load",
         nodes,
@@ -5577,7 +7007,7 @@ def add_agriculture(
         carrier="agriculture electricity",
         p_set=pop_weighted_energy_totals.loc[nodes, "total agriculture electricity"]
         * 1e6
-        / nhours,
+        / nhours * shock_multiplier,
     )
 
     # heat
@@ -5589,7 +7019,7 @@ def add_agriculture(
         carrier="agriculture heat",
         p_set=pop_weighted_energy_totals.loc[nodes, "total agriculture heat"]
         * 1e6
-        / nhours,
+        / nhours * shock_multiplier,
     )
 
     # machinery
@@ -5621,7 +7051,7 @@ def add_agriculture(
             suffix=" agriculture machinery electric",
             bus=nodes,
             carrier="agriculture machinery electric",
-            p_set=electric_share / efficiency_gain * machinery_nodal_energy / nhours,
+            p_set=electric_share / efficiency_gain * machinery_nodal_energy / nhours  * shock_multiplier,
         )
 
     if oil_share > 0:
@@ -5633,6 +7063,7 @@ def add_agriculture(
 
         if not options["regional_oil_demand"]:
             p_set = p_set.sum()
+            shock_multiplier = shock_multiplier.mean()
 
         n.add(
             "Bus",
@@ -5642,12 +7073,17 @@ def add_agriculture(
             unit="MWh_LHV",
         )
 
+        # Check if shock_multiplier is an array or a float
+        if hasattr(shock_multiplier, "index"):
+            shock_multiplier.index = shock_multiplier.index + " agriculture machinery oil"
+
+
         n.add(
             "Load",
             spatial.oil.agriculture_machinery,
             bus=spatial.oil.agriculture_machinery,
             carrier="agriculture machinery oil",
-            p_set=p_set,
+            p_set=p_set  * shock_multiplier,
         )
 
         n.add(
@@ -5655,7 +7091,7 @@ def add_agriculture(
             spatial.oil.agriculture_machinery,
             bus0=spatial.oil.nodes,
             bus1=spatial.oil.agriculture_machinery,
-            bus2="co2 atmosphere",
+            bus2=co2_labels,
             carrier="agriculture machinery oil",
             p_nom_extendable=True,
             efficiency2=costs.at["oil", "CO2 intensity"],
@@ -6237,6 +7673,82 @@ def add_import_options(
             marginal_cost=import_options["H2"],
         )
 
+def load_shocks(n, elec_coeffs, ener_coeffs):
+
+    # This function modifies the electric and energy load with the desired parameters in %
+    # Some energy demand are exogenously set, thus they are excluded from the shocks:
+    # Transport (land, shipping and aviation) and heating for residential uses
+
+    # ELECTRICITY
+    elec_coeffs = pd.read_csv(elec_coeffs)
+    elec_coeffs.set_index('n', inplace=True)
+    elec_coeffs = elec_coeffs.pivot(columns='t', values='share_var')
+
+    # Update values for loads that have a p_set equal for the whole year
+    elec_words = ['electricity']
+    # EV are excluded because they are exogenously set
+    for ind_name in n.loads.p_set.index:
+        # Skip if p_set is zero
+        if n.loads.loc[ind_name,'p_set'] == 0:
+            continue
+
+        if any(word in ind_name for word in elec_words):
+
+            prefix = ind_name.split(' ')[0][:2]
+            if prefix in elec_coeffs.index:
+                n.loads.loc[ind_name,'p_set'] *= (1 + elec_coeffs.loc[prefix, investment_year]/100)
+            elif prefix == 'EU':
+                avg_coeff = elec_coeffs[investment_year].mean()
+                n.loads.loc[ind_name, 'p_set'] *= (1 + avg_coeff / 100)
+
+    # Update values for time variable loads
+    for col_name in n.loads_t.p_set.columns:
+        # Skip if any exclude word is in the column name
+        if any(word in col_name for word in elec_words) or col_name.endswith(' 0'):
+
+            prefix = col_name.split(' ')[0][:2]
+            if prefix in elec_coeffs.index:
+                n.loads_t.p_set.loc[:, col_name] *= (1 + elec_coeffs.loc[prefix, investment_year]/100)
+
+            elif prefix == 'EU':
+                avg_coeff = elec_coeffs[investment_year].mean()
+                n.loads_t.p_set.loc[:,col_name] *= (1 + avg_coeff / 100)
+
+    # ENERGY
+    ener_coeffs = pd.read_csv(ener_coeffs)
+    ener_coeffs.set_index('n', inplace=True)
+    ener_coeffs = ener_coeffs.pivot(columns='t', values='share_var')
+
+    # Update values for loads that have a p_set equal for the whole year
+    ener_words = ['H2','industry methanol','naphtha','coal','solid biomass','agriculture heat','machinery oil','services','urban central heat','gas for industry','heat for industry']
+    # EV are excluded because they are exogenously set
+    for ind_name in n.loads.p_set.index:
+        # Skip if p_set is zero
+        if n.loads.loc[ind_name,'p_set'] == 0:
+            continue
+
+        if any(word in ind_name for word in ener_words):
+
+            prefix = ind_name.split(' ')[0][:2]
+            if prefix in ener_coeffs.index:
+                n.loads.loc[ind_name,'p_set'] *= (1 + ener_coeffs.loc[prefix, investment_year]/100)
+            elif prefix == 'EU':
+                avg_coeff = ener_coeffs[investment_year].mean()
+                n.loads.loc[ind_name, 'p_set'] *= (1 + avg_coeff / 100)
+
+    # Update values for time variable loads
+    for col_name in n.loads_t.p_set.columns:
+        # Skip if any exclude word is in the column name
+        if any(word in col_name for word in ener_words):
+
+            prefix = col_name.split(' ')[0][:2]
+            if prefix in ener_coeffs.index:
+                n.loads_t.p_set.loc[:, col_name] *= (1 + ener_coeffs.loc[prefix, investment_year]/100)
+
+            elif prefix == 'EU':
+                avg_coeff = ener_coeffs[investment_year].mean()
+                n.loads_t.p_set.loc[:,col_name] *= (1 + avg_coeff / 100)
+
 
 if __name__ == "__main__":
     if "snakemake" not in globals():
@@ -6294,6 +7806,7 @@ if __name__ == "__main__":
     fn = snakemake.input.heating_efficiencies
     year = int(snakemake.params["energy_totals_year"])
     heating_efficiencies = pd.read_csv(fn, index_col=[1, 0]).loc[year]
+    fidelio = options['fidelio']['enable']
 
     spatial = define_spatial(pop_layout.index, options)
 
@@ -6322,6 +7835,7 @@ if __name__ == "__main__":
     add_co2_tracking(
         n,
         costs,
+        fidelio,
         options,
         sequestration_potential_file=snakemake.input.sequestration_potential,
         co2_price=co2_price,
@@ -6349,20 +7863,38 @@ if __name__ == "__main__":
         options=options,
     )
 
-    if options["transport"]:
-        add_land_transport(
-            n=n,
-            costs=costs,
-            transport_demand_file=snakemake.input.transport_demand,
-            transport_data_file=snakemake.input.transport_data,
-            avail_profile_file=snakemake.input.avail_profile,
-            dsm_profile_file=snakemake.input.dsm_profile,
-            temp_air_total_file=snakemake.input.temp_air_total,
-            cf_industry=cf_industry,
-            options=options,
-            investment_year=investment_year,
-            nodes=spatial.nodes,
-        )
+    co2_budget = snakemake.params.co2_budget
+    if isinstance(co2_budget, str) and co2_budget.startswith("cb"):
+        fn = "results/" + snakemake.params.RDIR + "/csvs/carbon_budget_distribution.csv"
+        if not os.path.exists(fn):
+            emissions_scope = snakemake.params.emissions_scope
+            input_co2 = snakemake.input.co2
+            build_carbon_budget(
+                co2_budget,
+                snakemake.input.eurostat,
+                fn,
+                emissions_scope,
+                input_co2,
+                options,
+                snakemake.params.countries,
+                snakemake.params.planning_horizons,
+            )
+        co2_cap = pd.read_csv(fn, index_col=0).squeeze()
+        limit = co2_cap.loc[investment_year]
+
+    elif fidelio:
+        limit = options['fidelio']['scenario'][:4]
+    else:
+        limit = get(co2_budget, investment_year)
+    add_co2limit(
+        n,
+        options,
+        fidelio,
+        snakemake.input.co2_totals_name,
+        snakemake.params.countries,
+        nyears,
+        limit,
+    )
 
     if options["heating"]:
         add_heat(
@@ -6419,21 +7951,20 @@ if __name__ == "__main__":
     if options["ammonia"]:
         add_ammonia(n, costs, pop_layout, spatial, cf_industry)
 
+    if options["endo_industry"]["enable"]:
+        
+        industry_production_scenarios = pd.read_csv(
+            snakemake.input.industry_production_scenarios, index_col=0
+        )
+        steel_data = clean_industry_df(industry_production_scenarios, "steel")
+        aluminum_data = clean_industry_df(industry_production_scenarios, "aluminum")
+
+        add_steel_industry(n, investment_year, steel_data, options)
+        if options["endo_industry"]["endo_aluminium"]:
+            add_aluminium_industry(n, investment_year, aluminum_data, options)
+
     if options["methanol"]:
         add_methanol(n, costs, options=options, spatial=spatial, pop_layout=pop_layout)
-
-    if options["industry"]:
-        add_industry(
-            n=n,
-            costs=costs,
-            industrial_demand_file=snakemake.input.industrial_demand,
-            pop_layout=pop_layout,
-            pop_weighted_energy_totals=pop_weighted_energy_totals,
-            options=options,
-            spatial=spatial,
-            cf_industry=cf_industry,
-            investment_year=investment_year,
-        )
 
     if options["shipping"]:
         add_shipping(
@@ -6445,6 +7976,7 @@ if __name__ == "__main__":
             options=options,
             spatial=spatial,
             investment_year=investment_year,
+            limit=limit,
         )
 
     if options["aviation"]:
@@ -6455,6 +7987,7 @@ if __name__ == "__main__":
             pop_weighted_energy_totals=pop_weighted_energy_totals,
             options=options,
             spatial=spatial,
+            limit=limit,
         )
 
     if options["heating"]:
@@ -6496,34 +8029,35 @@ if __name__ == "__main__":
         n, snakemake.params.time_resolution, snakemake.input.snapshot_weightings
     )
 
-    co2_budget = snakemake.params.co2_budget
-    if isinstance(co2_budget, str) and co2_budget.startswith("cb"):
-        fn = "results/" + snakemake.params.RDIR + "/csvs/carbon_budget_distribution.csv"
-        if not os.path.exists(fn):
-            emissions_scope = snakemake.params.emissions_scope
-            input_co2 = snakemake.input.co2
-            build_carbon_budget(
-                co2_budget,
-                snakemake.input.eurostat,
-                fn,
-                emissions_scope,
-                input_co2,
-                options,
-                snakemake.params.countries,
-                snakemake.params.planning_horizons,
-            )
-        co2_cap = pd.read_csv(fn, index_col=0).squeeze()
-        limit = co2_cap.loc[investment_year]
-    else:
-        limit = get(co2_budget, investment_year)
-    add_co2limit(
-        n,
-        options,
-        snakemake.input.co2_totals_name,
-        snakemake.params.countries,
-        nyears,
-        limit,
-    )
+    if options["transport"]:
+        add_land_transport(
+            n=n,
+            costs=costs,
+            transport_demand_file=snakemake.input.transport_demand,
+            transport_data_file=snakemake.input.transport_data,
+            avail_profile_file=snakemake.input.avail_profile,
+            dsm_profile_file=snakemake.input.dsm_profile,
+            temp_air_total_file=snakemake.input.temp_air_total,
+            cf_industry=cf_industry,
+            options=options,
+            investment_year=investment_year,
+            nodes=spatial.nodes,
+            limit=limit
+        )
+
+
+    if options["industry"]:
+        add_industry(
+            n=n,
+            costs=costs,
+            industrial_demand_file=snakemake.input.industrial_demand,
+            pop_layout=pop_layout,
+            pop_weighted_energy_totals=pop_weighted_energy_totals,
+            options=options,
+            spatial=spatial,
+            cf_industry=cf_industry,
+            investment_year=investment_year,
+        )
 
     maxext = snakemake.params["lines"]["max_extension"]
     if maxext is not None:
@@ -6581,7 +8115,32 @@ if __name__ == "__main__":
 
     n.meta = dict(snakemake.config, **dict(wildcards=dict(snakemake.wildcards)))
 
+    if investment_year == 2020: # Validation, so no expansion
+        fixed_capacity = ['CCGT','OCGT','nuclear','lignite','coal','CC','charger','heat pump','heater','CHP']#,'H2','battery','SMR']#,'DC','DAC','Sabatier','Fischer']#'Fuel','charger','heat','CHP'] 
+
+        filtered_index = [
+            idx for idx in n.links.index 
+            if any(capacity.lower() in idx.lower() for capacity in fixed_capacity) 
+            and not idx[0].islower() 
+            and not idx.startswith("EU")
+        ]
+
+        n.links.loc[filtered_index, 'p_nom_extendable'] = False
+        n.generators.loc[~n.generators.index.str.startswith('EU') & ~n.generators.index.str.contains('thermal'), 'p_nom_extendable'] = False
+
     sanitize_carriers(n, snakemake.config)
     sanitize_locations(n)
+
+    # Change the load with FIDELIO shocks if we want to iterate the two models
+    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'] == 'ff55':
+
+        shock_file = options['fidelio']['fidelio_folder'] + 'hh_cons_var.csv'
+        shock_multipliers = get_fidelio_shocks(spatial.nodes, shock_file, investment_year, options)
+
+        # Update values for time variable loads
+        for col_name in n.loads_t.p_set.columns:
+            if col_name.endswith(' 0'):
+
+                n.loads_t.p_set.loc[:, col_name] *= shock_multipliers.loc[col_name]
 
     n.export_to_netcdf(snakemake.output[0])

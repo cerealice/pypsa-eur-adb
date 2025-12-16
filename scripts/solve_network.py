@@ -295,7 +295,9 @@ def add_carbon_constraint(n: pypsa.Network, snapshots: pd.DatetimeIndex) -> None
         return
     for name, glc in glcs.iterrows():
         carattr = glc.carrier_attribute
-        emissions = n.carriers.query(f"{carattr} != 0")[carattr]
+        #emissions = n.carriers.query(f"{carattr} != 0")[carattr]
+        emissions = n.carriers.loc[(n.carriers[carattr] != 0) & (n.carriers[carattr].notnull()), carattr]
+
 
         if emissions.empty:
             continue

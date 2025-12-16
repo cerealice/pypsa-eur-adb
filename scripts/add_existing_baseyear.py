@@ -24,10 +24,14 @@ from scripts._helpers import (
     set_scenario_config,
     update_config_from_wildcards,
 )
-from scripts.add_electricity import sanitize_carriers
+from scripts.add_electricity import calculate_annuity, sanitize_carriers
 from scripts.build_energy_totals import cartesian
 from scripts.definitions.heat_system import HeatSystem
-from scripts.prepare_sector_network import cluster_heat_buses, define_spatial
+from scripts.prepare_sector_network import (
+    calculate_steel_parameters,
+    cluster_heat_buses,
+    define_spatial,
+)
 
 logger = logging.getLogger(__name__)
 cc = coco.CountryConverter()
@@ -364,6 +368,8 @@ def add_power_capacities_installed_before_baseyear(
             if not new_build.empty:
                 new_capacity = capacity.loc[new_build.str.replace(name_suffix, "")]
 
+                co2_labels = "co2_ets2" if fidelio else "co2 atmosphere"
+
                 if generator != "urban central solid biomass CHP":
                     n.add(
                         "Link",
@@ -371,7 +377,7 @@ def add_power_capacities_installed_before_baseyear(
                         suffix=name_suffix,
                         bus0=bus0,
                         bus1=new_capacity.index,
-                        bus2="co2 atmosphere",
+                        bus2=co2_labels,
                         carrier=generator,
                         marginal_cost=costs.at[generator, "efficiency"]
                         * costs.at[generator, "VOM"],  # NB: VOM is per MWel
@@ -644,13 +650,15 @@ def add_heating_capacities_installed_before_baseyear(
                 heat_system, "gas", nodes, heating_efficiencies, costs
             )
 
+            co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
+
             n.add(
                 "Link",
                 nodes,
                 suffix=f" {heat_system} gas boiler-{grouping_year}",
                 bus0="EU gas" if "EU gas" in spatial.gas.nodes else nodes + " gas",
                 bus1=nodes + " " + heat_system.value + " heat",
-                bus2="co2 atmosphere",
+                bus2=co2_labels,
                 carrier=heat_system.value + " gas boiler",
                 efficiency=efficiency,
                 efficiency2=costs.at["gas", "CO2 intensity"],
@@ -671,13 +679,15 @@ def add_heating_capacities_installed_before_baseyear(
                 heat_system, "oil", nodes, heating_efficiencies, costs
             )
 
+            co2_labels = "co2_ets2" if fidelio else "co2 atmosphere"
+
             n.add(
                 "Link",
                 nodes,
                 suffix=f" {heat_system} oil boiler-{grouping_year}",
                 bus0=spatial.oil.nodes,
                 bus1=nodes + " " + heat_system.value + " heat",
-                bus2="co2 atmosphere",
+                bus2=co2_labels,
                 carrier=heat_system.value + " oil boiler",
                 efficiency=efficiency,
                 efficiency2=costs.at["oil", "CO2 intensity"],
@@ -747,6 +757,212 @@ def add_heating_capacities_installed_before_baseyear(
                 ],
             )
 
+def add_steel_industry_existing(n):
+    """
+    Add existing steel industry capacities (BF-BOF, DRI-EAF, Scrap-EAF)
+    to the PyPSA network, based on historical data.
+    """
+    # --- Load input data ---
+    capacities = pd.read_csv(snakemake.input.endoindustry_capacities, index_col=0)
+    capacities = capacities[["EAF", "DRI + EAF", "Integrated steelworks"]]
+    start_dates = pd.read_csv(snakemake.input.endoindustry_start_dates, index_col=0)
+    start_dates = start_dates[["EAF", "DRI + EAF", "Integrated steelworks"]]
+    keys = pd.read_csv(snakemake.input.industrial_distribution_key, index_col=0)
+
+    # --- Split technology types ---
+    capacities_bof = capacities["Integrated steelworks"]
+    capacities_dri = capacities["DRI + EAF"]
+    capacities_eaf = capacities["EAF"]
+    capacities_bof = capacities_bof * keys["Integrated steelworks"]
+    capacities_dri = capacities_dri * keys["EAF"]
+    capacities_eaf = capacities_eaf * keys["EAF"]
+
+    start_dates_bof = round(start_dates["Integrated steelworks"]).fillna(2000)
+    start_dates_dri = round(start_dates["DRI + EAF"]).fillna(2000)
+    start_dates_eaf = round(start_dates["EAF"]).fillna(2000)
+
+    # --- Compute hourly capacity ---
+    p_nom_bof = capacities_bof / nhours
+    p_nom_dri = capacities_dri / nhours
+    p_nom_eaf = capacities_eaf / nhours
+
+    nodes = pop_layout.index
+    nyears = n.snapshot_weightings.generators.sum() / 8760.0
+
+    # --- Retrieve parameters ---
+    bof, eaf_ng, eaf_h2, tgr, min_part_load_steel = calculate_steel_parameters(options, nyears)
+
+    # --- Check for overcapacity ---
+    steel_load = n.loads[n.loads.carrier == "steel"].p_set.sum()
+    installed_cap = (
+        p_nom_eaf.sum() / eaf_ng["iron input"] +
+        p_nom_dri.sum() / eaf_ng["iron input"] +
+        p_nom_bof.sum() / bof["iron input"]
+    )
+    cap_decrease = installed_cap / steel_load * 1.1 if installed_cap > steel_load else 1
+
+    # ============================================================
+    # --- EXISTING BF–BOF ----------------------------------------
+    # ============================================================
+    n.add(
+        "Link",
+        nodes,
+        suffix=" BF-BOF-2020",
+        carrier="BF-BOF",
+        bus0=spatial.iron.nodes,
+        bus1=spatial.steel.nodes,
+        bus2=spatial.coal.nodes,
+        bus3=nodes,
+        bus4=spatial.co2.bof,
+        p_nom=(p_nom_bof / cap_decrease) * bof["iron input"] * 1e3, #t steel
+        p_nom_extendable=False,
+        capital_cost=bof["capital cost"] / bof["iron input"],
+        p_min_pu=min_part_load_steel,
+        efficiency=1 / bof["iron input"],
+        efficiency2=-bof["coal input"] / bof["iron input"],
+        efficiency3=-bof["elec input"] / bof["iron input"],
+        efficiency4=bof["emission factor"] / bof["iron input"],
+        lifetime=bof["lifetime"],
+        build_year=start_dates_bof,
+    )
+    
+    # ============================================================
+    # --- EXISTING SCRAP–EAF -------------------------------------
+    # ============================================================
+    # Retrieve maximum available scrap
+    max_scrap_file = "data/max_scrap.csv"
+    max_scrap_df = pd.read_csv(max_scrap_file, index_col=0)
+    max_scrap_mt = max_scrap_df.loc["maintain", "2020"]  # baseline year
+    max_scrap_t = max_scrap_mt * 1e6
+    max_scrap_pertimestep = (max_scrap_t / 8760) * n.snapshot_weightings.iloc[0, 0]
+
+    # Add scrap bus and generator if not present
+    if "EU steel scrap" not in n.buses.index:
+        n.add("Bus", "EU steel scrap", location="EU", carrier="steel scrap", unit="t/yr")
+
+
+    electricity_input_scrap = costs.at["electric arc furnace", "electricity-input"]
+    capital_cost_eaf = costs.at["electric arc furnace", "capital_cost"]  / electricity_input_scrap
+
+    n.add(
+        "Link",
+        nodes,
+        suffix=" Scrap-EAF-2020",
+        carrier="Scrap-EAF",
+        p_nom_extendable=False,
+        p_nom=(p_nom_eaf / cap_decrease) * eaf_ng["iron input"] * 1e3, #t steel
+        capital_cost=capital_cost_eaf,
+        #p=max_scrap_pertimestep,
+        p_min_pu=min_part_load_steel,
+        bus0=nodes,
+        bus1=spatial.steel.nodes,
+        bus2="EU steel scrap",
+        efficiency=1 / electricity_input_scrap,
+        efficiency2=-costs.at["electric arc furnace", "hbi-input"] / electricity_input_scrap,
+        lifetime=eaf_ng["lifetime"],
+        build_year=2025,
+    )
+
+    logger.info("Added existing steel capacities: BF-BOF, DRI-EAF, and Scrap-EAF.")
+
+
+def add_aluminum_industry_existing(n):
+    # Aluminum capacities in Europe in kton of aluminum products per year
+    cap_recycled_2023 = 5074 # kton aluminum / yr recycled capacity in Europe
+    cap_primary_2023 = 932 # kton aluminum / yr primary capacity in Europe
+    start_dates = pd.read_csv(snakemake.input.endoindustry_start_dates, index_col=0)
+
+    start_dates = start_dates.where(
+        (start_dates >= 1000) & np.isfinite(start_dates), 2000
+    )
+
+    nodes = pop_layout.index
+    p_nom = pd.DataFrame(index=nodes, columns=(["value"]))
+
+    p_nom = capacities / nhours  # get the hourly production capacity
+
+    # check if existing capacity is bigger than demand
+    aluminum_load = n.loads[n.loads.carrier == "aluminum"].p_set.sum()
+    installed_cap = p_nom.sum() / 1.28  # times 1/efficiency
+    if installed_cap > aluminum_load:
+        logger.info(
+            f"Scaling down aluminum capacity by factor {installed_cap / aluminum_load} to avoid numerical issues due to low aluminum demand."
+        )
+        cap_decrease = installed_cap / aluminum_load * 1.1
+    else:
+        cap_decrease = 1
+
+    ########### Add existing cement production capacities ############
+
+    # Lifetimes
+    lifetime_aluminum = 25  # Raillard-Cazanove
+
+    # Capital costs
+    discount_rate = 0.04
+    capex_aluminum = (
+        263000 / nhours * calculate_annuity(lifetime_aluminum, discount_rate)
+    )  # https://iea-etsap.org/E-TechDS/HIGHLIGHTS%20PDF/I03_cement_June%202010_GS-gct%201.pdf with CCS 558000
+
+    min_part_load_aluminum = options["min_part_load_aluminum"]
+
+    n.add(
+        "Link",
+        suffix=" electricity for aluminium",
+        bus0=nodes,
+        bus1="EU electricity aluminum",
+        carrier="aluminum plant",
+        p_nom=p_nom / cap_decrease,
+        p_nom_extendable=False,
+        p_min_pu=min_part_load_aluminum,
+        efficiency=1
+        / 1.28,  # kt limestone/ kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
+        efficiency2=-3420.1
+        / 3.6
+        * (1 / 1.28)
+        / 0.5,  # MWh/kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
+        lifetime=lifetime_aluminum,
+        build_year=start_dates,
+    )
+
+    n.add(
+        "Link",
+        suffix=" EU Primary Aluminium Plant-2020",
+        bus0=spatial.limestone.nodes,
+        bus1=spatial.aluminum.nodes,
+        bus2=spatial.gas.nodes,
+        carrier="aluminum plant",
+        p_nom=p_nom / cap_decrease,
+        p_nom_extendable=False,
+        p_min_pu=min_part_load_aluminum,
+        efficiency=1
+        / 1.28,  # kt limestone/ kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
+        efficiency2=-3420.1
+        / 3.6
+        * (1 / 1.28)
+        / 0.5,  # MWh/kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
+        lifetime=lifetime_aluminum,
+        build_year=start_dates,
+    )
+
+    n.add(
+        "Link",
+        suffix=" EU Recycling Aluminium Plant-2020",
+        bus0=spatial.alumina.nodes,
+        bus1=spatial.aluminum.nodes,
+        bus2=nodes,
+        carrier="aluminum plant",
+        p_nom=p_nom / cap_decrease,
+        p_nom_extendable=False,
+        p_min_pu=min_part_load_aluminum,
+        efficiency=1
+        / 1.28,  # kt limestone/ kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
+        efficiency2=-3420.1
+        / 3.6
+        * (1 / 1.28)
+        / 0.5,  # MWh/kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
+        lifetime=lifetime_aluminum,
+        build_year=start_dates,
+    )
 
 if __name__ == "__main__":
     if "snakemake" not in globals():
@@ -769,6 +985,8 @@ if __name__ == "__main__":
     options = snakemake.params.sector
 
     renewable_carriers = snakemake.params.carriers
+
+    fidelio = snakemake.params.fidelio
 
     baseyear = snakemake.params.baseyear
 
@@ -828,6 +1046,13 @@ if __name__ == "__main__":
 
     if options.get("cluster_heat_buses", False):
         cluster_heat_buses(n)
+
+    pop_layout = pd.read_csv(snakemake.input.clustered_pop_layout, index_col=0)
+    nhours = n.snapshot_weightings.generators.sum()
+    if options["endo_industry"].get("enable"):
+        add_steel_industry_existing(n)
+        if options["endo_industry"].get("endo_aluminum"):
+            add_aluminum_industry_existing(n, options)
 
     n.meta = dict(snakemake.config, **dict(wildcards=dict(snakemake.wildcards)))
 

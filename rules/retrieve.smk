@@ -1089,7 +1089,21 @@ elif (JRC_ARDECO_DATASET := dataset_version("jrc_ardeco"))["source"] in ["archiv
             for key in input.keys():
                 copy2(input[key], output[key])
 
+if config["weather_years"]["enable"]:
 
+    rule retrieve_zenodo_timeseries:
+        params:
+            rcp=config_provider("weather_years","rcp"),
+            global_regional_models=config_provider("weather_years","global_regional_models"),
+        output:
+            directory("data/zenodo_timeseries"),
+        log:
+            "logs/retrieve_zenodo_timeseries.log",
+        retries: 2
+        conda:
+            "../envs/environment.yaml"
+        script:
+            "../scripts/retrieve_zenodo_timeseries.py"
 
 if (AQUIFER_DATA_DATASET := dataset_version("aquifer_data"))["source"] in [
     "primary",

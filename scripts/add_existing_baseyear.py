@@ -52,20 +52,20 @@ def add_build_year_to_new_assets(n: pypsa.Network, baseyear: int) -> None:
     """
     # Give assets with lifetimes and no build year the build year baseyear
     for c in n.iterate_components(["Link", "Generator", "Store"]):
-        assets = c.df.index[(c.df.lifetime != np.inf) & (c.df.build_year == 0)]
-        c.df.loc[assets, "build_year"] = baseyear
+        assets = c.static.index[(c.static.lifetime != np.inf) & (c.static.build_year == 0)]
+        c.static.loc[assets, "build_year"] = baseyear
 
         # add -baseyear to name
-        rename = pd.Series(c.df.index, c.df.index)
+        rename = pd.Series(c.static.index, c.static.index)
         rename[assets] += f"-{str(baseyear)}"
-        c.df.rename(index=rename, inplace=True)
+        c.static.rename(index=rename, inplace=True)
 
         # rename time-dependent
         selection = n.component_attrs[c.name].type.str.contains(
             "series"
         ) & n.component_attrs[c.name].status.str.contains("Input")
         for attr in n.component_attrs[c.name].index[selection]:
-            c.pnl[attr] = c.pnl[attr].rename(columns=rename)
+            c.dynamic[attr] = c.dynamic[attr].rename(columns=rename)
 
 
 def add_existing_renewables(
@@ -814,7 +814,7 @@ def add_steel_industry_existing(n):
         bus2=spatial.coal.nodes,
         bus3=nodes,
         bus4=spatial.co2.bof,
-        p_nom=(p_nom_bof / cap_decrease) * bof["iron input"] * 1e3, #t steel
+        p_nom=(p_nom_bof / cap_decrease) * bof["iron input"], #t steel
         p_nom_extendable=False,
         capital_cost=bof["capital cost"] / bof["iron input"],
         p_min_pu=min_part_load_steel,
@@ -850,7 +850,7 @@ def add_steel_industry_existing(n):
         suffix=" Scrap-EAF-2020",
         carrier="Scrap-EAF",
         p_nom_extendable=False,
-        p_nom=(p_nom_eaf / cap_decrease) * eaf_ng["iron input"] * 1e3, #t steel
+        p_nom=(p_nom_eaf / cap_decrease) * eaf_ng["iron input"] , #t steel
         capital_cost=capital_cost_eaf,
         #p=max_scrap_pertimestep,
         p_min_pu=min_part_load_steel,

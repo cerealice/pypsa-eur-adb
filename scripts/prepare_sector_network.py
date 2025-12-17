@@ -264,11 +264,11 @@ def define_spatial(nodes, options):
         spatial.co2.bof = nodes + " bof process emissions"
         spatial.co2.bof_locations = nodes
 
-        # Aluminum primary
+        # Aluminium primary
 
         if options["endo_industry"]["endo_aluminium"]:
             spatial.aluminium = SimpleNamespace()
-            spatial.aluminium.nodes = ["EU aluminum"]
+            spatial.aluminium.nodes = ["EU aluminium"]
             spatial.aluminium.locations = ["EU"]
             spatial.aluminium.df = pd.DataFrame(vars(spatial.aluminium), index=nodes)
 
@@ -752,11 +752,11 @@ def remove_elec_base_techs(n: pypsa.Network, carriers_to_keep: dict) -> None:
     """
     for c in n.iterate_components(carriers_to_keep):
         to_keep = carriers_to_keep[c.name]
-        to_remove = pd.Index(c.df.carrier.unique()).symmetric_difference(to_keep)
+        to_remove = pd.Index(c.static.carrier.unique()).symmetric_difference(to_keep)
         if to_remove.empty:
             continue
         logger.info(f"Removing {c.list_name} with carrier {list(to_remove)}")
-        names = c.df.index[c.df.carrier.isin(to_remove)]
+        names = c.static.index[c.static.carrier.isin(to_remove)]
         n.remove(c.name, names)
         n.carriers.drop(to_remove, inplace=True, errors="ignore")
 
@@ -844,6 +844,39 @@ def add_co2_tracking(
 
     if fidelio:
         co2_labels = ["co2_ets", "co2_ets2", "co2_nonets"]
+
+        for co2_label in co2_labels:
+            n.add("Carrier", co2_label)
+        
+        for attr in co2_labels:
+            n.carriers[attr] = 0.0
+            n.carriers.loc[attr, attr] = -1.0
+
+        # 3. Add buses and stores
+        for co2_label in co2_labels:
+            n.add(
+                "Bus",
+                co2_label,
+                location="EU",
+                carrier=co2_label,
+                unit="t_co2",
+            )
+            n.add(
+                "Store",
+                co2_label,
+                e_nom=np.inf,
+                e_min_pu=-1,
+                carrier=co2_label,
+                bus=co2_label,
+                marginal_cost=-co2_price,
+            )
+
+        else:
+            n.add("Carrier", "co2", co2_emissions=-1.0)
+            n.add("Bus", "co2 atmosphere", location="EU", carrier="co2", unit="t_co2")
+
+    """
+        co2_labels = ["co2_ets", "co2_ets2", "co2_nonets"]
         for co2_label in co2_labels:
             n.add("Carrier", co2_label, **{co2_label: -1.0})
             n.add("Bus", co2_label, location="EU", carrier=co2_label, unit="t_co2")
@@ -863,6 +896,7 @@ def add_co2_tracking(
             bus="co2 atmosphere",
             marginal_cost=-co2_price,
         )
+    """
 
     # add CO2 tanks
     n.add(
@@ -1436,7 +1470,7 @@ def add_co2limit(n, options, fidelio, co2_totals_file, countries, nyears, limit=
     logger.info(f"Adding CO2 budget limit as per unit of 1990 levels of {limit}")
 
     countries = snakemake.params.countries
-    
+
     if fidelio:
 
         sectors_ets, sectors_ets2, sectors_nonets = determine_emission_sectors_ff55(options)
@@ -5735,7 +5769,7 @@ def calculate_steel_parameters(options, nyears=1):
     iron_to_steel_bof = 1.8  # t iron/t steel
     coal_to_steel_bof = 6342 / 1e3 # MWh coal/t steel
     elec_to_steel_bof = 194 / 1e3   # MWh el/t steel
-    em_factor_bof = 1760 / 1e3  # tCO2/kt steel
+    em_factor_bof = 1760 / 1e3  # tCO2/t steel
 
     capex_bof = 442 * 8760  # €/t steel/h
     opex_bof = (53 / capex_bof) * 100  # €/t steel/yr -> € of CAPEX
@@ -5861,6 +5895,7 @@ def clean_industry_df(df, sector):
     return df
 
 def add_steel_industry(n, investment_year, steel_data, options):
+    print("Adding endogenous steel")
     # Steel production demanded in Europe in Mton of steel products per year
     capacities = pd.read_csv(snakemake.input.endoindustry_capacities, index_col=0)
     capacities = capacities[["EAF", "DRI + EAF", "Integrated steelworks"]]
@@ -5872,7 +5907,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
     else:
         hourly_steel_production = steel_data.loc[investment_year, scenario] * 1e6 / nhours # t steel
   # get the steel that needs to be produced hourly tsteel/h
-    capacities = capacities.sum(axis=1) * 1e3
+    capacities = capacities.sum(axis=1)
 
     # Share of steel production capacities -> assumption: keep producing the same share in the country, changing technology
     cap_share = capacities / capacities.sum()
@@ -6015,7 +6050,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         p_min_pu=min_part_load_steel,
         capital_cost=bof["capital cost"] / bof["iron input"],
         efficiency=1 / bof["iron input"],
-        efficiency2=-bof["coal input"] / bof["iron input"],  # MWhth coal per kt iron
+        efficiency2=-bof["coal input"] / bof["iron input"],  # MWhth coal per t iron
         efficiency3=-bof["elec input"]
         / bof["iron input"],  # MWh electricity per t iron
         efficiency4=bof["emission factor"] / bof["iron input"],  # t CO2 per t iron
@@ -6105,12 +6140,14 @@ def add_steel_industry(n, investment_year, steel_data, options):
         # https://www.mgg-recycling.com/wp-content/uploads/2013/06/EFR_EU27_steel_scrap_specification.pdf
         mc_scrap = 302
 
+    print(f"Max scrap {max_scrap_t} t")
     n.add(
         "Generator",
         "EU steel scrap",
         bus="EU steel scrap",
         carrier="steel scrap",
-        p_nom=1e7,
+        p_nom_extendable=True,
+        #p_nom=max_scrap_t,
         marginal_cost=mc_scrap,
         #e_sum_min = min_scrap_kt,
         e_sum_max = max_scrap_t,
@@ -7183,7 +7220,7 @@ def cluster_heat_buses(n):
     components = ["Bus", "Carrier", "Generator", "Link", "Load", "Store"]
 
     for c in n.iterate_components(components):
-        df = c.df
+        df = c.static
         cols = df.columns[df.columns.str.contains("bus") | (df.columns == "carrier")]
 
         # rename columns and index
@@ -7200,7 +7237,7 @@ def cluster_heat_buses(n):
         agg = define_clustering(df.columns, aggregate_dict)
         df = df.groupby(level=0).agg(agg, numeric_only=False)
         # time-varying data
-        pnl = c.pnl
+        pnl = c.dynamic
         agg = define_clustering(pd.Index(pnl.keys()), aggregate_dict)
         for k in pnl.keys():
 
@@ -7210,10 +7247,10 @@ def cluster_heat_buses(n):
             pnl[k] = pnl[k].T.groupby(renamer).agg(agg[k], numeric_only=False).T
 
         # remove unclustered assets of service/residential
-        to_drop = c.df.index.difference(df.index)
+        to_drop = c.static.index.difference(df.index)
         n.remove(c.name, to_drop)
         # add clustered assets
-        to_add = df.index.difference(c.df.index)
+        to_add = df.index.difference(c.static.index)
         n.add(c.name, df.loc[to_add].index, **df.loc[to_add])
 
 
@@ -7257,7 +7294,7 @@ def set_temporal_aggregation(n, resolution, snapshot_weightings):
         # Aggregation all time-varying data.
         for c in n.iterate_components():
             pnl = getattr(m, c.list_name + "_t")
-            for k, df in c.pnl.items():
+            for k, df in c.dynamic.items():
                 if not df.empty:
                     if c.list_name == "stores" and k == "e_max_pu":
                         pnl[k] = df.groupby(aggregation_map).min()
@@ -7749,6 +7786,29 @@ def load_shocks(n, elec_coeffs, ener_coeffs):
                 avg_coeff = ener_coeffs[investment_year].mean()
                 n.loads_t.p_set.loc[:,col_name] *= (1 + avg_coeff / 100)
 
+def correct_co2_fidelio_carriers(n):
+    """
+    Ensure that FIDELIO CO2 carriers have unique carrier attributes
+    and that all other carriers have zero CO2 attributes.
+
+    This avoids broadcasting issues in GlobalConstraints and dual assignment.
+    """
+
+    co2_labels = ["co2_ets", "co2_ets2", "co2_nonets"]
+
+    # 1. Ensure the CO2 attribute columns exist
+    for attr in co2_labels:
+        if attr not in n.carriers.columns:
+            n.carriers[attr] = 0.0
+
+    # 2. Reset ALL carriers to zero for all CO2 attributes
+    n.carriers.loc[:, co2_labels] = 0.0
+
+    # 3. Assign -1 only to the matching carrier
+    for attr in co2_labels:
+        if attr in n.carriers.index:
+            n.carriers.loc[attr, attr] = -1.0
+
 
 if __name__ == "__main__":
     if "snakemake" not in globals():
@@ -8132,7 +8192,7 @@ if __name__ == "__main__":
     sanitize_locations(n)
 
     # Change the load with FIDELIO shocks if we want to iterate the two models
-    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'] == 'ff55':
+    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'][:4] == 'ff55':
 
         shock_file = options['fidelio']['fidelio_folder'] + 'hh_cons_var.csv'
         shock_multipliers = get_fidelio_shocks(spatial.nodes, shock_file, investment_year, options)
@@ -8142,5 +8202,8 @@ if __name__ == "__main__":
             if col_name.endswith(' 0'):
 
                 n.loads_t.p_set.loc[:, col_name] *= shock_multipliers.loc[col_name]
+
+    if fidelio:
+        correct_co2_fidelio_carriers(n)
 
     n.export_to_netcdf(snakemake.output[0])

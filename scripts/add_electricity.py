@@ -170,8 +170,8 @@ def sanitize_carriers(n, config):
     """
 
     for c in n.iterate_components():
-        if "carrier" in c.df:
-            add_missing_carriers(n, c.df.carrier)
+        if "carrier" in c.static:
+            add_missing_carriers(n, c.static.carrier)
 
     carrier_i = n.carriers.index
     nice_names = (

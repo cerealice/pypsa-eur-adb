@@ -8,7 +8,7 @@ run:
   name: #"all"
   #- baseline
   #- basetariffs_iter_2
-  #- baseline_iter_1
+  - baseline_iter_1
   #- ff55tariffs_iter_1
   - ff55_iter_1
   #- baseline_iter_4
@@ -115,6 +115,7 @@ sector:
     fidelio_shocks: false
     scenario: baseline
     fidelio_folder: "../coupling/from_fidelio/iter_1/"
+    to_gwh_kt: false
   endo_industry:
     enable: true
     policy_scenario: maintain

@@ -804,6 +804,13 @@ def add_steel_industry_existing(n):
     # ============================================================
     # --- EXISTING BF–BOF ----------------------------------------
     # ============================================================
+    cap_cost_bof = costs.at["blast furnace-basic oxygen furnace", "capital_cost"]
+    ore_input_bof = costs.at["blast furnace-basic oxygen furnace", "ore-input"]
+    coal_input_bof = costs.at["blast furnace-basic oxygen furnace", "coal-input"]
+    elec_input_bof = 194 / 1e3   # MWh el/t steel
+    co2_output_bof = 1760 / 1e3  # tCO2/t steel
+    lifetime_bof = costs.at["blast furnace-basic oxygen furnace", "lifetime"]
+
     n.add(
         "Link",
         nodes,
@@ -814,15 +821,15 @@ def add_steel_industry_existing(n):
         bus2=spatial.coal.nodes,
         bus3=nodes,
         bus4=spatial.co2.bof,
-        p_nom=(p_nom_bof / cap_decrease) * bof["iron input"], #t steel
+        p_nom=(p_nom_bof / cap_decrease) * ore_input_bof, #t steel
         p_nom_extendable=False,
-        capital_cost=bof["capital cost"] / bof["iron input"],
+        capital_cost=cap_cost_bof / ore_input_bof,
         p_min_pu=min_part_load_steel,
-        efficiency=1 / bof["iron input"],
-        efficiency2=-bof["coal input"] / bof["iron input"],
-        efficiency3=-bof["elec input"] / bof["iron input"],
-        efficiency4=bof["emission factor"] / bof["iron input"],
-        lifetime=bof["lifetime"],
+        efficiency=1 / ore_input_bof,
+        efficiency2=-coal_input_bof / ore_input_bof,
+        efficiency3=-elec_input_bof / ore_input_bof,
+        efficiency4=co2_output_bof / ore_input_bof,
+        lifetime=lifetime_bof,
         build_year=start_dates_bof,
     )
     
@@ -840,9 +847,10 @@ def add_steel_industry_existing(n):
     if "EU steel scrap" not in n.buses.index:
         n.add("Bus", "EU steel scrap", location="EU", carrier="steel scrap", unit="t/yr")
 
-
-    electricity_input_scrap = costs.at["electric arc furnace", "electricity-input"]
-    capital_cost_eaf = costs.at["electric arc furnace", "capital_cost"]  / electricity_input_scrap
+    elec_input_scrap_eaf = costs.at["electric arc furnace with hbi and scrap", "electricity-input"]
+    scrap_input_scrap_eaf = costs.at["electric arc furnace with hbi and scrap", "scrap-input"]
+    capital_cost_eaf = costs.at["electric arc furnace with hbi and scrap", "capital_cost"]  / elec_input_scrap_eaf
+    lifetime_scrap_eaf = costs.at["electric arc furnace with hbi and scrap", "lifetime"]
 
     n.add(
         "Link",
@@ -850,16 +858,16 @@ def add_steel_industry_existing(n):
         suffix=" Scrap-EAF-2020",
         carrier="Scrap-EAF",
         p_nom_extendable=False,
-        p_nom=(p_nom_eaf / cap_decrease) * eaf_ng["iron input"] , #t steel
+        p_nom=(p_nom_eaf / cap_decrease) * elec_input_scrap_eaf , #t steel
         capital_cost=capital_cost_eaf,
         #p=max_scrap_pertimestep,
-        p_min_pu=min_part_load_steel,
+        #p_min_pu=1,
         bus0=nodes,
         bus1=spatial.steel.nodes,
         bus2="EU steel scrap",
-        efficiency=1 / electricity_input_scrap,
-        efficiency2=-costs.at["electric arc furnace", "hbi-input"] / electricity_input_scrap,
-        lifetime=eaf_ng["lifetime"],
+        efficiency=1 / elec_input_scrap_eaf,
+        efficiency2= - scrap_input_scrap_eaf / elec_input_scrap_eaf,
+        lifetime=lifetime_scrap_eaf,
         build_year=2025,
     )
 

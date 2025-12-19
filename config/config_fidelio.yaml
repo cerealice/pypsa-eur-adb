@@ -9,7 +9,7 @@ run:
   #- baseline
   #- basetariffs_iter_2
   - baseline_iter_1
-  #- ff55tariffs_iter_1
+  - ff55tariffs_iter_1
   - ff55_iter_1
   #- baseline_iter_4
   #- ff55tariffs_iter_6

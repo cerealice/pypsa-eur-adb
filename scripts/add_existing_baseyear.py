@@ -861,7 +861,7 @@ def add_steel_industry_existing(n):
         p_nom=(p_nom_eaf / cap_decrease) * elec_input_scrap_eaf , #t steel
         capital_cost=capital_cost_eaf,
         #p=max_scrap_pertimestep,
-        #p_min_pu=1,
+        p_min_pu=1,
         bus0=nodes,
         bus1=spatial.steel.nodes,
         bus2="EU steel scrap",

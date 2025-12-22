@@ -5772,7 +5772,7 @@ def calculate_steel_parameters(options, nyears=1):
     em_factor_bof = 1760 / 1e3  # tCO2/t steel
 
     capex_bof = 442 * 8760  # €/t steel/h
-    opex_bof = (53 / capex_bof) * 100  # €/t steel/yr -> € of CAPEX
+    opex_bof = (53 / capex_bof) * 100  # €/t steel/h -> € of CAPEX
     lifetime_bof = 40
     discount_rate = 0.04
 
@@ -5961,7 +5961,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         spatial.iron.nodes,
         location=spatial.iron.locations,
         carrier="iron",
-        unit="t/yr",
+        unit="t/h",
     )
 
     costs.at["iron", "discount rate"] = 0.04
@@ -5977,7 +5977,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
 
     n.add("Carrier", "steel")
     location_value = getattr(spatial, "steel").nodes
-    unit = "t/yr"
+    unit = "t/h"
 
     n.add(
         "Bus",
@@ -6144,8 +6144,9 @@ def add_steel_industry(n, investment_year, steel_data, options):
     max_scrap_mt = max_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
     max_scrap_t = max_scrap_mt * 1e6  # [t]
     # Making sure it is below 70% of total demand
-    scrap_70 = 0.70 * p_set.sum() * nhours
+    scrap_70 = 0.50 * p_set.sum() * nhours
     max_scrap_t = min(max_scrap_t, scrap_70)
+    print(f"Scrap 70 % limit: {scrap_70/1e6} Mt, max scrap used: {max_scrap_t/1e6} Mt")
 
     # --- Scrap bus and generator ---
     n.add(
@@ -6153,7 +6154,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         "EU steel scrap",
         location="EU",
         carrier="steel scrap",
-        unit="t/yr",
+        unit="t/h",
     )
 
     #https://gmk.center/en/posts/the-global-scrap-market-showed-overwhelming-stability-in-july/
@@ -6162,17 +6163,36 @@ def add_steel_industry(n, investment_year, steel_data, options):
     mc_scrap = 350
     # https://tradingeconomics.com/commodity/scrap-steel
 
+    
     n.add(
         "Generator",
         "EU steel scrap",
         bus="EU steel scrap",
         carrier="steel scrap",
         p_nom_extendable=True,
-        #p_nom=min_scrap_t,
+        #p_nom=max_scrap_t,
         marginal_cost=mc_scrap,
         e_sum_min = max_scrap_t,
         e_sum_max = max_scrap_t,
     )
+    """
+    e_max_pu = pd.Series(
+        1.0,
+        index=n.snapshots,
+    )
+    e_max_pu.iloc[-1] = 0.0
+
+    n.add(
+        "Store",
+        "EU steel scrap",
+        bus="EU steel scrap",
+        carrier="steel scrap",
+        e_nom=max_scrap_t,      # total scrap available [t]
+        e_initial=max_scrap_t,
+        e_max_pu=e_max_pu,
+        #marginal_cost=mc_scrap,
+    )
+    """
 
     # --- Scrap–EAF Link ---
     elec_input_scrap_eaf = costs.at["electric arc furnace with hbi and scrap", "electricity-input"]
@@ -6333,7 +6353,7 @@ def add_aluminium_industry(n, investment_year, aluminum_data, options):
         spatial.alumina.nodes,
         location=spatial.alumina.locations,
         carrier="alumina",
-        unit="kt/yr",
+        unit="kt/h",
     )
 
     costs.at["alumina", "discount rate"] = 0.04
@@ -6353,7 +6373,7 @@ def add_aluminium_industry(n, investment_year, aluminum_data, options):
         spatial.aluminium.nodes,
         location=spatial.aluminium.locations,
         carrier="aluminium",
-        unit="kt/yr",
+        unit="kt/h",
     )
 
     n.add(
@@ -6396,7 +6416,7 @@ def add_aluminium_industry(n, investment_year, aluminum_data, options):
         "EU electricity aluminium",
         location=spatial.aluminium.locations,
         carrier="aluminium",
-        unit="kt/yr",
+        unit="kt/h",
     )
 
     n.add(

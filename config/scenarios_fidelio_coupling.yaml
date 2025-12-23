@@ -19,7 +19,8 @@ hist:
   energy:
     base_emissions_year: 2018
 
-# All scenarios should have steel now
+# FF55 scenario iterations
+
 ff55_iter_7:
   sector:
     fidelio:
@@ -67,6 +68,8 @@ ff55_iter_1:
     fidelio:
       fidelio_shocks: false
       scenario: 'ff55'
+
+# FF55 Tariffs scenario iterations
 
 ff55tariffs_iter_7:
   sector:
@@ -118,6 +121,15 @@ ff55tariffs_iter_1:
       fidelio_shocks: false
       scenario: 'ff55tariffs'
     
+# Baseline scenario iterations
+
+baseline_iter_1:
+  sector:
+    fidelio:
+      enable: true
+      fidelio_shocks: false
+      scenario: baseline
+
 
 baseline_iter_2:
   sector:
@@ -161,24 +173,59 @@ baseline_iter_7:
       scenario: baseline
       fidelio_folder: "../coupling/from_fidelio/baseline/iter_6/"
 
-steel_aluminum:
-  sector:
-    fidelio:
-      enable: true
-      fidelio_shocks: false
-      scenario: ff55
-    endo_industry:
-      enable: true
-      policy_scenario: maintain
-      regional_steel_demand: true
-      endo_aluminum: false
-    min_part_load_steel: 0.3
 
-# Testing reduction of transmission lines
+# Baseline tariffs scenario iterations
 
-baseline_iter_1:
+basetariffs_iter_1:
   sector:
     fidelio:
       enable: true
       fidelio_shocks: false
       scenario: baseline
+
+basetariffs_iter_2:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/basetariffs/iter_1/"
+
+basetariffs_iter_3:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/basetariffs/iter_2/"
+
+basetariffs_iter_4:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/basetariffs/iter_3/"
+
+basetariffs_iter_5:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/basetariffs/iter_4/"
+
+basetariffs_iter_6:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/basetariffs/iter_5/"
+
+basetariffs_iter_7:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/basetariffs/iter_6/"
+
+
+
+
+

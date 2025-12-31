@@ -38,12 +38,12 @@ if snakemake.params.endo_industry:
         "Paper production": "Paper and printing",
         "Printing and media reproduction": "Paper and printing",
         "Alumina production": "Non-ferrous metals",
+        "Aluminium - primary production": "Non-ferrous metals",
         "Aluminium - secondary production": "Non-ferrous metals", #ADB to do too
         "Other non-ferrous metals": "Non-ferrous metals",
     }
 
 else:
-
     sector_mapping = {
         "Electric arc": "EAF",
         "Integrated steelworks": "Integrated steelworks",
@@ -63,31 +63,12 @@ else:
         "Aluminium - secondary production": "Non-ferrous metals",
         "Other non-ferrous metals": "Non-ferrous metals",
     }
-    """
+
+if snakemake.params.get("endo_aluminium", False):
     sector_mapping = {
-        "Electric arc": "EAF",
-        "Integrated steelworks": "Integrated steelworks",
-        "DRI + Electric arc": "DRI + EAF",
-        "Ammonia": "Ammonia",
-        "HVC": "Chemical industry",
-        "HVC (mechanical recycling)": "Chemical industry",
-        "HVC (chemical recycling)": "Chemical industry",
-        "Methanol": "Chemical industry",
-        "Chlorine": "Chemical industry",
-        "Other chemicals": "Chemical industry",
-        "Pharmaceutical products etc.": "Chemical industry",
-        "Cement": "Cement",
-        "Ceramics & other NMM": "Non-metallic mineral products",
-        "Glass production": "Glass",
-        "Pulp production": "Paper and printing",
-        "Paper production": "Paper and printing",
-        "Printing and media reproduction": "Paper and printing",
-        "Alumina production": "Non-ferrous metals",
-        "Aluminium - primary production": "Non-ferrous metals",
-        "Aluminium - secondary production": "Non-ferrous metals",
-        "Other non-ferrous metals": "Non-ferrous metals",
+        k: v for k, v in sector_mapping.items()
+        if "aluminium" not in k.lower()
     }
-    """
 
 
 def build_nodal_industrial_energy_demand():

@@ -1153,10 +1153,11 @@ def non_ferrous_metals():
     s_out = idees["out"][11:12]
     assert sector in str(s_out.index)
 
-    # tCO2/t material
-    df.loc["process emission", sector] = (
-        s_emi["Process emissions"] / s_out["Aluminium - primary production"]
-    )
+    if not endo_aluminium:
+        # tCO2/t material
+        df.loc["process emission", sector] = (
+            s_emi["Process emissions"] / s_out["Aluminium - primary production"]
+        )
 
     # MWh/t material
     sources = ["elec", "biomass", "methane", "hydrogen", "heat", "naphtha"]
@@ -1523,6 +1524,7 @@ if __name__ == "__main__":
 
     params = snakemake.params.industry
     endo_industry = snakemake.params.endo_industry
+    endo_aluminium = snakemake.params.endo_aluminium
 
     year = params["reference_year"]
 

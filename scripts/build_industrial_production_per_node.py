@@ -41,6 +41,7 @@ if snakemake.params.endo_industry:
         "Paper production": "Paper and printing",
         "Printing and media reproduction": "Paper and printing",
         "Alumina production": "Non-ferrous metals", #ADB to do too
+        "Aluminium - primary production": "Non-ferrous metals",
         "Aluminium - secondary production": "Non-ferrous metals",
         "Other non-ferrous metals": "Non-ferrous metals",
     }
@@ -67,6 +68,12 @@ else:
         "Aluminium - primary production": "Non-ferrous metals",
         "Aluminium - secondary production": "Non-ferrous metals",
         "Other non-ferrous metals": "Non-ferrous metals",
+    }
+
+if snakemake.params.get("endo_aluminium", False):
+    sector_mapping = {
+        k: v for k, v in sector_mapping.items()
+        if "aluminium" not in k.lower()
     }
 
 

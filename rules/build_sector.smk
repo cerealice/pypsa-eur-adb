@@ -945,6 +945,7 @@ rule build_industry_sector_ratios:
         industry=config_provider("industry"),
         ammonia=config_provider("sector", "ammonia", default=False),
         endo_industry=config_provider("sector", "endo_industry", "enable", default=False),
+        endo_aluminium=config_provider("sector", "endo_industry", "endo_aluminium", default=False),
     input:
         ammonia_production=resources("ammonia_production.csv"),
         idees=rules.retrieve_jrc_idees.output["directory"],
@@ -1073,7 +1074,8 @@ rule build_industrial_distribution_key:
 
 rule build_industrial_production_per_node:
     params:
-        endo_industry=config_provider("sector","endo_industry","enable", default=False)
+        endo_industry=config_provider("sector","endo_industry","enable", default=False),
+        endo_aluminium=config_provider("sector","endo_industry","endo_aluminium", default=False)
     input:
         industrial_distribution_key=resources(
             "industrial_distribution_key_base_s_{clusters}.csv"
@@ -1102,7 +1104,8 @@ rule build_industrial_production_per_node:
 
 rule build_industrial_energy_demand_per_node:
     params:
-        endo_industry=config_provider("sector", "endo_industry", "enable", default=False)
+        endo_industry=config_provider("sector", "endo_industry", "enable", default=False),
+        endo_aluminium=config_provider("sector", "endo_industry", "endo_aluminium", default=False)
     input:
         industry_sector_ratios=resources(
             "industry_sector_ratios_{planning_horizons}.csv"
@@ -1139,7 +1142,7 @@ rule build_industrial_energy_demand_per_country_today:
         countries=config_provider("countries"),
         industry=config_provider("industry"),
         ammonia=config_provider("sector", "ammonia", default=False),
-        endo_industry=config_provider("sector", "endo_industry","enable", default=False)
+        #endo_industry=config_provider("sector", "endo_industry","enable", default=False)
     input:
         transformation_output_coke=resources("transformation_output_coke.csv"),
         jrc=rules.retrieve_jrc_idees.output["directory"],
@@ -1163,7 +1166,8 @@ rule build_industrial_energy_demand_per_country_today:
 
 rule build_industrial_energy_demand_per_node_today:
     params:
-        endo_industry=config_provider("sector","endo_industry","enable", default=False)
+        endo_industry=config_provider("sector","endo_industry","enable", default=False),
+        endo_aluminium=config_provider("sector","endo_industry","endo_aluminium", default=False)
     input:
         industrial_distribution_key=resources(
             "industrial_distribution_key_base_s_{clusters}.csv"

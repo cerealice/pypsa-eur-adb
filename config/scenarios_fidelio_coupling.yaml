@@ -225,6 +225,15 @@ basetariffs_iter_7:
       scenario: baseline
       fidelio_folder: "../coupling/from_fidelio/basetariffs/iter_6/"
 
+base_aluminium:
+  sector:
+    fidelio:
+      enable: true
+      fidelio_shocks: false
+      scenario: baseline
+    endo_industry:
+      enable: true
+      endo_aluminium: true
 
 
 

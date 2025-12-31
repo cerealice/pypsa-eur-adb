@@ -47,12 +47,12 @@ if __name__ == "__main__":
     fn = snakemake.input.industry_sector_ratios
     sector_ratios = pd.read_csv(fn, header=[0, 1], index_col=0)
 
-    remove_keywords = [
+    remove_keywords_steel = [
         "Electric arc",
         "DRI + Electric arc",
         "Integrated steelworks",
         #"Alumina production",
-        "Aluminium - primary production",
+        #"Aluminium - primary production",
         #"Aluminium - secondary production",
     ]  # Add any others you want to exclude
 
@@ -61,7 +61,21 @@ if __name__ == "__main__":
         sector_ratios = sector_ratios.loc[
             :,
             ~sector_ratios.columns.get_level_values(1).str.contains(
-                "|".join(remove_keywords), case=False
+                "|".join(remove_keywords_steel), case=False
+            ),
+        ]
+
+    remove_keywords_aluminium = [
+        "Aluminium - primary production",
+        "Aluminium - secondary production",
+    ]  # Add any others you want to exclude
+
+    if snakemake.params.endo_aluminium:
+        # Remove if the sector name (level=1) matches any of the keywords
+        sector_ratios = sector_ratios.loc[
+            :,
+            ~sector_ratios.columns.get_level_values(1).str.contains(
+                "|".join(remove_keywords_aluminium), case=False
             ),
         ]
 
@@ -70,9 +84,15 @@ if __name__ == "__main__":
     nodal_production = pd.read_csv(fn, index_col=0) / 1e3
 
     # For nodal_production, which has simple column index
-    nodal_production = nodal_production.loc[
-        :, ~nodal_production.columns.str.contains("|".join(remove_keywords), case=False)
-    ]
+    if snakemake.params.endo_industry:
+        nodal_production = nodal_production.loc[
+            :, ~nodal_production.columns.str.contains("|".join(remove_keywords_steel), case=False)
+        ]
+        
+    if snakemake.params.endo_aluminium:
+        nodal_production = nodal_production.loc[
+            :, ~nodal_production.columns.str.contains("|".join(remove_keywords_aluminium), case=False)
+        ]
 
     # energy demand today to get current electricity
     fn = snakemake.input.industrial_energy_demand_per_node_today

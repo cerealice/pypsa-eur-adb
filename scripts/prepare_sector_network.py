@@ -270,19 +270,6 @@ def define_spatial(nodes, options):
             spatial.aluminium = SimpleNamespace()
             spatial.aluminium.nodes = ["EU aluminium"]
             spatial.aluminium.locations = ["EU"]
-            spatial.aluminium.df = pd.DataFrame(vars(spatial.aluminium), index=nodes)
-
-            spatial.alumina = SimpleNamespace()
-            spatial.alumina.nodes = ["EU alumina"]
-            spatial.alumina.locations = ["EU"]
-            spatial.alumina.df = pd.DataFrame(vars(spatial.alumina), index=nodes)
-
-            spatial.al_elec = SimpleNamespace()
-            spatial.al_elec.nodes = ["EU electricity aluminium"]
-            spatial.al_elec.locations = ["EU"]
-            spatial.al_elec.df = pd.DataFrame(vars(spatial.al_elec), index=nodes)
-
-            
 
     return spatial
 
@@ -6084,7 +6071,6 @@ def add_steel_industry(n, investment_year, steel_data, options):
         bus2=spatial.co2.dri,
         carrier="EAF",
         p_nom_extendable=True,
-        p_min_pu= min_part_load_steel,
         efficiency=1 / gas_input_dri_ch4,  # MWh natural gas per one unit of dri gas
         efficiency2= co2_output_dri_ch4 / iron_input_dri / gas_input_dri_ch4,  # t CO2 per unit of dri gas
     )
@@ -6098,10 +6084,8 @@ def add_steel_industry(n, investment_year, steel_data, options):
         bus0=nodes + " H2",
         bus1=spatial.syngas_dri.nodes,
         carrier="EAF",
-        #p_min_pu= min_part_load_steel,
         p_nom_extendable=True,
         efficiency=1 / h2_input_dri,  # MWh hydrogen per one unit of dri gas
-        #lifetime=40,
     )
 
     # Parameters
@@ -6291,17 +6275,29 @@ def add_steel_industry(n, investment_year, steel_data, options):
     )
 
 
+def add_aluminium_industry(n):
+    """
+    Add  aluminium production technologies to a PyPSA sector network
+    (to be used inside prepare_sector_network).
 
-def add_aluminium_industry(n, investment_year, aluminum_data, options):
-    # Aluminum production in Europe in kton of aluminum products per year (2023)
-    #  https://european-aluminium.eu/about-aluminium/aluminium-industry/
+    Technologies:
+      - Primary aluminium (Hall–Héroult): electricity -> aluminium + direct CO2 from carbon anodes
+      - Secondary aluminium (recycling/remelting): electricity + gas -> aluminium + direct CO2
+
+    """
+    nodes = pop_layout.index
+
+    # -----------------------------
+    # Aluminium demand (load) [t/h]
+    # -----------------------------
+
+    # https://european-aluminium.eu/about-aluminium/aluminium-industry/
     # So far aluminum existing production if only at the European level
-    cap_recycled_2023 = 5074 # kton aluminum / yr recycled capacity in Europe
-    cap_primary_2023 = 932 # kton aluminum / yr primary capacity in Europe
+    cap_recycled_2023 = 5074 * 1e3 # t aluminum / yr recycled capacity in Europe
+    cap_primary_2023 = 932 * 1e3 # t aluminum / yr primary capacity in Europe
 
-    cap_recycled_1980 = 1226 # kton aluminum / yr recycled capacity in Europe
-    cap_primary_1980 = 2775 # kton aluminum / yr primary capacity in Europe
-
+    cap_recycled_1980 = 1226 * 1e3 # t aluminum / yr recycled capacity in Europe
+    cap_primary_1980 = 2775 * 1e3 # t aluminum / yr primary capacity in Europe
     total_al_1980 = cap_recycled_1980 + cap_primary_1980   # 4001
     total_al_2023 = cap_recycled_2023 + cap_primary_2023   # 6006
 
@@ -6311,69 +6307,46 @@ def add_aluminium_industry(n, investment_year, aluminum_data, options):
     years = [2030, 2040, 2050]
 
     # --- Scenarios ---
-    # Deindustrial: slope factor = -0.5
+    # Deindustrial: slope factor = -1
     # Maintain: slope factor = 0
     # Regain: slope factor = 1.0
 
-    deindustrial = [
-        total_2023 + (year - 2023) * slope * -0.5 for year in years
-    ]
+    deindustrial = [total_al_2023 + (year - 2023) * slope * -1.0 for year in years]
 
-    maintain = [
-        total_2023 + (year - 2023) * slope * 0.0 for year in years
-    ]
+    maintain = [total_al_2023 + (year - 2023) * slope * 0.0 for year in years]
 
-    regain = [
-        total_2023 + (year - 2023) * slope * 1.0 for year in years
-    ]
+    regain = [total_al_2023 + (year - 2023) * slope * 1.0 for year in years]
 
     # --- Create DataFrame ---
-    aluminum_data = pd.DataFrame({
-        "Year": years,
-        "Deindustrial": deindustrial,
-        "Maintain": maintain,
-        "Regain": regain
+    aluminium_data = pd.DataFrame({
+        "year": years,
+        "deindustrial": deindustrial,
+        "maintain": maintain,
+        "regain": regain
     }).round(1)
 
-    aluminum_data = aluminum_data.set_index("Year")
+    aluminium_data = aluminium_data.set_index("year")
 
-    scenario = options["endo_industry"]["policy_scenario"]  # e.g. "Maintain"
+    scenario = options["endo_industry"]["policy_scenario"] 
 
-    hourly_aluminum_production = aluminum_data.loc[investment_year, scenario] / nhours
+    # Total EU+UK aluminium output target for this investment year (t/yr)
+    annual_al_t = float(aluminium_data.loc[investment_year, scenario])
+    hourly_al_t = annual_al_t / nhours
 
-    p_set = hourly_aluminum_production
-
-    # Adding carriers and components
-    nodes = pop_layout.index
-
-    n.add("Carrier", "alumina")
-
-    n.add(
-        "Bus",
-        spatial.alumina.nodes,
-        location=spatial.alumina.locations,
-        carrier="alumina",
-        unit="kt/h",
-    )
-
-    costs.at["alumina", "discount rate"] = 0.04
-    n.add(
-        "Generator",
-        spatial.alumina.nodes,
-        bus=spatial.alumina .nodes,
-        p_nom_extendable=True,
-        carrier="alumina",
-        marginal_cost=320* 1e3* 0.877,  # €/kt of alumina https://www.lme.com/Metals/Non-ferrous/LME-Alumina_#Trading+day+summary
-    )
-
+    # Add aluminium demand loads (one per node)
     n.add("Carrier", "aluminium")
-
     n.add(
         "Bus",
         spatial.aluminium.nodes,
         location=spatial.aluminium.locations,
         carrier="aluminium",
-        unit="kt/h",
+        unit="t/h",
+    )
+
+    p_set_al = pd.DataFrame(
+        hourly_al_t,
+        index=n.snapshots,
+        columns=spatial.aluminium.nodes,
     )
 
     n.add(
@@ -6381,83 +6354,112 @@ def add_aluminium_industry(n, investment_year, aluminum_data, options):
         spatial.aluminium.nodes,
         bus=spatial.aluminium.nodes,
         carrier="aluminium",
-        p_set=p_set,
+        p_set=p_set_al,
     )
 
-    # add CO2 process from aluminum industry
-    n.add("Carrier", "aluminium process emissions")
+    # -----------------------------
+    # 1) Tech parameters (energy, CO2, lifetimes)
+    # -----------------------------
 
-    n.add(
-        "Bus",
-        spatial.co2.aluminium,
-        location=spatial.co2.aluminium_locations,
-        carrier="aluminium anode consumption emissions",
-        unit="t_co2",
-    )
+    # Energy intensities
+    # Primary electricity intensity (MWh_e per tonne Al)
+    # https://european-aluminium.eu/wp-content/uploads/2025/10/2025-09-05-European-Aluminium-response-to-ETS-Guidelines-call-for-evidence-on-technical-update.pdf
+    e_primary = 13.90  # MWh_e/tAl (EEB noted in the document)
 
-    ########### Add carriers for new capacity for aluminum production ############
+    # Recycling energy intensities (fixed values often used in EU studies)
+    # https://publications.jrc.ec.europa.eu/repository/handle/JRC134682
+    e_rec_elec = 0.102          # MWh_e/tAl
+    e_rec_th = 3.96 / 3.6       # convert GJ/t -> MWh_th/t  (3.96 GJ/t = 1.10 MWh_th/t)
 
-    # Traditional dry process
+    # DIRECT CO2 emissions (no electricity emissions)
+    # Primary: direct emissions mainly from carbon anodes consumption (tC per tAl)
+    # https://publications.jrc.ec.europa.eu/repository/handle/JRC134682
+    carbon_anode = 0.40
+    co2_primary = carbon_anode * (44.0 / 12.0)  # = 1.47 tCO2/tAl
+
+    # Secondary: direct emissions mainly from onsite thermal fuel combustion + minor process emissions
+    # (If you prefer combustion-only: ~0.22 tCO2/t from 1.10 MWh_th/t * 0.20 tCO2/MWh_th)
+    co2_recycling = 0.40  # tCO2/tAl
 
     # Lifetimes
-    lifetime_aluminum = 25  # Raillard Cazanove
+    lifetime_primary = 45
+    lifetime_recycling = 30
 
-    # Capital costs
-    discount_rate = 0.04
+    # Minimum part-load (optional if you want operational realism)
+    min_part_load_aluminium = options.get("min_part_load_aluminium", 0.0)
 
-    capex_aluminum = (
-        263000 * calculate_annuity(lifetime_aluminum, discount_rate)
-    )  # https://iea-etsap.org/E-TechDS/HIGHLIGHTS%20PDF/I03_cement_June%202010_GS-gct%201.pdf with CCS 558000
-    # * 8760 h/a (?)
-    min_part_load_aluminum = options["min_part_load_aluminum"]
+    # -----------------------------
+    # 2) CO2 bus label used in your project
+    # -----------------------------
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
 
-    n.add(
-        "Bus",
-        "EU electricity aluminium",
-        location=spatial.aluminium.locations,
-        carrier="aluminium",
-        unit="kt/h",
-    )
+    # -----------------------------
+    # 3) Ensure required buses exist
+    # -----------------------------
+    if "EU aluminium" not in n.buses.index:
+        n.add("Bus", "EU aluminium", carrier="aluminium")
 
+    # -----------------------------
+    # 4) CAPEX (converted to €/MW_e input so PyPSA can optimize p_nom)
+    # -----------------------------
+    # Primary aluminium new-build investment cost (€/tpa):
+    # https://iea-etsap.org/E-TechDS/PDF/I10_AlProduction_ER_March2012_Final%20GSOK.pdf
+    capex_primary_eur_per_tpa = 4500  # €/tpa
+
+    # Convert €/tpa -> €/MW_e input, using MW_e per tpa = (e_primary / 8760)
+    capex_primary_eur_per_mw = capex_primary_eur_per_tpa / (e_primary / 8760.0)
+
+    # Secondary recycling CAPEX is plant-specific; these are public investment anchors:
+    # Novelis Ulsan: https://investors.novelis.com/news-events/press-releases/detail/1390/novelis-opens-ulsan-aluminum-recycling-center
+    # Novelis UK (Latchford): https://novelis.com/novelis-invests-in-doubling-its-uk-recycling-capacity-for-used-beverage-cans/
+    capex_recycling_eur_per_tpa = 900  # €/tpa (placeholder mid value)
+
+    # Convert €/tpa -> €/MW_e input (will be large due to low e_rec_elec; OK if you're consistent)
+    capex_recycling_eur_per_mw = capex_recycling_eur_per_tpa / (e_rec_elec / 8760.0)
+
+    # -----------------------------
+    # 5) Add NEW-BUILD PRIMARY aluminium technology
+    # -----------------------------
+
+
+    print(f"Spatial aluminium nodes: {spatial.aluminium.nodes}")
     n.add(
         "Link",
-        " electricity for aluminium",
+        nodes + " primary aluminium plant",
         bus0=nodes,
-        bus1="EU electricity aluminium",
-        carrier="aluminum plant",
-        p_nom_extendable=True,
-        efficiency=1
-    )
-
-    n.add(
-        "Link",
-        " EU Primary Aluminium Plant",
-        bus0=spatial.alumina.nodes,
         bus1=spatial.aluminium.nodes,
-        bus2="electricity for aluminium",
-        bus3=spatial.co2.aluminium,
-        carrier="aluminium plant",
+        bus2=co2_labels,
+        carrier="aluminium_primary",
         p_nom_extendable=True,
-        p_min_pu=min_part_load_aluminum,
-        capital_cost=capex_aluminum,
-        efficiency=1 / 1.9, # 1.9 t alumina / t aluminium https://alvancebritishaluminium.com/wp-content/uploads/2025/08/ALVANCE-BA-Sustainability-Report-FINAL.pdf
-        efficiency2=-5.99 * 1e3 / 1.9, # MWh/kt aluminium https://www.nrdc.org/bio/ian-wells/role-inert-anodes-aluminum-decarbonization
-        efficiency3=(0.9 + 1.5) * 1e3 / 1.9,  # tCO2/kt aluminum PFC + CO2 anode reduction https://international-aluminium.org/statistics/greenhouse-gas-emissions-primary-aluminium/?publication=greenhouse-gas-emissions-intensity-primary-aluminium&filter=%7B%22row%22%3Anull%2C%22group%22%3Anull%2C%22multiGroup%22%3A%5B%5D%2C%22dateRange%22%3A%22annually%22%2C%22monthFrom%22%3Anull%2C%22monthTo%22%3Anull%2C%22quarterFrom%22%3A1%2C%22quarterTo%22%3A4%2C%22yearFrom%22%3A2024%2C%22yearTo%22%3A2024%2C%22multiRow%22%3A%5B70%5D%2C%22columns%22%3A%5B77%2C78%5D%2C%22activeChartIndex%22%3A1%2C%22activeChartType%22%3A%22table%22%7D
-        lifetime=lifetime_aluminium,
+        p_min_pu=min_part_load_aluminium,
+        efficiency=1.0 / e_primary,
+        efficiency2=-(co2_primary / e_primary),
+        lifetime=lifetime_primary,
+        capital_cost=capex_primary_eur_per_mw,
     )
+
+    # -----------------------------
+    # 6) Add NEW-BUILD RECYCLING aluminium technology
+    # -----------------------------
 
     n.add(
         "Link",
-        nodes,
-        suffix=" aluminum process emis to atmosphere",
-        bus0=spatial.co2.aluminum,
-        bus1="co2 atmosphere",
-        carrier="aluminum process emissions",
+        nodes + " recycling aluminium plant",
+        bus0=nodes,
+        bus1=spatial.aluminium.nodes,
+        bus2=spatial.gas.nodes,
+        bus3=co2_labels,
+        carrier="aluminium_secondary",
         p_nom_extendable=True,
-        capital_cost=0,
-        efficiency=1,
+        p_min_pu=min_part_load_aluminium,
+        efficiency=1.0 / e_rec_elec,
+        efficiency2=-(e_rec_th / e_rec_elec),
+        efficiency3=-(co2_recycling / e_rec_elec),
+        lifetime=lifetime_recycling,
+        capital_cost=capex_recycling_eur_per_mw,
     )
-    
+
+
 
 def add_aviation(
     n: pypsa.Network,
@@ -8064,7 +8066,7 @@ if __name__ == "__main__":
 
         add_steel_industry(n, investment_year, steel_data, options)
         if options["endo_industry"]["endo_aluminium"]:
-            add_aluminium_industry(n, investment_year, aluminum_data, options)
+            add_aluminium_industry(n)
 
     if options["methanol"]:
         add_methanol(n, costs, options=options, spatial=spatial, pop_layout=pop_layout)

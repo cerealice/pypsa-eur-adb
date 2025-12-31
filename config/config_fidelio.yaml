@@ -8,9 +8,10 @@ run:
   name: #"all"
   #- baseline
   #- basetariffs_iter_2
-  - basetariffs_iter_1
-  - ff55tariffs_iter_1
-  - ff55_iter_1
+  #- basetariffs_iter_3
+  #- ff55tariffs_iter_3
+  #- ff55_iter_1
+  - base_aluminium
   #- baseline_iter_4
   #- ff55tariffs_iter_6
   #- ff55_iter_5
@@ -122,6 +123,7 @@ sector:
     regional_steel_demand: true
     endo_aluminium: false
   min_part_load_steel: 0.2
+  min_part_load_aluminium: 0.2
   bev_dsm: false
   v2g: false
   cluster_heat_buses: false
@@ -325,7 +327,7 @@ industry:
 clustering:
   temporal:
     resolution_elec: false
-    resolution_sector: 3h
+    resolution_sector: 2920h
 
 plotting:
   tech_colors:

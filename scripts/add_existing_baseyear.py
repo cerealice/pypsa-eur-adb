@@ -874,103 +874,173 @@ def add_steel_industry_existing(n):
     logger.info("Added existing steel capacities: BF-BOF, DRI-EAF, and Scrap-EAF.")
 
 
-def add_aluminum_industry_existing(n):
-    # Aluminum capacities in Europe in kton of aluminum products per year
-    cap_recycled_2023 = 5074 # kton aluminum / yr recycled capacity in Europe
-    cap_primary_2023 = 932 # kton aluminum / yr primary capacity in Europe
-    start_dates = pd.read_csv(snakemake.input.endoindustry_start_dates, index_col=0)
+def add_aluminium_industry_existing(n):
+    """
+    Add existing (exogenous) aluminium production capacities (EU+UK aggregate) to a PyPSA network:
+      - Primary aluminium (electrolysis): electricity -> aluminium + direct CO2 from carbon anodes
+      - Secondary aluminium (recycling/remelting): electricity + gas -> aluminium + direct CO2
 
-    start_dates = start_dates.where(
-        (start_dates >= 1000) & np.isfinite(start_dates), 2000
-    )
+    Notes / conventions
+    -------------------
+    - We keep aluminium as an *output commodity bus* ("EU aluminium") in "tAl/h".
+    - To keep the electricity system dimensionally meaningful, we set p_nom in MW_e (electricity input capacity),
+      computed from (tAl/h capacity) * (MWh_e/tAl). Output then becomes (MW_e) * (tAl/MWh_e) = tAl/h.
+    - CO2 emissions added here are *DIRECT* emissions only (no electricity-related emissions).
+    """
 
     nodes = pop_layout.index
-    p_nom = pd.DataFrame(index=nodes, columns=(["value"]))
+    # Aluminium capacities in Europe (EU+UK aggregate) in tonnes/year
+    # Source: European Aluminium (industry overview)
+    # https://european-aluminium.eu/about-aluminium/aluminium-industry/
+    cap_recycled_2023_tpy = 5074 * 1e3  # t/yr recycled capacity in Europe
+    cap_primary_2023_tpy = 932 * 1e3    # t/yr primary capacity in Europe
 
-    p_nom = capacities / nhours  # get the hourly production capacity
+    # Convert to throughput capacities [t/h]
+    cap_recycled_2023_tph = cap_recycled_2023_tpy / nhours
+    cap_primary_2023_tph = cap_primary_2023_tpy / nhours
 
-    # check if existing capacity is bigger than demand
-    aluminum_load = n.loads[n.loads.carrier == "aluminum"].p_set.sum()
-    installed_cap = p_nom.sum() / 1.28  # times 1/efficiency
-    if installed_cap > aluminum_load:
-        logger.info(
-            f"Scaling down aluminum capacity by factor {installed_cap / aluminum_load} to avoid numerical issues due to low aluminum demand."
-        )
-        cap_decrease = installed_cap / aluminum_load * 1.1
-    else:
-        cap_decrease = 1
+    # -----------------------------
+    # 1) Tech parameters (energy, CO2, lifetimes, vintages)
+    # -----------------------------
 
-    ########### Add existing cement production capacities ############
+    # Energy intensities
+    # Primary electricity intensity (MWh_e per tonne Al)
+    # https://european-aluminium.eu/wp-content/uploads/2025/10/2025-09-05-European-Aluminium-response-to-ETS-Guidelines-call-for-evidence-on-technical-update.pdf
+    e_primary = 13.90  # MWh_e/tAl (EEB noted in the document) 
+    
 
-    # Lifetimes
-    lifetime_aluminum = 25  # Raillard-Cazanove
+    # Recycling energy intensities (fixed values often used in EU studies)
+    # https://publications.jrc.ec.europa.eu/repository/handle/JRC134682
+    e_rec_elec = 0.102  # MWh_e/tAl
+    e_rec_th = 3.96 / 3.6  # convert GJ/t -> MWh_th/t  (3.96 GJ/t = 1.10 MWh_th/t) 
 
-    # Capital costs
-    discount_rate = 0.04
-    capex_aluminum = (
-        263000 / nhours * calculate_annuity(lifetime_aluminum, discount_rate)
-    )  # https://iea-etsap.org/E-TechDS/HIGHLIGHTS%20PDF/I03_cement_June%202010_GS-gct%201.pdf with CCS 558000
 
-    min_part_load_aluminum = options["min_part_load_aluminum"]
+    # DIRECT CO2 emissions (no electricity emissions)
+    # Primary: direct emissions mainly from carbon anodes consumption (tC per tAl)
+    # Here we use 0.40 tC/tAl -> 1.47 tCO2/tAl (44/12)
+    # JRC (and EU benchmarking literature) often uses ~1.4–1.5 tCO2/t for primary process emissions;
+    carbon_anode = 0.40          # tC/tAl (assumption aligned with EU-average prebake order of magnitude)
+    co2_primary = carbon_anode * (44.0 / 12.0)  # tCO2/tAl = 1.47
+
+    # Secondary: direct emissions mainly from onsite thermal fuel combustion + minor process emissions
+    # where EF_gas ≈ 0.20 tCO2/MWh_th (typical), giving ≈ 0.22 tCO2/tAl.
+    co2_recycling = 0.40  # tCO2/tAl 
+
+    # Lifetimes (typical industrial asset lifetimes)
+    lifetime_primary = 45
+    lifetime_recycling = 30
+
+    # Average start years (fleet-average vintages for EU+UK)
+    start_year_primary = 1970
+    start_year_recycling = 2005
+
+    # Minimum part-load (you already have this option)
+    min_part_load_aluminium = options["min_part_load_aluminium"]
+
+    # -----------------------------
+    # 2) Ensure required buses exist
+    # -----------------------------
+    if "EU aluminium" not in n.buses.index:
+        n.add("Bus", "EU aluminium", carrier="aluminium")
+
+    # -----------------------------
+    # 3) Convert throughput capacities to MW_e input capacities
+    # -----------------------------
+    # If aluminium throughput is [t/h], electricity input is:
+    #   MW_e = (t/h) * (MWh/t)
+    p_nom_primary_mw = cap_primary_2023_tph * e_primary
+    p_nom_recycling_mw = cap_recycled_2023_tph * e_rec_elec
+
+    # -----------------------------
+    # 4) CAPEX (optional: attach to links via n.links.loc[...] later or costs table)
+    # -----------------------------
+    # Primary aluminium new-build investment cost (€/tpa):
+    # https://iea-etsap.org/E-TechDS/PDF/I10_AlProduction_ER_March2012_Final%20GSOK.pdf :contentReference[oaicite:4]{index=4}
+    capex_primary_eur_per_tpa = 4500  # €/tpa
+
+    # Convert €/tpa -> €/MW_e input, using MW_e per tpa = (e_primary / 8760)
+    # €/MW_e = (€/tpa) / (MW_e/tpa)
+    capex_primary_eur_per_mw = capex_primary_eur_per_tpa / (e_primary / 8760.0)
+
+    # Secondary recycling CAPEX is highly plant-specific; 
+    # Novelis https://investors.novelis.com/news-events/press-releases/detail/1390/novelis-opens-ulsan-aluminum-recycling-center
+    # https://novelis.com/novelis-invests-in-doubling-its-uk-recycling-capacity-for-used-beverage-cans/
+    capex_recycling_eur_per_tpa = 900  # €/tpa
+
+    # Convert €/tpa -> €/MW_e input (this becomes very large because electricity per tonne is tiny)
+    capex_recycling_eur_per_mw = capex_recycling_eur_per_tpa / (e_rec_elec / 8760.0)
+
+    # -----------------------------
+    # 5) Add PRIMARY aluminium link (electricity -> aluminium + direct CO2)
+    # -----------------------------
+    
+    co2_labels = "co2_ets" if fidelio else "co2 atmosphere"
+
+    n.add("Carrier", "electricity_aluminium")
+
+    n.add(
+        "Bus",
+        "EU electricity aluminium",
+        location="EU",
+        carrier="electricity_aluminium",
+        unit="MW",
+    )
 
     n.add(
         "Link",
-        suffix=" electricity for aluminium",
+        nodes + " to electricity aluminium",
         bus0=nodes,
-        bus1="EU electricity aluminum",
-        carrier="aluminum plant",
-        p_nom=p_nom / cap_decrease,
-        p_nom_extendable=False,
-        p_min_pu=min_part_load_aluminum,
-        efficiency=1
-        / 1.28,  # kt limestone/ kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
-        efficiency2=-3420.1
-        / 3.6
-        * (1 / 1.28)
-        / 0.5,  # MWh/kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
-        lifetime=lifetime_aluminum,
-        build_year=start_dates,
+        bus1="EU electricity aluminium",
+        carrier="electricity_aluminium",
+        p_nom_extendable=True,   # or False if you want a fixed capacity
+        efficiency=1.0,
+        marginal_cost=0.0,
     )
+
+    print(f"Sparial aluminium nodes: {spatial.aluminium.nodes}")
+    print(f"p_nom_primary_mw: {p_nom_primary_mw}")
 
     n.add(
         "Link",
-        suffix=" EU Primary Aluminium Plant-2020",
-        bus0=spatial.limestone.nodes,
-        bus1=spatial.aluminum.nodes,
-        bus2=spatial.gas.nodes,
-        carrier="aluminum plant",
-        p_nom=p_nom / cap_decrease,
+        spatial.aluminium.nodes[0] + " primary plant",
+        bus0="EU electricity aluminium",                # electricity 
+        bus1=spatial.aluminium.nodes[0],       # aluminium product
+        bus2=co2_labels,                # direct CO2 emissions bus
+        carrier="aluminium_primary",
+        p_nom=p_nom_primary_mw,
         p_nom_extendable=False,
-        p_min_pu=min_part_load_aluminum,
-        efficiency=1
-        / 1.28,  # kt limestone/ kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
-        efficiency2=-3420.1
-        / 3.6
-        * (1 / 1.28)
-        / 0.5,  # MWh/kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
-        lifetime=lifetime_aluminum,
-        build_year=start_dates,
+        p_min_pu=min_part_load_aluminium,
+        efficiency=1.0 / e_primary,                  # tAl per MWh_e
+        efficiency2=-(co2_primary / e_primary),       # tCO2 per MWh_e 
+        lifetime=lifetime_primary,
+        build_year=start_year_primary,
+        capital_cost=capex_primary_eur_per_mw,
     )
+
+    # -----------------------------
+    # 6) Add RECYCLING aluminium link (electricity + gas -> aluminium + direct CO2)
+    # -----------------------------
 
     n.add(
         "Link",
-        suffix=" EU Recycling Aluminium Plant-2020",
-        bus0=spatial.alumina.nodes,
-        bus1=spatial.aluminum.nodes,
-        bus2=nodes,
-        carrier="aluminum plant",
-        p_nom=p_nom / cap_decrease,
+        spatial.aluminium.nodes[0] + " recycling plant",
+        bus0="EU electricity aluminium",               # electricity
+        bus1=spatial.aluminium.nodes[0],       # aluminium output
+        bus2=spatial.gas.nodes[0],    # thermal fuel (gas) input
+        bus3=co2_labels,                # direct CO2
+        carrier="aluminium_secondary",
+        p_nom=p_nom_recycling_mw,
         p_nom_extendable=False,
-        p_min_pu=min_part_load_aluminum,
-        efficiency=1
-        / 1.28,  # kt limestone/ kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
-        efficiency2=-3420.1
-        / 3.6
-        * (1 / 1.28)
-        / 0.5,  # MWh/kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
-        lifetime=lifetime_aluminum,
-        build_year=start_dates,
+        p_min_pu=min_part_load_aluminium,
+        efficiency=1.0 / e_rec_elec,                  # tAl per MWh_e
+        efficiency2=-(e_rec_th / e_rec_elec),          # MWh_th (gas) per MWh_e
+        efficiency3=-(co2_recycling / e_rec_elec),     # tCO2 per MWh_e
+        lifetime=lifetime_recycling,
+        build_year=start_year_recycling,
+        capital_cost=capex_recycling_eur_per_mw,
     )
+
+
 
 if __name__ == "__main__":
     if "snakemake" not in globals():
@@ -1059,8 +1129,8 @@ if __name__ == "__main__":
     nhours = n.snapshot_weightings.generators.sum()
     if options["endo_industry"].get("enable"):
         add_steel_industry_existing(n)
-        if options["endo_industry"].get("endo_aluminum"):
-            add_aluminum_industry_existing(n, options)
+        if options["endo_industry"].get("endo_aluminium"):
+            add_aluminium_industry_existing(n)
 
     n.meta = dict(snakemake.config, **dict(wildcards=dict(snakemake.wildcards)))
 

@@ -7,16 +7,16 @@ run:
   prefix: ""
   name: #"all"
   #- baseline
-  #- basetariffs_iter_2
+  - baseline_iter_1
   #- basetariffs_iter_3
   #- ff55tariffs_iter_3
-  #- ff55_iter_1
-  - base_aluminium
+  - ff55_iter_1
+  #- base_aluminium
   #- baseline_iter_4
   #- ff55tariffs_iter_6
   #- ff55_iter_5
   #- steel_aluminum
-  #- ff55tariffs_iter_1
+  - ff55tariffs_iter_1
   #- ff55_iter_2
   #- baseline_iter_3
   #- hist
@@ -41,12 +41,11 @@ scenario:
   sector_opts:
   - ''
   planning_horizons:
-  #- 2020
+  #- 2025
   - 2030
   - 2040
   - 2050
 
-validation: false # Should be turned on when 2020 as planning_horizon
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#countries
 #countries: ['AL', 'AT', 'BA', 'BE', 'BG', 'CH', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'ME', 'MK', 'NL', 'NO', 'PL', 'PT', 'RO', 'RS', 'SE', 'SI', 'SK', 'XK']
@@ -116,7 +115,6 @@ sector:
     fidelio_shocks: false
     scenario: baseline
     fidelio_folder: "../coupling/from_fidelio/iter_1/"
-    to_gwh_kt: false
   endo_industry:
     enable: true
     policy_scenario: maintain
@@ -327,7 +325,7 @@ industry:
 clustering:
   temporal:
     resolution_elec: false
-    resolution_sector: 2920h
+    resolution_sector: 3h
 
 plotting:
   tech_colors:

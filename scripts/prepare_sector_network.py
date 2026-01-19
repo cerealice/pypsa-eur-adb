@@ -2564,46 +2564,87 @@ def calculate_land_transport_shares_ff55(number_cars, limit):
     return output
 
 def calculate_shipping_shares_ff55():
+    """
+    Shipping fuel shares for FF55 using:
+      - Given 2030 and 2040 calibration (as in your current setup)
+      - Linear methanol increase of +1.1 percentage points per year from 2040 to 2050
+      - In 2050, enforce Oil share = 25% and compute Ammonia as the residual
+    """
 
-    ef_allships_2020 = 91.16 # gCO2eq/MJ from https://www.dnv.com/maritime/insights/topics/fueleu-maritime/#:~:text=The%20baseline%20for%20the%20calculation,an%2080%25%20reduction%20by%202050.
-    ef_MeOH = 1/options["MWh_MeOH_per_tCO2"]*1e6/3600 # from tCO2/MWh *(1MWh/3600MJ) * (1e6gCO2/tCO2)
+    ef_allships_2020 = 91.16  # gCO2eq/MJ
+    ef_MeOH = 1 / options["MWh_MeOH_per_tCO2"] * 1e6 / 3600  # gCO2eq/MJ
 
-    ef_allships_2030_ff55 = 85.69 #gCO2eq/MJ
-    ef_allships_2040_ff55 = 56.52 #gCO2eq/MJ
-    ef_allships_2050_ff55 = 18.23 #gCO2eq/MJ
+    ef_allships_2030_ff55 = 85.69  # gCO2eq/MJ
+    ef_allships_2040_ff55 = 56.52  # gCO2eq/MJ
+    # ef_allships_2050_ff55 = 18.23  # gCO2eq/MJ  # no longer used for shares under the new rule
 
-    # Calculate the share of fuels for 2030 and 2050 
-    # 2030
-    share_ammonia_2030 = 0.05 #IMO policy
-    share_MeOH_2030 = (ef_allships_2030_ff55 - ((1 - share_ammonia_2030) * ef_allships_2020)) / (ef_MeOH - ef_allships_2020 )
+    # ------------------------
+    # 2030 shares
+    # ------------------------
+    share_ammonia_2030 = 0.05  # IMO policy (given)
+    share_MeOH_2030 = (ef_allships_2030_ff55 - ((1 - share_ammonia_2030) * ef_allships_2020)) / (
+        ef_MeOH - ef_allships_2020
+    )
 
-    # 2050
-    share_ammonia_2050 = (ef_MeOH - ef_allships_2050_ff55) / ef_MeOH
-    share_MeOH_2050 = 1- share_ammonia_2050
+    # ------------------------
+    # 2040 shares
+    # ------------------------
+    # (keeps your original approach to derive a consistent 2040 point)
+    # First build a "reference" methanol trajectory between 2030 and an internally-derived 2050,
+    # then compute ammonia_2040 from the 2040 intensity.
+    share_ammonia_2050_old = (ef_MeOH - 18.23) / ef_MeOH
+    share_MeOH_2050_old = 1 - share_ammonia_2050_old
 
-    # 2040
-    share_MeOH_2040 = share_MeOH_2030 + ((share_MeOH_2050 - share_MeOH_2030) / (2050- 2030)) * (2040 - 2030)
-    share_ammonia_2040 = (share_MeOH_2040 * ef_MeOH + (1-share_MeOH_2040) * ef_allships_2020 - ef_allships_2040_ff55 ) / ef_allships_2020
+    share_MeOH_2040 = share_MeOH_2030 + ((share_MeOH_2050_old - share_MeOH_2030) / (2050 - 2030)) * (2040 - 2030)
+    share_ammonia_2040 = (
+        (share_MeOH_2040 * ef_MeOH + (1 - share_MeOH_2040) * ef_allships_2020 - ef_allships_2040_ff55)
+        / ef_allships_2020
+    )
 
+    # ---------------------------------------------------------
+    # 2050 shares
+    #   - Methanol continues linearly at +1.1pp/year from 2040
+    #   - Oil fixed at 25%
+    #   - Ammonia is residual
+    # ---------------------------------------------------------
+    methanol_growth_pp_per_year = 0.011  # 1.1 percentage points per year in share terms
+    share_MeOH_2050 = share_MeOH_2040 + methanol_growth_pp_per_year * (2050 - 2040)
+
+    share_oil_2050 = 0.25
+    share_ammonia_2050 = 1 - share_oil_2050 - share_MeOH_2050
+
+    # Guardrails (optional but recommended)
+    if share_ammonia_2050 < 0:
+        logger.warning(
+            f"Computed ammonia share in 2050 is negative ({share_ammonia_2050:.2%}). "
+            "Check methanol growth or oil constraint."
+        )
+
+    # ------------------------
+    # Select shares by year
+    # ------------------------
     if investment_year == 2030:
-        shipping_methanol_share = round(share_MeOH_2030,2)
-        shipping_ammonia_share = share_ammonia_2030
+        shipping_methanol_share = round(share_MeOH_2030, 4)
+        shipping_ammonia_share = round(share_ammonia_2030, 4)
         shipping_oil_share = 1 - shipping_methanol_share - shipping_ammonia_share
-    
+
     elif investment_year == 2040:
-        shipping_methanol_share = round(share_MeOH_2040,2)
-        shipping_ammonia_share = round(share_ammonia_2040,2)
+        shipping_methanol_share = round(share_MeOH_2040, 4)
+        shipping_ammonia_share = round(share_ammonia_2040, 4)
         shipping_oil_share = 1 - shipping_methanol_share - shipping_ammonia_share
 
     elif investment_year == 2050:
-        shipping_methanol_share = round(share_MeOH_2050,2)
-        shipping_ammonia_share = round(share_ammonia_2040,2)
-        shipping_oil_share = 1 - shipping_methanol_share - shipping_ammonia_share
+        shipping_oil_share = round(share_oil_2050, 4)
+        shipping_methanol_share = round(share_MeOH_2050, 4)
+        shipping_ammonia_share = round(share_ammonia_2050, 4)
+
+    else:
+        raise ValueError(f"Unsupported investment_year={investment_year}. Expected 2030, 2040, or 2050.")
 
     total_share = shipping_oil_share + shipping_methanol_share + shipping_ammonia_share
-    if total_share != 1:
+    if abs(total_share - 1) > 1e-6:
         logger.warning(
-            f"Total shipping shares sum up to {total_share:.2%},"
+            f"Total shipping shares sum up to {total_share:.2%}, "
             "corresponding to increased or decreased demand assumptions."
         )
 
@@ -3205,7 +3246,7 @@ def add_land_transport(
     avail_profile = pd.read_csv(avail_profile_file, index_col=0, parse_dates=True)
     dsm_profile = pd.read_csv(dsm_profile_file, index_col=0, parse_dates=True)
 
-    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'] == 'ff55':
+    if options['fidelio']['fidelio_shocks'] and options['fidelio']['scenario'][:4] == 'ff55':
         shock_file = options['fidelio']['fidelio_folder'] + 'hh_trans_var.csv'
         # We take the household value because PyPSA-Eur only includes passenger land transport
         transport = apply_fidelio_shocks_to_demand(
@@ -3540,7 +3581,7 @@ def add_heat(
                     sector_name="services heat",
                     nodes_in="columns",
                 )
-            elif options['fidelio']['scenario'] == 'ff55' and ("residential" in name or "urban central" in name):
+            elif options['fidelio']['scenario'][:4] == 'ff55' and ("residential" in name or "urban central" in name):
                 shock_file = options['fidelio']['fidelio_folder'] + 'hh_cons_var.csv'
                 heat_load = apply_fidelio_shocks_to_demand(
                     heat_load,
@@ -5913,23 +5954,6 @@ def add_steel_industry(n, investment_year, steel_data, options):
 
         print(f"P shocked {p_set_shocked}")
 
-        """
-
-        # Shocks of demand from FIDELIO do not account in PyPSA for social economic inertias
-        max_limit = hourly_steel_production = steel_data.loc[investment_year, "regain"] * 1e6
-        min_limit = hourly_steel_production = steel_data.loc[investment_year, "deindustrial"] * 1e6
-
-        tot_dem_shocked = p_set_shocked.sum() * nhours
-        print(f"N hours {nhours}")
-        if tot_dem_shocked > max_limit:
-            hourly_steel_production = max_limit / nhours
-            p_set = cap_share * hourly_steel_production
-        elif tot_dem_shocked < min_limit:
-            hourly_steel_production = min_limit / nhours
-            p_set = cap_share * hourly_steel_production
-        else:
-            p_set = p_set_shocked
-        """
         p_set = p_set_shocked
 
     if options["endo_industry"]["regional_steel_demand"]:
@@ -8220,7 +8244,7 @@ if __name__ == "__main__":
 
     n.meta = dict(snakemake.config, **dict(wildcards=dict(snakemake.wildcards)))
 
-    if investment_year == 2020: # Validation, so no expansion
+    if investment_year <= 2025: # Validation, so no expansion
         fixed_capacity = ['CCGT','OCGT','nuclear','lignite','coal','CC','charger','heat pump','heater','CHP']#,'H2','battery','SMR']#,'DC','DAC','Sabatier','Fischer']#'Fuel','charger','heat','CHP'] 
 
         filtered_index = [

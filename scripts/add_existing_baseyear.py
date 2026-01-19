@@ -814,7 +814,7 @@ def add_steel_industry_existing(n):
     n.add(
         "Link",
         nodes,
-        suffix=" BF-BOF-2020",
+        suffix=" BF-BOF-2025",
         carrier="BF-BOF",
         bus0=spatial.iron.nodes,
         bus1=spatial.steel.nodes,
@@ -839,7 +839,7 @@ def add_steel_industry_existing(n):
     # Retrieve maximum available scrap
     max_scrap_file = "data/max_scrap.csv"
     max_scrap_df = pd.read_csv(max_scrap_file, index_col=0)
-    max_scrap_mt = max_scrap_df.loc["maintain", "2020"]  # baseline year
+    max_scrap_mt = max_scrap_df.loc["maintain", "2025"]  # baseline year
     max_scrap_t = max_scrap_mt * 1e6
     max_scrap_pertimestep = (max_scrap_t / 8760) * n.snapshot_weightings.iloc[0, 0]
 
@@ -855,7 +855,7 @@ def add_steel_industry_existing(n):
     n.add(
         "Link",
         nodes,
-        suffix=" Scrap-EAF-2020",
+        suffix=" Scrap-EAF-2025",
         carrier="Scrap-EAF",
         p_nom_extendable=False,
         p_nom=(p_nom_eaf / cap_decrease) * elec_input_scrap_eaf , #t steel

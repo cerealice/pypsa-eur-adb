@@ -7,16 +7,16 @@ run:
   prefix: ""
   name: #"all"
   #- baseline
-  - baseline_iter_1
+  - baseline_iter_8
   #- basetariffs_iter_3
   #- ff55tariffs_iter_3
-  - ff55_iter_1
+  #- ff55_iter_1
   #- base_aluminium
   #- baseline_iter_4
   #- ff55tariffs_iter_6
   #- ff55_iter_5
   #- steel_aluminum
-  - ff55tariffs_iter_1
+  #- ff55tariffs_iter_1
   #- ff55_iter_2
   #- baseline_iter_3
   #- hist

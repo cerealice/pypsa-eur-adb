@@ -20,6 +20,61 @@ hist:
     base_emissions_year: 2018
 
 # FF55 scenario iterations
+ff55_iter_15:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_14/"
+
+ff55_iter_14:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_13/"
+
+ff55_iter_13:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_12/"
+
+ff55_iter_12:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_11/"
+
+ff55_iter_11:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_10/"
+
+ff55_iter_10:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_9/"
+
+ff55_iter_9:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_8/"
+
+ff55_iter_8:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55'
+      fidelio_folder: "../coupling/from_fidelio/ff55/iter_7/"
 
 ff55_iter_7:
   sector:
@@ -70,6 +125,66 @@ ff55_iter_1:
       scenario: 'ff55'
 
 # FF55 Tariffs scenario iterations
+ff55tariffs_iter_15:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_14/"
+
+
+ff55tariffs_iter_14:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_13/"
+
+
+ff55tariffs_iter_13:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_12/"
+
+
+ff55tariffs_iter_12:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_11/"
+
+
+ff55tariffs_iter_11:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_10/"
+
+
+ff55tariffs_iter_10:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_9/"
+
+ff55tariffs_iter_9:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_8/"
+
+ff55tariffs_iter_8:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: 'ff55tariffs'
+      fidelio_folder: "../coupling/from_fidelio/ff55tariffs/iter_7/"
 
 ff55tariffs_iter_7:
   sector:
@@ -172,6 +287,56 @@ baseline_iter_7:
       fidelio_shocks: true
       scenario: baseline
       fidelio_folder: "../coupling/from_fidelio/baseline/iter_6/"
+
+baseline_iter_8:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_7/"
+
+
+baseline_iter_9:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_8/"
+
+baseline_iter_10:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_9/"
+
+baseline_iter_11:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_10/"
+
+baseline_iter_12:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_11/"
+
+baseline_iter_13:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_12/"
+
+baseline_iter_14:
+  sector:
+    fidelio:
+      fidelio_shocks: true
+      scenario: baseline
+      fidelio_folder: "../coupling/from_fidelio/baseline/iter_13/"
 
 
 # Baseline tariffs scenario iterations

@@ -1047,7 +1047,7 @@ rule build_industrial_distribution_key:
     input:
         regions_onshore=resources("regions_onshore_base_s_{clusters}.geojson"),
         clustered_pop_layout=resources("pop_layout_base_s_{clusters}.csv"),
-        hotmaps="data/Industrial_Database.csv",
+        #hotmaps="data/Industrial_Database.csv",
         steel_gem="data/gem/Global-Steel-Plant-Tracker-April-2024-Standard-Copy-V1.xlsx",
         cement_sfi="data/sfi/SFI-Global-Cement-Database-July-2021.xlsx",
         chemicals_ecm="data/1-s2.0-S0196890424010586-mmc2.xlsx", # Reference Neuwirth et al., https://doi.org/10.1016/j.enconman.2024.119117 

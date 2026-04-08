@@ -5601,7 +5601,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         )
 
     electricity_input = (
-        costs.at["direct iron reduction furnace", "electricity-input"] * 1e3
+        costs.at["natural gas direct iron reduction furnace", "electricity-input"] * 1e3
     )  # MWh/kt
 
     n.add(
@@ -5609,7 +5609,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         nodes,
         suffix=" DRI",
         carrier="DRI",
-        capital_cost=costs.at["direct iron reduction furnace", "capital_cost"]
+        capital_cost=costs.at["natural gas direct iron reduction furnace", "capital_cost"]
         * 1e3
         / eaf_ng["iron input"],
         p_nom_extendable=True,
@@ -5910,15 +5910,13 @@ def add_cement_industry(n, investment_year, cement_data, options):
         efficiency=1,
     )
 
-    # Cement plant retrofitted with post-combustion capture using amines (methylethanol amine MEA)
+    capture_rate = costs.at["cement carbon capture retrofit", "capture_rate"]
     electricity_input = (
-        costs.at["cement capture", "electricity-input"]
-        + costs.at["cement capture", "compression-electricity-input"]
-    )  # MWh_el / tCO2
-    heat_input = (
-        costs.at["cement capture", "heat-input"]
-        - costs.at["cement capture", "compression-heat-output"]
-    )  # MWh_th / tCO2
+        costs.at["cement carbon capture retrofit", "electricity-input"]
+        + costs.at["cement carbon capture retrofit", "compression-electricity-input"]
+    )
+
+    n.add("Carrier", "cement process emissions CC")
 
     n.add(
         "Link",
@@ -5927,21 +5925,14 @@ def add_cement_industry(n, investment_year, cement_data, options):
         bus0=spatial.co2.cement,
         bus1="co2 atmosphere",
         bus2=spatial.co2.nodes,
-        # bus3=spatial.gas.nodes,
-        bus4=nodes,
+        bus3=nodes,
         carrier="cement process emissions CC",
         p_nom_extendable=True,
-        capital_cost=costs.at[
-            "cement capture", "investment"
-        ],  # 80, #/ costs.at["cement capture", "capture_rate"], #€/tCO2 stored I hope, otherwise 8280 / 500 /nhours, # CAPEX €/kt clinker / 500 tCO2/kt clinker
-        efficiency=1
-        - costs.at[
-            "cement capture", "capture_rate"
-        ],  # Natural gas emissions are not included yet
-        efficiency2=costs.at["cement capture", "capture_rate"],
-        # efficiency3= -heat_input * costs.at["cement capture", "capture_rate"] / 0.5,
-        efficiency4=-electricity_input * costs.at["cement capture", "capture_rate"],
-        lifetime=costs.at["cement capture", "lifetime"],
+        capital_cost=costs.at["cement carbon capture retrofit", "capital_cost"],
+        efficiency=1 - capture_rate,
+        efficiency2=capture_rate,
+        efficiency3=-electricity_input * capture_rate,
+        lifetime=costs.at["cement carbon capture retrofit", "lifetime"],
     )
 
     if options["industrial_flexibility"]:
@@ -7587,6 +7578,31 @@ def add_import_options(
         )
 
 
+
+def correct_co2_carriers(n):
+    """
+    Ensure that CO2 carriers have unique carrier attributes
+    and that all other carriers have zero CO2 attributes.
+
+    This avoids broadcasting issues in GlobalConstraints and dual assignment.
+    """
+
+    co2_labels = ["co2_emissions"]
+
+    # 1. Ensure the CO2 attribute columns exist
+    for attr in co2_labels:
+        if attr not in n.carriers.columns:
+            n.carriers[attr] = 0.0
+
+    # 2. Reset ALL carriers to zero for all CO2 attributes
+    n.carriers.loc[:, co2_labels] = 0.0
+
+    # 3. Assign -1 only to the matching carrier
+    for attr in co2_labels:
+        if attr in n.carriers.index:
+            n.carriers.loc[attr, attr] = -1.0
+
+
 if __name__ == "__main__":
     if "snakemake" not in globals():
         from scripts._helpers import mock_snakemake
@@ -7967,5 +7983,8 @@ if __name__ == "__main__":
 
     sanitize_carriers(n, snakemake.config)
     sanitize_locations(n)
+
+    #if options["endo_industry"]["enable"]:
+    #    correct_co2_carriers(n)
 
     n.export_to_netcdf(snakemake.output[0])

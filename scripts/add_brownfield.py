@@ -129,7 +129,7 @@ def add_brownfield(
         )
 
         if c.name == "Link":
-            n_p.mremove(
+            n_p.remove(
                 c.name,
                 c.df.index[
                     (

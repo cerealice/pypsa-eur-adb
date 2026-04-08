@@ -1192,7 +1192,7 @@ def build_transport_data(
 
     if "CH" in countries:
         fn = snakemake.input.swiss_transport
-        swiss_cars = pd.read_csv(fn, index_col=0).loc[years, ["passenger cars"]]
+        swiss_cars = pd.read_csv(fn, index_col=0, sep=";").loc[years, ["passenger cars"]]
 
         swiss_cars.index = pd.MultiIndex.from_product(
             [["CH"], swiss_cars.index], names=["country", "year"]

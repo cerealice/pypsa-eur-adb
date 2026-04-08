@@ -1137,6 +1137,7 @@ if (DH_AREAS_DATASET := dataset_version("dh_areas"))["source"] in [
             copy2(input["dh_areas"], output["dh_areas"])
 
 
+
 if (MOBILITY_PROFILES_DATASET := dataset_version("mobility_profiles"))["source"] in [
     "archive"
 ]:
@@ -1160,7 +1161,7 @@ if (MOBILITY_PROFILES_DATASET := dataset_version("mobility_profiles"))["source"]
             copy2(input["pkw"], output["pkw"])
 
 
-if config["enable"]["retrieve"] and config["weather_years"]["enable"]:
+if config["weather_years"]["enable"]:
 
     rule retrieve_zenodo_timeseries:
         params:
@@ -1177,29 +1178,3 @@ if config["enable"]["retrieve"] and config["weather_years"]["enable"]:
             "../envs/environment.yaml"
         script:
             "../scripts/retrieve_zenodo_timeseries.py"
-=======
-            copy2(input["dh_areas"], output["dh_areas"])
-
-
-if (MOBILITY_PROFILES_DATASET := dataset_version("mobility_profiles"))["source"] in [
-    "archive"
-]:
-
-    rule retrieve_mobility_profiles:
-        input:
-            kfz=storage(MOBILITY_PROFILES_DATASET["url"] + "/kfz.csv"),
-            pkw=storage(MOBILITY_PROFILES_DATASET["url"] + "/pkw.csv"),
-        output:
-            kfz=f"{MOBILITY_PROFILES_DATASET["folder"]}/kfz.csv",
-            pkw=f"{MOBILITY_PROFILES_DATASET["folder"]}/pkw.csv",
-        threads: 1
-        resources:
-            mem_mb=1000,
-        log:
-            "logs/retrieve_mobility_profiles.log",
-        benchmark:
-            "benchmarks/retrieve_mobility_profiles"
-        run:
-            copy2(input["kfz"], output["kfz"])
-            copy2(input["pkw"], output["pkw"])
->>>>>>> 151f60383500c69e90f89b9190b20b4c5c368a35

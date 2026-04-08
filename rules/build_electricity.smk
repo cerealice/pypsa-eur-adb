@@ -54,7 +54,7 @@ rule build_powerplants:
 def input_base_network(w):
     base_network = config_provider("electricity", "base_network")(w)
     components = {"buses", "lines", "links", "converters", "transformers"}
-    if base_network == "osm":
+    if base_network in {"osm", "osm-prebuilt"}:
         OSM_DATASET = dataset_version("osm")
         inputs = {c: f"{OSM_DATASET['folder']}/{c}.csv" for c in components}
     elif base_network == "tyndp":

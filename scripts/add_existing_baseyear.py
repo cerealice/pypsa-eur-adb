@@ -803,10 +803,10 @@ def add_steel_industry_existing(n):
 
     
     electricity_input = (
-        costs.at["direct iron reduction furnace", "electricity-input"] * 1e3
+        costs.at["natural gas direct iron reduction furnace", "electricity-input"] * 1e3
     )  # MWh/kt
 
-    capital_cost = (costs.at["direct iron reduction furnace", "capital_cost"] + costs.at["electric arc furnace", "capital_cost"]) * 1e3 / eaf_ng["iron input"]
+    capital_cost = (costs.at["natural gas direct iron reduction furnace", "capital_cost"] + costs.at["electric arc furnace", "capital_cost"]) * 1e3 / eaf_ng["iron input"]
     n.add(
         "Link",
         nodes,

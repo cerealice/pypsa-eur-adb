@@ -5294,20 +5294,20 @@ def add_industry(
 def calculate_steel_parameters(options, nyears=1):
     # BF-BOF
     # Reference: Raillard-Cazanove et al. https://doi.org/10.1016/j.apenergy.2024.125206
-    iron_to_steel_bof = 1.8  # kt iron/kt steel
-    coal_to_steel_bof = 6342  # MWh coal/kt steel
-    elec_to_steel_bof = 194  # MWh el/kt steel
-    em_factor_bof = 1760  # tCO2/kt steel
+    iron_to_steel_bof = 1.8  # t iron/t steel
+    coal_to_steel_bof = 6342 / 1e3  # MWh coal/t steel
+    elec_to_steel_bof = 194 / 1e3  # MWh el/t steel
+    em_factor_bof = 1760 / 1e3  # tCO2/t steel
 
-    capex_bof = 442 * 1e3  # €/kt steel
-    opex_bof = (53 * 1e3 / capex_bof) * 100  # €/kt steel/yr -> € of CAPEX
+    capex_bof = 442  # €/t steel
+    opex_bof = (53 / capex_bof) * 100  # €/t steel/yr -> % of CAPEX
     lifetime_bof = 40
     discount_rate = 0.04
 
-    capex_bof_mpp = 871.85 * 1e3 * 8760  # €/kt steel/h
-    capex_bof_mpp = 1066.851 * 1e3 * 8760  # €/kt steel/h
-    opex_bof_mpp = (123.67 * 1e3 / capex_bof_mpp) * 100  # €/kt steel/yr -> € of CAPEX
-    opex_bof_mpp = (129.75 * 1e3 / capex_bof_mpp) * 100  # €/kt steel/yr -> € of CAPEX
+    capex_bof_mpp = 871.85 * 8760  # €/(t steel/h)
+    capex_bof_mpp = 1066.851 * 8760  # €/(t steel/h)
+    opex_bof_mpp = (123.67 / capex_bof_mpp) * 100  # €/t steel/yr -> % of CAPEX
+    opex_bof_mpp = (129.75 / capex_bof_mpp) * 100  # €/t steel/yr -> % of CAPEX
 
     capital_cost_bof = (
         (calculate_annuity(lifetime_bof, discount_rate) + opex_bof_mpp / 100.0)
@@ -5328,19 +5328,19 @@ def calculate_steel_parameters(options, nyears=1):
 
     # DRI-EAF with NG
     # Reference: Graupner et al. https://doi.org/10.1016/j.procir.2023.02.117
-    iron_to_steel_eaf_ng = 1.36  # kt iron/kt steel
-    gas_to_steel_eaf_ng = 2803  # MWh gas/kt steel
-    elec_to_steel_eaf_ng = 554  # MWh el/kt steel
-    em_factor_eaf_ng = 565  # tCO2/kt steel
+    iron_to_steel_eaf_ng = 1.36  # t iron/t steel
+    gas_to_steel_eaf_ng = 2803 / 1e3  # MWh gas/t steel
+    elec_to_steel_eaf_ng = 554 / 1e3  # MWh el/t steel
+    em_factor_eaf_ng = 565 / 1e3  # tCO2/t steel
 
     # Reference: Raillard-Cazanove et al. https://doi.org/10.1016/j.apenergy.2024.125206
-    capex_eaf_ng = 414 * 1e3  # €/kt steel
-    opex_eaf_ng = (54 * 1e3 / capex_eaf_ng) * 100  # €/kt steel/yr -> % of CAPEX
+    capex_eaf_ng = 414  # €/t steel
+    opex_eaf_ng = (54 / capex_eaf_ng) * 100  # €/t steel/yr -> % of CAPEX
     lifetime_eaf_ng = 40
     discount_rate = 0.04
 
-    capex_eaf_mpp = 698.34 * 1e3 * 8760  # €/kt steel/h
-    opex_eaf_mpp = (118.27 * 1e3 / capex_eaf_mpp) * 100  # €/kt steel/yr -> % of CAPEX
+    capex_eaf_mpp = 698.34 * 8760  # €/(t steel/h)
+    opex_eaf_mpp = (118.27 / capex_eaf_mpp) * 100  # €/t steel/yr -> % of CAPEX
 
     capital_cost_eaf_ng = (
         (calculate_annuity(lifetime_eaf_ng, discount_rate) + opex_eaf_ng / 100.0)
@@ -5361,10 +5361,10 @@ def calculate_steel_parameters(options, nyears=1):
 
     # DRI-EAF with hydrogen
     # Reference: Graupner et al. https://doi.org/10.1016/j.procir.2023.02.117
-    iron_to_steel_eaf_h2 = 1.39  # kt iron/kt steel
-    h2_to_steel_eaf_h2 = 2211  # MWh H2/kt steel
-    elec_to_steel_eaf_h2 = 611  # MWh el/kt steel
-    em_factor_eaf_h2 = 76  # tCO2/kt steel
+    iron_to_steel_eaf_h2 = 1.39  # t iron/t steel
+    h2_to_steel_eaf_h2 = 2211 / 1e3  # MWh H2/t steel
+    elec_to_steel_eaf_h2 = 611 / 1e3  # MWh el/t steel
+    em_factor_eaf_h2 = 76 / 1e3  # tCO2/t steel
 
     # Assumption: costs are the same as NG DRI-EAF (besides the fuel costs)
 
@@ -5384,9 +5384,9 @@ def calculate_steel_parameters(options, nyears=1):
     elec_tgr = 0.2705  # MWh el/tCO2 in
 
     # Reference: Raillard-Cazanove et al. https://doi.org/10.1016/j.apenergy.2024.125206
-    capex_tgr_2030 = 90 * 1e3 / em_factor_bof  # €/t CO2 in
-    capex_tgr_2050 = 67 * 1e3 / em_factor_bof  # €/t CO2 in
-    capex_tgr_mpp = (1230.094 - 1066.851) * 1e3 / em_factor_bof  # €/t CO2 in
+    capex_tgr_2030 = 90 / em_factor_bof  # €/t CO2 in  (90 €/t steel / tCO2/t steel)
+    capex_tgr_2050 = 67 / em_factor_bof  # €/t CO2 in
+    capex_tgr_mpp = (1230.094 - 1066.851) / em_factor_bof  # €/t CO2 in
     # We choose Raillard-Cazanove et al. values because they decrease in time
     opex_tgr = 5  # % CAPEX
     lifetime_tgr = 20  # years
@@ -5431,8 +5431,8 @@ def add_steel_industry(n, investment_year, steel_data, options):
 
     scenario = options["endo_industry"]["policy_scenario"]
     hourly_steel_production = (
-        steel_data.loc[investment_year, scenario] * 1e3 / nhours
-    )  # get the steel that needs to be produced hourly ktsteel/h
+        steel_data.loc[investment_year, scenario] * 1e6 / nhours
+    )  # get the steel that needs to be produced hourly t steel/h
     capacities = capacities.sum(axis=1)
 
     # Share of steel production capacities -> assumption: keep producing the same share in the country, changing technology
@@ -5454,7 +5454,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         spatial.iron.nodes,
         location=spatial.iron.locations,
         carrier="iron",
-        unit="kt/yr",
+        unit="t/yr",
     )
 
     costs.at["iron", "discount rate"] = 0.04
@@ -5465,12 +5465,12 @@ def add_steel_industry(n, investment_year, steel_data, options):
         bus=spatial.iron.nodes,
         p_nom_extendable=True,
         carrier="iron",
-        marginal_cost=costs.at["iron ore DRI-ready", "commodity"] * 1e3,  # €/kt of iron
+        marginal_cost=costs.at["iron ore DRI-ready", "commodity"],  # €/t of iron
     )
 
     n.add("Carrier", "steel")
     location_value = getattr(spatial, "steel").nodes
-    unit = "kt/yr"
+    unit = "t/yr"
 
     n.add(
         "Bus",
@@ -5575,7 +5575,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         "EU HBI",
         location="EU",
         carrier="HBI",
-        unit="kt/yr",
+        unit="t/yr",
     )
 
     n.add(
@@ -5588,8 +5588,8 @@ def add_steel_industry(n, investment_year, steel_data, options):
     )
 
     if options["endo_industry"]["dri_import"]:
-        mc_dri = 395 * 1e3 if investment_year >= 2040 else 1e7
-        # €/ktHBI https://www.sciencedirect.com/science/article/pii/S0360544223006308
+        mc_dri = 395 if investment_year >= 2040 else 1e4
+        # €/t HBI https://www.sciencedirect.com/science/article/pii/S0360544223006308
 
         n.add(
             "Generator",
@@ -5600,9 +5600,9 @@ def add_steel_industry(n, investment_year, steel_data, options):
             marginal_cost=mc_dri,
         )
 
-    electricity_input = (
-        costs.at["natural gas direct iron reduction furnace", "electricity-input"] * 1e3
-    )  # MWh/kt
+    electricity_input = costs.at[
+        "natural gas direct iron reduction furnace", "electricity-input"
+    ]  # MWh/t
 
     n.add(
         "Link",
@@ -5610,7 +5610,6 @@ def add_steel_industry(n, investment_year, steel_data, options):
         suffix=" DRI",
         carrier="DRI",
         capital_cost=costs.at["natural gas direct iron reduction furnace", "capital_cost"]
-        * 1e3
         / eaf_ng["iron input"],
         p_nom_extendable=True,
         #p_min_pu=0.1,
@@ -5630,10 +5629,10 @@ def add_steel_industry(n, investment_year, steel_data, options):
     max_scrap_file = "data/max_scrap.csv"
     max_scrap_df = pd.read_csv(max_scrap_file, index_col=0)
 
-    # Value in Mt (convert to kt if needed for units)
+    # Value in Mt (convert to t)
     max_scrap_mt = max_scrap_df.loc[scenario, str(investment_year)]  # [Mt]
-    max_scrap_kt = max_scrap_mt * 1000  # [kt]
-    max_scrap_pertimestep = (max_scrap_kt / 8760) * n.snapshot_weightings.iloc[0, 0]
+    max_scrap_t = max_scrap_mt * 1e6  # [t]
+    max_scrap_pertimestep = (max_scrap_t / 8760) * n.snapshot_weightings.iloc[0, 0]
 
 
     n.add(
@@ -5641,7 +5640,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         "EU steel scrap",
         location="EU",
         carrier="steel scrap",
-        unit="kt/yr",
+        unit="t/yr",
     )
 
     n.add(
@@ -5660,12 +5659,12 @@ def add_steel_industry(n, investment_year, steel_data, options):
         carrier="steel scrap",
         p_nom=1e7,
         # https://www.scrapmonster.com/metal/steel-price/europe/300?utm_source=chatgpt.com
-        # Grade 1 Old Steel to be conservative: 160 $/t -> *0.86 * 1000 = 137107 €/kt
+        # Grade 1 Old Steel to be conservative: 160 $/t -> *0.86 = 137 €/t
         # https://gmk.center/en/posts/the-global-scrap-market-showed-overwhelming-stability-in-july/
         # 302.5 €/t in Germany for E3, which has limited contamination, low quality than prime grades but a staple feedstock for EAF
         # https://www.mgg-recycling.com/wp-content/uploads/2013/06/EFR_EU27_steel_scrap_specification.pdf
-        marginal_cost=280 * 1e3, # €/kt
-        e_sum_max = max_scrap_kt,
+        marginal_cost=280,  # €/t
+        e_sum_max=max_scrap_t,
     )
 
     n.add(
@@ -5681,9 +5680,9 @@ def add_steel_industry(n, investment_year, steel_data, options):
         efficiency=1,
     )
 
-    electricity_input = (
-        costs.at["electric arc furnace", "electricity-input"] * 1e3
-    )  # MWh/kt steel
+    electricity_input = costs.at[
+        "electric arc furnace", "electricity-input"
+    ]  # MWh/t steel
 
     n.add(
         "Link",
@@ -5691,7 +5690,6 @@ def add_steel_industry(n, investment_year, steel_data, options):
         suffix=" EAF",
         carrier="EAF",
         capital_cost=costs.at["electric arc furnace", "capital_cost"]
-        * 1e3
         / electricity_input,
         p_nom_extendable=True,
         p_min_pu=min_part_load_steel,
@@ -5791,8 +5789,8 @@ def add_cement_industry(n, investment_year, cement_data, options):
 
     scenario = options["endo_industry"]["policy_scenario"]
     hourly_cement_production = (
-        cement_data.loc[investment_year, scenario] * 1e3 / nhours
-    )  # get the cement that needs to be produced hourly kt cement/h
+        cement_data.loc[investment_year, scenario] * 1e6 / nhours
+    )  # get the cement that needs to be produced hourly t cement/h
     # hourly_cement_production.index = hourly_cement_production.index + ' cement'
 
     # Share of cement production capacities -> assumption: keep producing the same share in the country, changing technology
@@ -5814,7 +5812,7 @@ def add_cement_industry(n, investment_year, cement_data, options):
         spatial.limestone.nodes,
         location=spatial.limestone.locations,
         carrier="limestone",
-        unit="kt/yr",
+        unit="t/yr",
     )
 
     costs.at["limestone", "discount rate"] = 0.04
@@ -5826,8 +5824,7 @@ def add_cement_industry(n, investment_year, cement_data, options):
         p_nom_extendable=True,
         carrier="limestone",
         marginal_cost=40
-        * 1e3
-        * 0.877,  # €/kt of limestone https://thundersaidenergy.com/downloads/cement-costs-and-energy-economics/
+        * 0.877,  # €/t of limestone https://thundersaidenergy.com/downloads/cement-costs-and-energy-economics/
     )
 
     n.add("Carrier", "cement")
@@ -5837,7 +5834,7 @@ def add_cement_industry(n, investment_year, cement_data, options):
         spatial.cement.nodes,
         location=spatial.cement.locations,
         carrier="cement",
-        unit="kt/yr",
+        unit="t/yr",
     )
 
     # CEMENT
@@ -5871,8 +5868,8 @@ def add_cement_industry(n, investment_year, cement_data, options):
     # Capital costs
     discount_rate = 0.04
     capex_cement = (
-        263000 * calculate_annuity(lifetime_cement, discount_rate)
-    )  # https://iea-etsap.org/E-TechDS/HIGHLIGHTS%20PDF/I03_cement_June%202010_GS-gct%201.pdf with CCS 558000
+        263 * calculate_annuity(lifetime_cement, discount_rate)
+    )  # https://iea-etsap.org/E-TechDS/HIGHLIGHTS%20PDF/I03_cement_June%202010_GS-gct%201.pdf with CCS 558; €/t cement
     # * 8760 h/a (?)
     min_part_load_cement = options["min_part_load_cement"]
 
@@ -5893,8 +5890,9 @@ def add_cement_industry(n, investment_year, cement_data, options):
         efficiency2=-3420.1
         / 3.6
         * (1 / 1.28)
-        / 0.5,  # MWh/kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974 divided by 0.5 because I don't have heat
-        efficiency3=500 * (1 / 1.28),  # tCO2/kt cement
+        / 0.5
+        / 1e3,  # MWh/t clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974 divided by 0.5 because I don't have heat
+        efficiency3=500 / 1e3 * (1 / 1.28),  # tCO2/t limestone
         lifetime=lifetime_cement,
     )
 
@@ -6080,8 +6078,8 @@ def add_hvc(n, investment_year, hvc_data, options):
     # Read industrial production data for HVC in Europe (in ktHVC/yr)
     scenario = options["endo_industry"]["policy_scenario"]
     hourly_hvc_production = (
-        hvc_data.loc[investment_year, scenario] * 1e3 / nhours
-    )  # ktMeOH/h
+        hvc_data.loc[investment_year, scenario] * 1e6 / nhours
+    )  # t HVC/h
 
     # Share of HVC production capacities -> assumption: keep producing the same share in the country, changing technology
     cap_share = capacities / capacities.sum()
@@ -6105,7 +6103,7 @@ def add_hvc(n, investment_year, hvc_data, options):
         spatial.hvc.nodes,
         location=spatial.hvc.locations,
         carrier="HVC",
-        unit="kt_HVC",
+        unit="t_HVC",
     )
 
     n.add(
@@ -6116,9 +6114,7 @@ def add_hvc(n, investment_year, hvc_data, options):
         p_set=p_set,
     )
 
-    naphtha_to_hvc = (
-        2.31 * 12.47
-    ) * 1000  # kt oil / kt HVC * MWh/t oil * 1000 t / kt =   MWh oil / kt HVC
+    naphtha_to_hvc = 2.31 * 12.47  # t oil / t HVC * MWh/t oil = MWh oil / t HVC
     # we need to account for CO2 emissions from HVC decay
     decay_emis = costs.at["oil", "CO2 intensity"]  # tCO2/MWh_th oil
     min_part_load_hvc = options["min_part_load_hvc"]
@@ -6135,15 +6131,15 @@ def add_hvc(n, investment_year, hvc_data, options):
         carrier="naphtha steam cracker",
         p_nom_extendable=True,
         p_min_pu=min_part_load_hvc,
-        capital_cost=2050 * 1e3 * 0.8865 / naphtha_to_hvc, 
-        # €/kt HVC https://www.iea.org/data-and-statistics/charts/simplified-levelised-cost-of-petrochemicals-for-selected-feedstocks-and-regions-2017
+        capital_cost=2050 * 0.8865 / naphtha_to_hvc,
+        # €/t HVC https://www.iea.org/data-and-statistics/charts/simplified-levelised-cost-of-petrochemicals-for-selected-feedstocks-and-regions-2017
         # Raillard Cazanove says 725 but prices were too low
-        efficiency=1 / naphtha_to_hvc,  # kt HVC / MWh oil
-        efficiency2=0.021 * 33.3 / naphtha_to_hvc,  # MWh H2 / kt HVC
+        efficiency=1 / naphtha_to_hvc,  # t HVC / MWh oil
+        efficiency2=0.021 * 33.3 / 1e3 / naphtha_to_hvc,  # MWh H2 / MWh oil
         efficiency3=decay_emis,  # tCO2 / MWh oil # should remove the first process emissions term
         # To be sure I include all C embedded in the plastics it's better to directly put the emission factor of oil
-        # efficiency3= (819 / naphtha_to_hvc) + decay_emis, # tCO2 / kt HVC # should remove the first process emissions term
-        efficiency4=-135 / naphtha_to_hvc,  # MWh electricity / kt HVC
+        # efficiency3= (819 / 1e3 / naphtha_to_hvc) + decay_emis, # tCO2/t HVC → tCO2/MWh oil
+        efficiency4=-135 / 1e3 / naphtha_to_hvc,  # MWh electricity / MWh oil
         lifetime=30,
     )
 
@@ -7597,10 +7593,9 @@ def correct_co2_carriers(n):
     # 2. Reset ALL carriers to zero for all CO2 attributes
     n.carriers.loc[:, co2_labels] = 0.0
 
-    # 3. Assign -1 only to the matching carrier
-    for attr in co2_labels:
-        if attr in n.carriers.index:
-            n.carriers.loc[attr, attr] = -1.0
+    # 3. Assign -1 only to the "co2" carrier (the carrier name is "co2", not "co2_emissions")
+    if "co2" in n.carriers.index:
+        n.carriers.loc["co2", "co2_emissions"] = -1.0
 
 
 if __name__ == "__main__":
@@ -7984,7 +7979,7 @@ if __name__ == "__main__":
     sanitize_carriers(n, snakemake.config)
     sanitize_locations(n)
 
-    #if options["endo_industry"]["enable"]:
-    #    correct_co2_carriers(n)
+    if options["endo_industry"]["enable"]:
+        correct_co2_carriers(n)
 
     n.export_to_netcdf(snakemake.output[0])

@@ -754,8 +754,8 @@ def add_steel_industry_existing(n):
     p_nom_bof = pd.DataFrame(index=nodes, columns=(["value"]))
     p_nom_eaf = pd.DataFrame(index=nodes, columns=(["value"]))
 
-    p_nom_bof = capacities_bof / nhours  # get the hourly production capacity
-    p_nom_eaf = capacities_eaf / nhours  # get the hourly production capacity
+    p_nom_bof = capacities_bof * 1e3 / nhours  # get the hourly production capacity in t/h
+    p_nom_eaf = capacities_eaf * 1e3 / nhours  # get the hourly production capacity in t/h
 
     # PARAMETERS
     nyears = n.snapshot_weightings.generators.sum() / 8760.0
@@ -802,11 +802,11 @@ def add_steel_industry_existing(n):
     )
 
     
-    electricity_input = (
-        costs.at["natural gas direct iron reduction furnace", "electricity-input"] * 1e3
-    )  # MWh/kt
+    electricity_input = costs.at[
+        "natural gas direct iron reduction furnace", "electricity-input"
+    ]  # MWh/t
 
-    capital_cost = (costs.at["natural gas direct iron reduction furnace", "capital_cost"] + costs.at["electric arc furnace", "capital_cost"]) * 1e3 / eaf_ng["iron input"]
+    capital_cost = (costs.at["natural gas direct iron reduction furnace", "capital_cost"] + costs.at["electric arc furnace", "capital_cost"]) / eaf_ng["iron input"]
     n.add(
         "Link",
         nodes,
@@ -834,7 +834,7 @@ def add_steel_industry_existing(n):
         nodes,
         suffix=" EAF-2020",
         carrier="EAF",
-        capital_cost=costs.at["electric arc furnace", "capital_cost"] * 1e3 / electricity_input,
+        capital_cost=costs.at["electric arc furnace", "capital_cost"] / electricity_input,
         p_nom_extendable=False,
         # p_min_pu=min_part_load_steel,
         p_nom=p_nom_eaf / cap_decrease * eaf_ng["iron input"],  # fake capacity, the bottleneck is DRI
@@ -868,7 +868,7 @@ def add_cement_industry_existing(n):
     nodes = pop_layout.index
     p_nom = pd.DataFrame(index=nodes, columns=(["value"]))
 
-    p_nom = capacities / nhours  # get the hourly production capacity
+    p_nom = capacities * 1e3 / nhours  # get the hourly production capacity in t/h
 
     # check if existing capacity is bigger than demand
     cement_load = n.loads[n.loads.carrier == "cement"].p_set.sum()
@@ -889,8 +889,8 @@ def add_cement_industry_existing(n):
     # Capital costs
     discount_rate = 0.04
     capex_cement = (
-        263000 / nhours * calculate_annuity(lifetime_cement, discount_rate)
-    )  # https://iea-etsap.org/E-TechDS/HIGHLIGHTS%20PDF/I03_cement_June%202010_GS-gct%201.pdf with CCS 558000
+        263 / nhours * calculate_annuity(lifetime_cement, discount_rate)
+    )  # https://iea-etsap.org/E-TechDS/HIGHLIGHTS%20PDF/I03_cement_June%202010_GS-gct%201.pdf with CCS 558; €/t cement
     min_part_load_cement = options["min_part_load_cement"]
 
     n.add(
@@ -910,8 +910,9 @@ def add_cement_industry_existing(n):
         efficiency2=-3420.1
         / 3.6
         * (1 / 1.28)
-        / 0.5,  # MWh/kt clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
-        efficiency3=500 * (1 / 1.28),  # tCO2/kt cement
+        / 0.5
+        / 1e3,  # MWh/t clinker https://www.sciencedirect.com/science/article/pii/S2214157X22005974
+        efficiency3=500 / 1e3 * (1 / 1.28),  # tCO2/t limestone
         lifetime=lifetime_cement,
         build_year=start_dates,
     )
@@ -1059,11 +1060,9 @@ def add_chemicals_industry_existing(n, options):
         p_nom_hvc = pd.DataFrame(index=nodes, columns=(["value"]))
 
         p_nom_hvc = (
-            capacities_hvc / nhours
-        )  # get the hourly production capacity in ktHVC/h
-        naphtha_to_hvc = (
-            2.31 * 12.47 * 1000
-        )  # kt oil / kt HVC * MWh/t oil * 1000 t / kt =   MWh oil / kt HVC
+            capacities_hvc * 1e3 / nhours
+        )  # get the hourly production capacity in t HVC/h
+        naphtha_to_hvc = 2.31 * 12.47  # t oil / t HVC * MWh/t oil = MWh oil / t HVC
 
         # check if existing capacity is bigger than demand
         hvc_load = n.loads[n.loads.carrier == "HVC"].p_set.sum()
@@ -1096,10 +1095,10 @@ def add_chemicals_industry_existing(n, options):
             p_min_pu=min_part_load_hvc,
             p_nom=p_nom_hvc / cap_decrease,
             #capital_cost=2050 * 1e3 * 0.8865 / naphtha_to_hvc,  # €/kt HVC
-            efficiency=1 / naphtha_to_hvc,  # MWh oil / kt HVC
-            efficiency2=21 * 33.3 / naphtha_to_hvc,  # MWh H2 / kt HVC
-            efficiency3=819 / naphtha_to_hvc + decay_emis,  # tCO2 / kt HVC
-            efficiency4=-135 / naphtha_to_hvc,  # MWh electricity / kt HVC
+            efficiency=1 / naphtha_to_hvc,  # t HVC / MWh oil
+            efficiency2=21 * 33.3 / 1e3 / naphtha_to_hvc,  # MWh H2 / MWh oil
+            efficiency3=819 / 1e3 / naphtha_to_hvc + decay_emis,  # tCO2 / MWh oil
+            efficiency4=-135 / 1e3 / naphtha_to_hvc,  # MWh electricity / MWh oil
             lifetime=30,
             build_year=start_dates_hvc,
         )

@@ -5535,12 +5535,19 @@ def add_steel_industry(n, investment_year, steel_data, options):
         carrier="BF-BOF",
         p_nom_extendable=True,
         p_min_pu=min_part_load_steel,
-        capital_cost=bof["capital cost"],
-        efficiency=1 / bof["iron input"],
-        efficiency2=-bof["coal input"] / bof["iron input"],  # MWhth coal per kt iron
+        #capital_cost=bof["capital cost"],  # Raillard-Cazanove custom values
+        #capital_cost=costs.at["blast furnace-basic oxygen furnace", "capital_cost"] / bof["iron input"],
+        capital_cost=costs.at["blast furnace-basic oxygen furnace", "capital_cost"]
+        / costs.at["blast furnace-basic oxygen furnace", "ore-input"],
+        #efficiency=1 / bof["iron input"],
+        efficiency=1 / costs.at["blast furnace-basic oxygen furnace", "ore-input"],
+        #efficiency2=-bof["coal input"] / bof["iron input"],
+        efficiency2=-costs.at["blast furnace-basic oxygen furnace", "coal-input"]
+        / costs.at["blast furnace-basic oxygen furnace", "ore-input"],  # MWhth coal per t ore
         efficiency3=-bof["elec input"]
-        / bof["iron input"],  # MWh electricity per kt iron
-        efficiency4=bof["emission factor"] / bof["iron input"],  # t CO2 per kt iron
+        / costs.at["blast furnace-basic oxygen furnace", "ore-input"],  # MWh electricity per t ore
+        efficiency4=bof["emission factor"]
+        / costs.at["blast furnace-basic oxygen furnace", "ore-input"],  # tCO2 per t ore
         lifetime=bof["lifetime"],
     )
 
@@ -5553,10 +5560,11 @@ def add_steel_industry(n, investment_year, steel_data, options):
         bus2=spatial.co2.dri,
         carrier="DRI",
         p_nom_extendable=True,
-        efficiency=1 / eaf_ng["gas input"],  # MWh natural gas per one unit of dri gas
+        #efficiency=1 / eaf_ng["gas input"],
+        efficiency=1 / costs.at["natural gas direct iron reduction furnace", "gas-input"],  # MWh gas per unit of dri gas
         efficiency2=eaf_ng["emission factor"]
-        / eaf_ng["iron input"]
-        / eaf_ng["gas input"],  # t CO2 per unit of dri gas
+        / costs.at["hydrogen direct iron reduction furnace", "ore-input"]
+        / costs.at["natural gas direct iron reduction furnace", "gas-input"],  # tCO2 per unit of dri gas
     )
 
     n.add(
@@ -5567,7 +5575,8 @@ def add_steel_industry(n, investment_year, steel_data, options):
         bus1=spatial.syngas_dri.nodes,
         carrier="DRI",
         p_nom_extendable=True,
-        efficiency=1 / eaf_h2["h2 input"],  # MWh hydrogen per one unit of dri gas
+        #efficiency=1 / eaf_h2["h2 input"],
+        efficiency=1 / costs.at["hydrogen direct iron reduction furnace", "hydrogen-input"],  # MWh H2 per unit of dri gas
     )
 
     n.add(
@@ -5601,7 +5610,8 @@ def add_steel_industry(n, investment_year, steel_data, options):
         )
 
     electricity_input = costs.at[
-        "natural gas direct iron reduction furnace", "electricity-input"
+        #"natural gas direct iron reduction furnace", "electricity-input"
+        "hydrogen direct iron reduction furnace", "electricity-input"
     ]  # MWh/t
 
     n.add(
@@ -5609,17 +5619,21 @@ def add_steel_industry(n, investment_year, steel_data, options):
         nodes,
         suffix=" DRI",
         carrier="DRI",
-        capital_cost=costs.at["natural gas direct iron reduction furnace", "capital_cost"]
-        / eaf_ng["iron input"],
+        #capital_cost=costs.at["natural gas direct iron reduction furnace", "capital_cost"] / eaf_ng["iron input"],
+        #capital_cost=costs.at["hydrogen direct iron reduction furnace", "capital_cost"] / eaf_ng["iron input"],
+        capital_cost=costs.at["hydrogen direct iron reduction furnace", "capital_cost"]
+        / costs.at["hydrogen direct iron reduction furnace", "ore-input"],
         p_nom_extendable=True,
         #p_min_pu=0.1,
         bus0=spatial.iron.nodes,
         bus1="EU HBI",
         bus2=spatial.syngas_dri.nodes,
         bus3=nodes,
-        efficiency=1 / eaf_ng["iron input"],
-        efficiency2=-1,  # one unit of dri gas per kt iron
-        efficiency3=-electricity_input / eaf_ng["iron input"],
+        #efficiency=1 / eaf_ng["iron input"],
+        efficiency=1 / costs.at["hydrogen direct iron reduction furnace", "ore-input"],
+        efficiency2=-1,  # one unit of dri gas per t ore
+        #efficiency3=-electricity_input / eaf_ng["iron input"],
+        efficiency3=-electricity_input / costs.at["hydrogen direct iron reduction furnace", "ore-input"],
         lifetime=eaf_ng["lifetime"],
     )
 

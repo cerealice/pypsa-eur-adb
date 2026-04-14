@@ -5597,7 +5597,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
     )
 
     if options["endo_industry"]["dri_import"]:
-        mc_dri = 395 if investment_year >= 2040 else 1e4
+        mc_dri = 395 if investment_year >= 2040 else 1e7
         # €/t HBI https://www.sciencedirect.com/science/article/pii/S0360544223006308
 
         n.add(

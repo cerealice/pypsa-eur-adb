@@ -5562,9 +5562,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         p_nom_extendable=True,
         #efficiency=1 / eaf_ng["gas input"],
         efficiency=1 / costs.at["natural gas direct iron reduction furnace", "gas-input"],  # MWh gas per unit of dri gas
-        efficiency2=eaf_ng["emission factor"]
-        #/ costs.at["hydrogen direct iron reduction furnace", "ore-input"]
-        / costs.at["natural gas direct iron reduction furnace", "gas-input"],  # tCO2 per unit of dri gas
+        efficiency2=costs.at["gas", "CO2 intensity"],  # tCO2/MWh_gas (direct gas combustion intensity)
     )
 
     n.add(
@@ -5587,14 +5585,14 @@ def add_steel_industry(n, investment_year, steel_data, options):
         unit="t/yr",
     )
 
-    n.add(
-        "Store",
-        ["EU HBI"],
-        bus=["EU HBI"],
-        carrier="HBI",
-        e_nom_extendable=True,
-        e_cyclic=True,
-    )
+    #n.add(
+    #    "Store",
+    #    ["EU HBI"],
+    #    bus=["EU HBI"],
+    #    carrier="HBI",
+    #    e_nom_extendable=True,
+    #    e_cyclic=True,
+    #)
 
     if options["endo_industry"]["dri_import"]:
         mc_dri = 395 if investment_year >= 2040 else 1e7

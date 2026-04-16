@@ -5585,14 +5585,14 @@ def add_steel_industry(n, investment_year, steel_data, options):
         unit="t/yr",
     )
 
-    #n.add(
-    #    "Store",
-    #    ["EU HBI"],
-    #    bus=["EU HBI"],
-    #    carrier="HBI",
-    #    e_nom_extendable=True,
-    #    e_cyclic=True,
-    #)
+    n.add(
+        "Store",
+        ["EU HBI"],
+        bus=["EU HBI"],
+        carrier="HBI",
+        e_nom_extendable=True,
+        e_cyclic=True,
+    )
 
     if options["endo_industry"]["dri_import"]:
         mc_dri = 395 if investment_year >= 2040 else 1e7
@@ -5705,7 +5705,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         nodes,
         suffix=" EAF",
         carrier="EAF",
-        capital_cost=costs.at["electric arc furnace", "capital_cost"]
+        capital_cost=2*costs.at["electric arc furnace", "capital_cost"]
         / electricity_input,
         p_nom_extendable=True,
         p_min_pu=min_part_load_steel,

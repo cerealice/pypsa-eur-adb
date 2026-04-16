@@ -5563,7 +5563,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         #efficiency=1 / eaf_ng["gas input"],
         efficiency=1 / costs.at["natural gas direct iron reduction furnace", "gas-input"],  # MWh gas per unit of dri gas
         efficiency2=eaf_ng["emission factor"]
-        / costs.at["hydrogen direct iron reduction furnace", "ore-input"]
+        #/ costs.at["hydrogen direct iron reduction furnace", "ore-input"]
         / costs.at["natural gas direct iron reduction furnace", "gas-input"],  # tCO2 per unit of dri gas
     )
 
@@ -5657,28 +5657,32 @@ def add_steel_industry(n, investment_year, steel_data, options):
         unit="t/yr",
     )
 
-    n.add(
-        "Store",
-        "EU steel scrap",
-        bus="EU steel scrap",
-        carrier="steel scrap",
-        e_nom_extendable=True,
-        e_cyclic=True,
-    )
+    #n.add(
+    #    "Store",
+    #    "EU steel scrap",
+    #    bus="EU steel scrap",
+    #    carrier="steel scrap",
+    #    e_nom_extendable=True,
+    #    e_cyclic=True,
+    #)
 
     n.add(
         "Generator",
         "EU steel scrap",
         bus="EU steel scrap",
         carrier="steel scrap",
+        # p_nom caps supply at max available scrap per timestep (upper bound only).
+        # No p_min_pu forcing: the optimizer decides how much scrap to use.
+        # When the CO2 price is high enough, scrap-EAF saves carbon vs DRI route,
+        # making scrap competitive at the margin — its cost then flows into the steel price.
         p_nom=1e7,
-        # https://www.scrapmonster.com/metal/steel-price/europe/300?utm_source=chatgpt.com
+        # https://www.scrapmonster.com/metal/steel-price/europe/300
         # Grade 1 Old Steel to be conservative: 160 $/t -> *0.86 = 137 €/t
         # https://gmk.center/en/posts/the-global-scrap-market-showed-overwhelming-stability-in-july/
         # 302.5 €/t in Germany for E3, which has limited contamination, low quality than prime grades but a staple feedstock for EAF
         # https://www.mgg-recycling.com/wp-content/uploads/2013/06/EFR_EU27_steel_scrap_specification.pdf
-        marginal_cost=280,  # €/t
-        e_sum_max=max_scrap_t,
+        marginal_cost=300,  # €/t
+        e_sum_max=max_scrap_t,  # total available scrap over the year, to avoid overusing scrap in high CO2 price scenarios (could be relaxed if we assume more imports of scrap from outside Europe
     )
 
     n.add(

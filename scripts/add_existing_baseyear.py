@@ -789,6 +789,8 @@ def add_steel_industry_existing(n):
         p_nom=p_nom_bof / cap_decrease * bof["iron input"],
         p_nom_extendable=False,
         p_min_pu=min_part_load_steel,
+        capital_cost=costs.at["blast furnace-basic oxygen furnace", "capital_cost"]
+        / costs.at["blast furnace-basic oxygen furnace", "ore-input"],
         # marginal_cost=-0.1,#opex_bof,
         efficiency=1 / bof["iron input"],
         efficiency2=-bof["coal input"] / bof["iron input"],  # MWhth coal per kt iron
@@ -806,7 +808,6 @@ def add_steel_industry_existing(n):
         "natural gas direct iron reduction furnace", "electricity-input"
     ]  # MWh/t
 
-    capital_cost = (costs.at["natural gas direct iron reduction furnace", "capital_cost"] + costs.at["electric arc furnace", "capital_cost"]) / eaf_ng["iron input"]
     n.add(
         "Link",
         nodes,
@@ -815,7 +816,8 @@ def add_steel_industry_existing(n):
         p_nom_extendable=False,
         p_nom=1e7,
         #p_min_pu=min_part_load_steel,
-        #capital_cost=capital_cost,
+        capital_cost=costs.at["natural gas direct iron reduction furnace", "capital_cost"]
+        / costs.at["natural gas direct iron reduction furnace", "ore-input"],
         bus0=spatial.iron.nodes,
         bus1="EU HBI",
         bus2=spatial.syngas_dri.nodes,

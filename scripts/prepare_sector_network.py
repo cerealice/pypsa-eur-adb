@@ -5548,7 +5548,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         / costs.at["blast furnace-basic oxygen furnace", "ore-input"],  # MWh electricity per t ore
         efficiency4=bof["emission factor"]
         / costs.at["blast furnace-basic oxygen furnace", "ore-input"],  # tCO2 per t ore
-        lifetime=bof["lifetime"],
+        lifetime=costs.at["blast furnace-basic oxygen furnace", "economic_lifetime"],
     )
 
     n.add(
@@ -5632,7 +5632,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         efficiency2=-1,  # one unit of dri gas per t ore
         #efficiency3=-electricity_input / eaf_ng["iron input"],
         efficiency3=-electricity_input / costs.at["hydrogen direct iron reduction furnace", "ore-input"],
-        lifetime=eaf_ng["lifetime"],
+        lifetime=costs.at["hydrogen direct iron reduction furnace", "economic_lifetime"],
     )
 
     # Tentative scrap modelling
@@ -5714,7 +5714,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         bus2="EU HBI",
         efficiency=1 / electricity_input,
         efficiency2=-costs.at["electric arc furnace", "hbi-input"] / electricity_input,
-        lifetime=eaf_ng["lifetime"],
+        lifetime=costs.at["electric arc furnace", "economic_lifetime"],
     )
 
     n.add(

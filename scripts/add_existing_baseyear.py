@@ -797,9 +797,7 @@ def add_steel_industry_existing(n):
         efficiency3=-bof["elec input"]
         / bof["iron input"],  # MWh electricity per kt iron
         efficiency4=bof["emission factor"] / bof["iron input"],  # t CO2 per kt iron
-        lifetime=bof[
-            "lifetime"
-        ],  # https://www.energimyndigheten.se/4a9556/globalassets/energieffektivisering_/jag-ar-saljare-eller-tillverkare/dokument/produkter-med-krav/ugnar-industriella-och-laboratorie/annex-b_lifetime_energy.pdf
+        lifetime=costs.at["blast furnace-basic oxygen furnace", "economic_lifetime"],
         build_year=start_dates_bof,
     )
 
@@ -825,10 +823,10 @@ def add_steel_industry_existing(n):
         efficiency=1 / eaf_ng["iron input"],
         efficiency2=-1,  # one unit of dri gas per kt iron
         efficiency3=-electricity_input / eaf_ng["iron input"],
-        lifetime=eaf_ng["lifetime"],
+        lifetime=costs.at["natural gas direct iron reduction furnace", "economic_lifetime"],
         build_year=start_dates_eaf,
     )
-    
+
     electricity_input = costs.at["electric arc furnace", "electricity-input"]
     
     n.add(
@@ -846,7 +844,7 @@ def add_steel_industry_existing(n):
         efficiency=1 / electricity_input,
         efficiency2=-costs.at["electric arc furnace", "hbi-input"]
         / electricity_input,
-        lifetime=eaf_ng["lifetime"],
+        lifetime=costs.at["electric arc furnace", "economic_lifetime"],
         build_year=start_dates_eaf,
     )
 

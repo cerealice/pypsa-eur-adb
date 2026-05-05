@@ -2308,7 +2308,7 @@ def add_storage_and_grids(
             lifetime=costs.at["coal", "lifetime"],
         )
 
-    min_part_load_smr = 0.5 #ADB
+    min_part_load_smr = 0.7 #ADB
     if ((options["endo_industry"]["policy_scenario"] == "deindustrial")):
         min_part_load_smr = 0.1
     elif options["min_part_load_steel"] == 0: # proxy for flex scenarios
@@ -5430,6 +5430,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
     keys = pd.read_csv(snakemake.input.industrial_distribution_key, index_col=0)
 
     scenario = options["endo_industry"]["policy_scenario"]
+
     hourly_steel_production = (
         steel_data.loc[investment_year, scenario] * 1e6 / nhours
     )  # get the steel that needs to be produced hourly t steel/h
@@ -5523,6 +5524,8 @@ def add_steel_industry(n, investment_year, steel_data, options):
         options, nyears
     )
 
+    bof_capex = costs.at["blast furnace-basic oxygen furnace", "capital_cost"] / costs.at["blast furnace-basic oxygen furnace", "ore-input"] 
+
     n.add(
         "Link",
         nodes,
@@ -5537,8 +5540,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         p_min_pu=min_part_load_steel,
         #capital_cost=bof["capital cost"],  # Raillard-Cazanove custom values
         #capital_cost=costs.at["blast furnace-basic oxygen furnace", "capital_cost"] / bof["iron input"],
-        capital_cost=costs.at["blast furnace-basic oxygen furnace", "capital_cost"]
-        / costs.at["blast furnace-basic oxygen furnace", "ore-input"],
+        capital_cost=bof_capex,
         #efficiency=1 / bof["iron input"],
         efficiency=1 / costs.at["blast furnace-basic oxygen furnace", "ore-input"],
         #efficiency2=-bof["coal input"] / bof["iron input"],
@@ -5548,7 +5550,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         / costs.at["blast furnace-basic oxygen furnace", "ore-input"],  # MWh electricity per t ore
         efficiency4=bof["emission factor"]
         / costs.at["blast furnace-basic oxygen furnace", "ore-input"],  # tCO2 per t ore
-        lifetime=costs.at["blast furnace-basic oxygen furnace", "economic_lifetime"],
+        lifetime=costs.at["blast furnace-basic oxygen furnace", "lifetime"],
     )
 
     n.add(
@@ -5595,17 +5597,20 @@ def add_steel_industry(n, investment_year, steel_data, options):
     )
 
     if options["endo_industry"]["dri_import"]:
-        mc_dri = 395 if investment_year >= 2040 else 1e7
         # €/t HBI https://www.sciencedirect.com/science/article/pii/S0360544223006308
-
+        # Before 2040 imports are not available: set p_nom=0 so the variable is
+        # excluded from the LP (previously used mc=1e7 as a penalty, which still
+        # added a large-bound variable to every timestep).
         n.add(
             "Generator",
             "EU HBI import",
             bus="EU HBI",
             carrier="import HBI",
-            p_nom=1e7,
-            marginal_cost=mc_dri,
+            p_nom=0 if investment_year < 2040 else 1e7,
+            p_nom_extendable=False,
+            marginal_cost=395,  # €/t HBI, only relevant when p_nom > 0 (>=2040)
         )
+
 
     electricity_input = costs.at[
         #"natural gas direct iron reduction furnace", "electricity-input"
@@ -5632,7 +5637,7 @@ def add_steel_industry(n, investment_year, steel_data, options):
         efficiency2=-1,  # one unit of dri gas per t ore
         #efficiency3=-electricity_input / eaf_ng["iron input"],
         efficiency3=-electricity_input / costs.at["hydrogen direct iron reduction furnace", "ore-input"],
-        lifetime=costs.at["hydrogen direct iron reduction furnace", "economic_lifetime"],
+        lifetime=costs.at["hydrogen direct iron reduction furnace", "lifetime"],
     )
 
     # Tentative scrap modelling
@@ -5655,15 +5660,16 @@ def add_steel_industry(n, investment_year, steel_data, options):
         unit="t/yr",
     )
 
-    #n.add(
-    #    "Store",
-    #    "EU steel scrap",
-    #    bus="EU steel scrap",
-    #    carrier="steel scrap",
-    #    e_nom_extendable=True,
-    #    e_cyclic=True,
-    #)
-    scrap_price = 300 if investment_year >= 2040 else 150
+    n.add(
+        "Store",
+        "EU steel scrap",
+        bus="EU steel scrap",
+        carrier="steel scrap",
+        e_nom_extendable=True,
+        e_cyclic=True,
+    )
+    
+    scrap_price = 300
     n.add(
         "Generator",
         "EU steel scrap",
@@ -5705,16 +5711,16 @@ def add_steel_industry(n, investment_year, steel_data, options):
         nodes,
         suffix=" EAF",
         carrier="EAF",
-        capital_cost=2*costs.at["electric arc furnace", "capital_cost"]
+        capital_cost=costs.at["electric arc furnace", "capital_cost"]
         / electricity_input,
         p_nom_extendable=True,
-        p_min_pu=min_part_load_steel,
+        p_min_pu=0.95,
         bus0=nodes,
         bus1=spatial.steel.nodes,
         bus2="EU HBI",
         efficiency=1 / electricity_input,
         efficiency2=-costs.at["electric arc furnace", "hbi-input"] / electricity_input,
-        lifetime=costs.at["electric arc furnace", "economic_lifetime"],
+        lifetime=costs.at["electric arc furnace", "lifetime"],
     )
 
     n.add(
@@ -5795,6 +5801,11 @@ def add_steel_industry(n, investment_year, steel_data, options):
             e_nom_extendable=True,
             e_cyclic=True,
         )
+    
+    
+    # Dirty fix for policy_reg_maintain
+    #if scenario == 'maintain':
+        #min_part_load_electrolysis = 0
 
 
 def add_cement_industry(n, investment_year, cement_data, options):
@@ -5879,7 +5890,7 @@ def add_cement_industry(n, investment_year, cement_data, options):
     # Traditional dry process
 
     # Lifetimes
-    lifetime_cement = 25  # Raillard Cazanove
+    lifetime_cement = 30  # Raillard Cazanove
 
     # Capital costs
     discount_rate = 0.04
@@ -6169,85 +6180,6 @@ def add_hvc(n, investment_year, hvc_data, options):
             e_cyclic=True,
         )
 
-    """
-
-    # Tentative recycled plastics modelling
-
-    # Retrieve value for HVC recycled constraint
-    max_recycled_file = "data/max_recycled_plastics.csv"
-    max_recycled_df = pd.read_csv(max_recycled_file, index_col=0)
-
-    # Value in Mt (convert to kt if needed for units)
-    max_recycled_mt = max_recycled_df.loc[scenario, str(investment_year)]  # [Mt]
-    max_recycled_kt = max_recycled_mt * 1000  # from Mt to kt
-
-
-    n.add(
-        "Bus",
-        "EU recycled HVC",
-        location="EU",
-        carrier="HVC",
-        unit="kt/yr",
-    )
-
-    n.add(
-        "Generator",
-        "EU recycled HVC",
-        bus="EU recycled HVC",
-        carrier="HVC",
-        p_nom=1e7,
-        # https://www.eea.europa.eu/en/circularity/sectoral-modules/plastics/average-yearly-price-of-plastic-scrap-eur-tonne
-        # 2022 466.7 € / t -> kt
-        marginal_cost=466.7 * 1e3,
-        e_sum_min = 0,
-        e_sum_max = max_recycled_kt,
-    )
-
-    
-    n.add(
-        "Link",
-        nodes,
-        suffix = " recycled HVC to HVC",
-        bus0="EU recycled HVC",
-        bus1=spatial.hvc.nodes,
-        bus2="co2 atmosphere",
-        carrier="recycled HVC to HVC",
-        p_nom_extendable=True,
-        capital_cost=0,
-        efficiency=1,
-        efficiency2=decay_emis,
-    )    
-
-    
-    # Availability profile: available all year, then exhausted
-    e_max_pu = pd.DataFrame(1, index=n.snapshots, columns=["EU recycled HVC availability"])
-    e_max_pu.iloc[-1, :] = 0
-
-    e_max_pu = pd.Series(1.0, index=n.snapshots, name="EU recycled HVC availability")
-    e_max_pu.iloc[-1] = 0
-
-    # Add a store representing the total scrap stock
-    n.add(
-        "Store",
-        "EU recycled HVC availability",
-        bus="EU recycled HVC",
-        carrier="recycled HVC",
-        e_nom=max_recycled_kt,         # cap total scrap supply
-        marginal_cost=0,
-        e_initial=max_recycled_kt,     # start full
-        e_max_pu=e_max_pu,          # availability profile
-    )
-
-    
-    n.add(
-        "GlobalConstraint",
-        "recycled HVC limit",
-        carrier_attribute="recycled HVC",
-        sense="<=",
-        constant=max_recycled_kt,
-        type="operational_limit",
-    )
-    """
 
 
 def add_aviation(
@@ -7546,11 +7478,10 @@ def add_import_options(
 
     if "methanol_adb" in import_options:
         co2_intensity = costs.at["methanolisation", "carbondioxide-input"]
-        mc_methanol = (
-            import_options["methanol_adb"] / co2_intensity
-            if investment_year >= 2040
-            else 1e7
-        )
+        # Before 2040 imports are not available: set p_nom=0 to exclude from the LP.
+        # Previously mc=1e7 was used as a penalty but still added large-bound variables.
+        p_nom_methanol = 0 if investment_year < 2040 else 1e7
+        mc_methanol = import_options["methanol_adb"] / co2_intensity  # only active when p_nom > 0
 
         n.add(
             "Link",
@@ -7561,7 +7492,8 @@ def add_import_options(
             bus1=spatial.methanol.industry,
             efficiency=1 / co2_intensity,
             marginal_cost=mc_methanol,
-            p_nom=1e7,
+            p_nom=p_nom_methanol,
+            p_nom_extendable=False,
         )
 
         n.add(
@@ -7573,11 +7505,15 @@ def add_import_options(
             bus1=spatial.methanol.shipping,
             efficiency=1 / co2_intensity,
             marginal_cost=mc_methanol,
-            p_nom=1e7,
+            p_nom=p_nom_methanol,
+            p_nom_extendable=False,
         )
 
     if "ammonia_adb" in import_options:
-        mc_ammonia = import_options["ammonia_adb"] if investment_year >= 2040 else 1e7
+        # Before 2040 imports are not available: set p_nom=0 to exclude from the LP.
+        # Previously mc=1e7 was used as a penalty but still added large-bound variables.
+        p_nom_ammonia = 0 if investment_year < 2040 else 1e7
+        mc_ammonia = import_options["ammonia_adb"]  # only active when p_nom > 0
 
         n.add(
             "Generator",
@@ -7585,10 +7521,10 @@ def add_import_options(
             suffix=" import",
             bus=spatial.ammonia.nodes,
             carrier="import NH3",
-            p_nom=1e7,
+            p_nom=p_nom_ammonia,
+            p_nom_extendable=False,
             marginal_cost=mc_ammonia,
         )
-
 
 
 def correct_co2_carriers(n):

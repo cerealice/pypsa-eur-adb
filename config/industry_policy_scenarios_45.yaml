@@ -82,6 +82,7 @@ base_reg_maintain:
     min_part_load_steel: 0.3
     min_part_load_cement: 0.5
     min_part_load_hvc: 0.3
+    min_part_load_electrolysis: 0
     co2_sequestration_potential:
       2020: 0
       2030: 0
@@ -166,6 +167,7 @@ import_policy_reg_deindustrial:
     min_part_load_steel: 0.3
     min_part_load_cement: 0.5
     min_part_load_hvc: 0.3
+    min_part_load_electrolysis: 0
     imports:
       enable: true
       price:
@@ -197,6 +199,7 @@ import_policy_reg_regain:
     min_part_load_steel: 0.3
     min_part_load_cement: 0.5
     min_part_load_hvc: 0.3
+    min_part_load_electrolysis: 0
     imports:
       enable: true
       price:
@@ -231,6 +234,7 @@ policy_eu_regain_flex:
     min_part_load_steel: 0
     min_part_load_cement: 0
     min_part_load_hvc: 0
+    min_part_load_electrolysis: 0
     industrial_flexibility: true
 
 
@@ -260,6 +264,7 @@ policy_eu_deindustrial_flex:
     min_part_load_steel: 0
     min_part_load_cement: 0
     min_part_load_hvc: 0
+    min_part_load_electrolysis: 0
     industrial_flexibility: true
 
 # Climate policy: YES, Relocation: NO, Industrial policy: DEINDUSTRIAL
@@ -288,6 +293,7 @@ policy_reg_deindustrial_flex:
     min_part_load_steel: 0
     min_part_load_cement: 0
     min_part_load_hvc: 0
+    min_part_load_electrolysis: 0
     industrial_flexibility: true
 
 # Climate policy: YES, Relocation: NO, Industrial policy: REGAIN
@@ -316,6 +322,7 @@ policy_reg_regain_flex:
     min_part_load_steel: 0
     min_part_load_cement: 0
     min_part_load_hvc: 0
+    min_part_load_electrolysis: 0
     industrial_flexibility: true
 
 
@@ -369,6 +376,7 @@ policy_reg_deindustrial_h2:
     min_part_load_steel: 0.3
     min_part_load_cement: 0.5
     min_part_load_hvc: 0.3
+    min_part_load_electrolysis: 0
 
 # Climate policy: YES, Relocation: NO, Industrial policy: DEINDUSTRIAL
 policy_reg_deindustrial_co2:
@@ -423,6 +431,7 @@ policy_reg_regain_h2:
     min_part_load_steel: 0.3
     min_part_load_cement: 0.5
     min_part_load_hvc: 0.3
+    min_part_load_electrolysis: 0
 
 policy_reg_regain_co2:
   co2_budget:

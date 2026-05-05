@@ -393,7 +393,7 @@ def reduce_capacities(n, year):
             cap_decrease = installed_cap / load * 1.1
             n.links.loc[plants, "p_nom"] /= cap_decrease
 
-    # special case steel
+    # special case steel — EU-wide scale-down if total fixed capacity exceeds total demand
     steel_load = n.loads[n.loads.carrier == "steel"].p_set.sum()
     plants = n.links[
         (n.links.carrier.isin(["BF-BOF", "DRI-EAF"])) & ~(n.links.p_nom_extendable)
@@ -405,6 +405,26 @@ def reduce_capacities(n, year):
         )
         cap_decrease = installed_cap / steel_load * 1.1
         n.links.loc[plants, "p_nom"] /= cap_decrease
+
+    # Per-region: zero out fixed steel capacity where the regional bus has zero demand.
+    # The EU-wide check above misses regions where one country has zero demand but
+    # positive min-part-load (e.g. a tiny BF-BOF carried over from the previous horizon),
+    # which makes the regional bus balance infeasible.
+    steel_loads_by_bus = (
+        n.loads[n.loads.carrier == "steel"]
+        .groupby("bus")["p_set"]
+        .sum()
+    )
+    for plant in plants:
+        steel_bus = n.links.loc[plant, "bus1"]
+        regional_demand = steel_loads_by_bus.get(steel_bus, 0.0)
+        if regional_demand <= 0.0:
+            logger.info(
+                f"Zeroing fixed steel capacity '{plant}' at {steel_bus}: "
+                f"regional demand is zero, min-part-load would make bus balance infeasible."
+            )
+            n.links.loc[plant, "p_nom"] = 0.0
+
 
 
 if __name__ == "__main__":
